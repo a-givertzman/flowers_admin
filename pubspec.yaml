@@ -1,0 +1,43 @@
+name: flowers_admin
+version: 0.0.5
+homepage: https://github.com/a-givertzman/hmi_core
+description: A new Flutter project.
+# Prevent accidental publishing to pub.dev.
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.1.5 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  logging: ^1.1.1
+  window_manager: ^0.3.0
+  hmi_core:
+    git:
+      url: https://github.com/a-givertzman/hmi_core.git
+      ref: master
+  dart_api_client:
+    path: ../dart_api_client
+    # git:
+    #   url: https://github.com/a-givertzman/dart_api_client
+    #   ref: master
+  web_socket_channel: ^2.4.0
+  uuid: ^3.0.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mockito: ^5.3.0
+  flutter_lints: ^2.0.0
+  dart_code_metrics: ^5.6.0
+
+flutter:
+  uses-material-design: true
+  # Enable generation of localized Strings from arb files.
+  generate: true
+  assets:
+    # Add assets from the images directory to the application.
+    - assets/images/
