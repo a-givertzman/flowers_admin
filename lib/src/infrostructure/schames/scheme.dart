@@ -23,6 +23,7 @@ class Scheme<T extends SchemeEntry> {
   final Sql Function(List<dynamic>? values) _fetchSqlBuilder;
   final SqlBuilder? _insertSqlBuilder;
   final SqlBuilder? _updateSqlBuilder;
+  final Map<String, Scheme> _relations;
   // final SchemeEntry Function(Map<String, dynamic> row) _schemeBuilder;
   ///
   /// A collection of the SchameEntry, 
@@ -39,6 +40,7 @@ class Scheme<T extends SchemeEntry> {
     SqlBuilder? insertSqlBuilder,
     SqlBuilder? updateSqlBuilder,
     // required SchemeEntry Function(Map<String, dynamic> row) schemeBuilder,
+    Map<String, Scheme> relations = const {},
   }) :
     _address = address,
     _authToken = authToken,
@@ -48,8 +50,9 @@ class Scheme<T extends SchemeEntry> {
     _debug = debug,
     _fetchSqlBuilder = fetchSqlBuilder,
     _insertSqlBuilder = insertSqlBuilder,
-    _updateSqlBuilder = updateSqlBuilder;
-    // _schemeBuilder = schemeBuilder;
+    _updateSqlBuilder = updateSqlBuilder,
+    // _schemeBuilder = schemeBuilder,
+    _relations = relations;
   ///
   /// Returns a list of table field names
   List<Field> get fields {
@@ -71,6 +74,18 @@ class Scheme<T extends SchemeEntry> {
   Future<Result<List<SchemeEntry>>> fetch(values) {
     final sql = _fetchSqlBuilder(values);
     return fetchWith(sql);
+  }
+  ///
+  ///
+  Result<Scheme> relation(String key) {
+    if (_relations.containsKey(key)) {
+      return Result(data: _relations[key]);
+    } else {
+      return Result(error: Failure(
+        message: "$runtimeType.relation | key: $key - not found", 
+        stackTrace: StackTrace.current,
+      ));
+    }
   }
   ///
   T _makeEntry(Map<String, dynamic> row) {
