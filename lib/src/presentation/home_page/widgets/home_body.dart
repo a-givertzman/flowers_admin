@@ -70,9 +70,9 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: false, edit: true, key: 'account'),
                     const Field(hidden: false, edit: true, key: 'last_act'),
                     const Field(hidden: false, edit: true, key: 'blocked'),
-                    const Field(hidden: false, edit: true, key: 'created'),
-                    const Field(hidden: false, edit: true, key: 'updated'),
-                    const Field(hidden: false, edit: true, key: 'deleted'),
+                    const Field(hidden: true, edit: true, key: 'created'),
+                    const Field(hidden: true, edit: true, key: 'updated'),
+                    const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
                   fetchSqlBuilder: (values) {
                     return Sql(sql: 'select * from customer order by id;');

@@ -107,7 +107,9 @@ class _TableWidgetState extends State<TableWidget> {
   ///
   ///
   List<TCell> _buildRow(List<Field> fields, SchemeEntry entry, textStyle) {
-    final cells = fields.map((field) {
+    final cells = fields
+    .where((field) => !field.hidden)
+    .map((field) {
       final value = entry.value(field.key);
       return TCell(
         // key: Key(entry.key),
