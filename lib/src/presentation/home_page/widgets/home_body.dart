@@ -311,8 +311,9 @@ class _HomeBodyState extends State<HomeBody> {
                   database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
-                    const Field(hidden: false, edit: true, key: 'customer'),
+                    const Field(hidden: false, edit: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+                    const Field(hidden: false, edit: false, key: 'customer'),
+                    const Field(hidden: false, edit: true, key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'field')),// 
                     const Field(hidden: false, edit: true, key: 'purchase_content_id'),// relation: Relation(id: 'purchase_content_id', field: field)),
                     const Field(hidden: false, edit: true, key: 'purchase'),
                     const Field(hidden: false, edit: true, key: 'product'),
