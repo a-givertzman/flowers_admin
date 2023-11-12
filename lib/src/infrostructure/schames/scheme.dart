@@ -1,5 +1,6 @@
 import 'package:dart_api_client/dart_api_client.dart';
 import 'package:flowers_admin/src/infrostructure/schames/entry_factory.dart';
+import 'package:flowers_admin/src/infrostructure/schames/field.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
 import 'package:flowers_admin/src/infrostructure/schames/sql.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
@@ -17,7 +18,7 @@ class Scheme<T extends SchemeEntry> {
   final String _database;
   final bool _keepAlive;
   final bool _debug;
-  final List<String> _keys;
+  final List<Field> _fields;
   final Map<String, SchemeEntry> _entries = {};
   final Sql Function(List<dynamic>? values) _fetchSqlBuilder;
   final SqlBuilder? _insertSqlBuilder;
@@ -31,7 +32,7 @@ class Scheme<T extends SchemeEntry> {
     required ApiAddress address,
     required String authToken,
     required String database,
-    required List<String> fields,
+    required List<Field> fields,
     bool keepAlive = false,
     bool debug = false,
     required Sql Function(List<dynamic>? values) fetchSqlBuilder,
@@ -42,7 +43,7 @@ class Scheme<T extends SchemeEntry> {
     _address = address,
     _authToken = authToken,
     _database = database,
-    _keys = keys,
+    _fields = fields,
     _keepAlive = keepAlive,
     _debug = debug,
     _fetchSqlBuilder = fetchSqlBuilder,
@@ -52,7 +53,7 @@ class Scheme<T extends SchemeEntry> {
   ///
   /// Returns a list of table field names
   List<String> get keys {
-    return _keys;
+    return _fields.map((field) => field.key).toList();
   }
   ///
   ///
