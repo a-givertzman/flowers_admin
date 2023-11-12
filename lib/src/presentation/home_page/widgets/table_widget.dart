@@ -119,7 +119,7 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<TCell> _buildHead(List<Field> fields, textStyle) {
+  List<Widget> _buildHead(List<Field> fields, textStyle) {
     final cells = fields
     .where((field) => !field.hidden)
     .map((field) {
@@ -134,7 +134,7 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<TCell> _buildRow(List<Field> fields, SchemeEntry entry, textStyle) {
+  List<Widget> _buildRow(List<Field> fields, SchemeEntry entry, textStyle) {
     final cells = fields
     .where((field) => !field.hidden)
     .map((field) {
