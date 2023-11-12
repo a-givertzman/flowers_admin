@@ -41,7 +41,7 @@ class TCellList extends StatefulWidget {
 ///
 class _TCellListState extends State<TCellList> {
   final _log = Log("$_TCellListState._");
-  final String _id;
+  String _id;
   late String _value;
   final List<SchemeEntry> _relation;
   final TextStyle? _style;
@@ -132,11 +132,13 @@ class _TCellListState extends State<TCellList> {
   }
   ///
   ///
-  _applyNewValue(String value) {
+  _applyNewValue(String id) {
     setState(() {
       _isEditing = false;
+      _id = id;
+      _value = _relation.firstWhere((entry) => '${entry.value('id').value}' == _id).value('name').value.toString();
     });
     final onComplete = _onComplete;
-    if (onComplete != null) onComplete(value);
+    if (onComplete != null) onComplete(id);
   }
 }
