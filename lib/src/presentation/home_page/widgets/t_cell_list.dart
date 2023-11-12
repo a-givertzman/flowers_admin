@@ -6,20 +6,26 @@ import 'package:flutter/material.dart';
 ///
 ///
 class TCellEntry {
-  final dynamic _id;
-  final Map<String, String> _values;
-  const TCellEntry({
-    required dynamic id,
-    required Map<String, String> values,
-  }) :
-    _id = id,
-    _values = values;
-  const TCellEntry.empty() :
-    _id = '',
+  late final Map<dynamic, String> _values;
+  TCellEntry({
+    required String field,
+    required List<SchemeEntry> entries,
+  }) {
+    _values = entries.asMap().map((_, entry) {
+      return MapEntry(entry.value('id').value, '${entry.value(field).value}');
+    });
+
+  }
+  TCellEntry.empty() :
     _values = const {};
-  dynamic get id => _id;
-  Map<String, String> get values => _values;
-  String get value => _values[_id] ?? '';
+  Map<dynamic, String> get values => _values;
+  String value(id) => _values[id] ?? '';
+  ///
+  ///
+  @override
+  String toString() {
+    return 'TCellEntry { values: $_values}';
+  }
 }
 
 ///
@@ -32,7 +38,7 @@ class TCellList extends StatefulWidget {
   final bool _editable;
   ///
   ///
-  const TCellList({
+  TCellList({
     super.key,
     required dynamic id,
     TCellEntry? relation,
@@ -41,7 +47,7 @@ class TCellList extends StatefulWidget {
     bool editable = true,
   }) :
     _id = id,
-    _relation = relation ?? const TCellEntry.empty(),
+    _relation = relation ?? TCellEntry.empty(),
     _style = style,
     _onComplete = onComplete,
     _editable = editable;
@@ -61,7 +67,6 @@ class TCellList extends StatefulWidget {
 class _TCellListState extends State<TCellList> {
   final _log = Log("$_TCellListState._");
   dynamic _id;
-  // String _value = '';
   final TCellEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
@@ -82,22 +87,6 @@ class _TCellListState extends State<TCellList> {
     _style = style,
     _onComplete = onComplete,
     _editable = editable;
-  ///
-  ///
-  @override
-  void initState() {
-    // _controller.text = _value;
-    // _log.debug("initState | _controller.text: ${_controller.text}");
-    _log.debug("._build | id '$_id'");
-    // for (final entry in _relation) {
-    //   if (entry.value('id').value == _id) {
-    //     _value = entry.value('name').value.toString();
-    //     break;
-    //   }
-    // }
-    // _log.debug("._build | value '$_value'");
-    super.initState();
-  }
   ///
   ///
   @override
@@ -133,7 +122,7 @@ class _TCellListState extends State<TCellList> {
         : Padding(
           padding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH),
           child: Text(
-            _relation.value,
+            _relation.value(_id),
             style: _style,
             textAlign: _textAlign,
           ),

@@ -155,15 +155,12 @@ class _TableWidgetState extends State<TableWidget> {
           onComplete: (value) => _updateEntry(entry, field.key, value),
         );
       } else {
-        final values = (_relations[field.relation.field] ?? []).asMap().map((_, entry) {
-          return MapEntry('${entry.value('id').value}', '${entry.value(field.relation.field).value}');
-        });
-        final rel = TCellEntry(id: value.value, values: values);
-        _log.debug("._buildRow | relation '${field.relation}': $rel");
+        final relation = TCellEntry(entries: _relations[field.relation.id] ?? [], field: field.relation.field);
+        _log.debug("._buildRow | relation '${field.relation.id}': $relation");
         return TCellList(
           // key: Key(entry.key),
           id: value.value,
-          relation: rel,
+          relation: relation,
           editable: field.edit,
           style: textStyle,
           onComplete: (value) => _updateEntry(entry, field.key, value),
