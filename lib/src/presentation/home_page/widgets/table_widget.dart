@@ -36,13 +36,13 @@ class _TableWidgetState extends State<TableWidget> {
     _scheme = scheme;
   ///
   ///
-  @override
-  void initState() {
+  Future<Result<List<SchemeEntry>>> _fetch() async {
+    final entries = _scheme.fetch([]);
     for (final field in _scheme.fields) {
       if (field.relation.isNotEmpty) {
-        _scheme.relation(field.relation).fold(
-          onData: (scheme) {
-            scheme.refresh().then((result) {
+        await _scheme.relation(field.relation).fold(
+          onData: (scheme) async {
+            await scheme.refresh().then((result) {
               result.fold(
                 onData: (entries) {
                   _relations[field.relation] = entries;
@@ -59,6 +59,12 @@ class _TableWidgetState extends State<TableWidget> {
         );
       }
     }
+    return entries;
+  }
+  ///
+  ///
+  @override
+  void initState() {
     super.initState();
   }
   ///
@@ -66,7 +72,7 @@ class _TableWidgetState extends State<TableWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Result<List<SchemeEntry>>>(
-      future: _scheme.fetch([]),
+      future: _fetch(),
       builder: (BuildContext context, AsyncSnapshot<Result<List<SchemeEntry>>> snapshot) {
         final textStile = Theme.of(context).textTheme.bodyMedium;
         if (snapshot.connectionState != ConnectionState.done) {
@@ -151,11 +157,11 @@ class _TableWidgetState extends State<TableWidget> {
             _scheme.update(entry).then((result) {
               if (result.hasError) {
                 showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                        title: const Text('Update error'),
-                        content: Text('error: ${result.error}'),
-                    ),
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text('Update error'),
+                    content: Text('error: ${result.error}'),
+                  ),
                 );          
               }
             });
@@ -166,7 +172,7 @@ class _TableWidgetState extends State<TableWidget> {
         _log.debug("._buildRow | relation '${field.relation}': $rel");
         return TCellList(
           // key: Key(entry.key),
-          value: value.value.toString(),
+          id: value.value.toString(),
           relation: rel,
           editable: field.edit,
           style: textStyle,
@@ -175,11 +181,11 @@ class _TableWidgetState extends State<TableWidget> {
             _scheme.update(entry).then((result) {
               if (result.hasError) {
                 showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                        title: const Text('Update error'),
-                        content: Text('error: ${result.error}'),
-                    ),
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text('Update error'),
+                    content: Text('error: ${result.error}'),
+                  ),
                 );          
               }
             });

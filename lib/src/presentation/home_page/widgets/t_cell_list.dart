@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 ///
 ///
 class TCellList extends StatefulWidget {
-  final String _value;
+  final String _id;
   final List<SchemeEntry> _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
@@ -15,13 +15,13 @@ class TCellList extends StatefulWidget {
   ///
   const TCellList({
     super.key,
-    required String value,
+    required String id,
     List<SchemeEntry> relation = const [],
     TextStyle? style,
     void Function(String value)? onComplete,
     bool editable = true,
   }) :
-    _value = value,
+    _id = id,
     _relation = relation,
     _style = style,
     _onComplete = onComplete,
@@ -30,7 +30,7 @@ class TCellList extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<TCellList> createState() => _TCellListState(
-    value: _value,
+    id: _id,
     relation: _relation,
     style: _style,
     onComplete: _onComplete,
@@ -41,7 +41,8 @@ class TCellList extends StatefulWidget {
 ///
 class _TCellListState extends State<TCellList> {
   final _log = Log("$_TCellListState._");
-  final String _value;
+  final String _id;
+  late String _value;
   final List<SchemeEntry> _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
@@ -50,15 +51,14 @@ class _TCellListState extends State<TCellList> {
   final _textPaddingH = 16.0;
   final _textAlign = TextAlign.left;
   bool _isEditing = false;
-  late final TextEditingController _controller = TextEditingController();
   _TCellListState({
-    required String value,
+    required String id,
     required List<SchemeEntry> relation,
     required TextStyle? style,
     required void Function(String value)? onComplete,
     required bool editable,
   }) :
-    _value = value,
+    _id = id,
     _relation = relation,
     _style = style,
     _onComplete = onComplete,
@@ -69,13 +69,15 @@ class _TCellListState extends State<TCellList> {
   void initState() {
     // _controller.text = _value;
     // _log.debug("initState | _controller.text: ${_controller.text}");
+    _log.debug("._build | id '$_id'");
+    _value = _relation.firstWhere((entry) => '${entry.value('id').value}' == _id).value('name').value.toString();
+    _log.debug("._build | value '$_value'");
     super.initState();
   }
   ///
   ///
   @override
   Widget build(BuildContext context) {
-    _log.debug("._build | value '$_value'");
     return GestureDetector(
       onTap: () {
         if (_editable) {
@@ -86,7 +88,7 @@ class _TCellListState extends State<TCellList> {
       },
       child: _isEditing
         ? DropdownButton<String>(
-            value: _value,
+            value: _id,
             items: _relation.map<DropdownMenuItem<String>>((entry) {
               final id = entry.value('id').value;
               final value = entry.value('name').value;
