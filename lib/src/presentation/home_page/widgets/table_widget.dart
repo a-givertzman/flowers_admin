@@ -40,12 +40,12 @@ class _TableWidgetState extends State<TableWidget> {
     final entries = _scheme.fetch([]);
     for (final field in _scheme.fields) {
       if (field.relation.isNotEmpty) {
-        await _scheme.relation(field.relation).fold(
+        await _scheme.relation(field.relation.id).fold(
           onData: (scheme) async {
             await scheme.refresh().then((result) {
               result.fold(
                 onData: (entries) {
-                  _relations[field.relation] = entries;
+                  _relations[field.relation.id] = entries;
                 },
                 onError: (err) {
                   _log.warning(".initState | relation '${field.relation}' refresh error: $err");
@@ -155,7 +155,7 @@ class _TableWidgetState extends State<TableWidget> {
           onComplete: (value) => _updateEntry(entry, field.key, value),
         );
       } else {
-        final rel = _relations[field.relation] ?? [];
+        final rel = _relations[field.relation.field] ?? [];
         _log.debug("._buildRow | relation '${field.relation}': $rel");
         return TCellList(
           // key: Key(entry.key),

@@ -6,6 +6,7 @@ import 'package:flowers_admin/src/infrostructure/schames/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/schames/entry_purchase_content.dart';
 import 'package:flowers_admin/src/infrostructure/schames/entry_transaction.dart';
 import 'package:flowers_admin/src/infrostructure/schames/field.dart';
+import 'package:flowers_admin/src/infrostructure/schames/relation.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme.dart';
 import 'package:flowers_admin/src/infrostructure/schames/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
@@ -98,7 +99,7 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: false, edit: true, key: 'value'),
                     const Field(hidden: false, edit: true, key: 'description'),
                     const Field(hidden: false, edit: true, key: 'order_id'),
-                    const Field(hidden: false, edit: true, key: 'customer_id', relation: 'customer_id'),
+                    const Field(hidden: false, edit: true, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
                     const Field(hidden: false, edit: true, key: 'customer_account'),
                     const Field(hidden: true, edit: true, key: 'created'),
                     const Field(hidden: true, edit: true, key: 'updated'),
@@ -136,7 +137,7 @@ class _HomeBodyState extends State<HomeBody> {
                   database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'category_id', relation: 'category_id'),
+                    const Field(hidden: false, edit: true, key: 'category_id', relation: Relation(id: 'category_id', field: 'name')),
                     const Field(hidden: false, edit: true, key: 'name'),
                     const Field(hidden: false, edit: true, key: 'details'),
                     const Field(hidden: false, edit: true, key: 'description'),
@@ -177,7 +178,7 @@ class _HomeBodyState extends State<HomeBody> {
                   database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'product_category_id', relation: 'category_id'),
+                    const Field(hidden: false, edit: true, key: 'product_category_id', relation: Relation(id: 'category_id', field: 'name')),
                     // const Field(hidden: false, edit: true, key: 'category'),
                     const Field(hidden: false, edit: true, key: 'name'),
                     const Field(hidden: false, edit: true, key: 'details'),
@@ -251,10 +252,8 @@ class _HomeBodyState extends State<HomeBody> {
                   database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'purchase_id'),
-                    const Field(hidden: false, edit: true, key: 'purchase', relation: 'purchase_id'),
-                    const Field(hidden: false, edit: true, key: 'product_id'),
-                    const Field(hidden: false, edit: true, key: 'product', relation: 'product_id'),
+                    const Field(hidden: false, edit: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
+                    const Field(hidden: false, edit: true, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
                     const Field(hidden: false, edit: true, key: 'sale_price'),
                     const Field(hidden: false, edit: true, key: 'sale_currency'),
                     const Field(hidden: false, edit: true, key: 'shipping'),
@@ -312,9 +311,9 @@ class _HomeBodyState extends State<HomeBody> {
                   database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'customer_id'),
+                    const Field(hidden: false, edit: true, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
                     const Field(hidden: false, edit: true, key: 'customer'),
-                    const Field(hidden: false, edit: true, key: 'purchase_content_id'),
+                    const Field(hidden: false, edit: true, key: 'purchase_content_id'),// relation: Relation(id: 'purchase_content_id', field: field)),
                     const Field(hidden: false, edit: true, key: 'purchase'),
                     const Field(hidden: false, edit: true, key: 'product'),
                     const Field(hidden: false, edit: true, key: 'count'),
@@ -332,6 +331,21 @@ class _HomeBodyState extends State<HomeBody> {
                   },
                   updateSqlBuilder: updateSqlBuilder_CustomerOrder,
                   debug: true,
+                  relations: {
+                    'customer_id': Scheme<EntryCustomer>(
+                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                      authToken: _authToken, 
+                      database: _database, 
+                      fields: [
+                        const Field(key: 'id'),
+                        const Field(key: 'name'),
+                      ],
+                      fetchSqlBuilder: (values) {
+                        return Sql(sql: 'select id, name from customer order by id;');
+                      },
+                      debug: true,
+                    ),
+                  },
                 ),
               ),
             ),

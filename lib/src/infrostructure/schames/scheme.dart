@@ -80,12 +80,12 @@ class Scheme<T extends SchemeEntry> {
   }
   ///
   ///
-  Result<Scheme> relation(String key) {
-    if (_relations.containsKey(key)) {
-      return Result(data: _relations[key]);
+  Result<Scheme> relation(String id) {
+    if (_relations.containsKey(id)) {
+      return Result(data: _relations[id]);
     } else {
       return Result(error: Failure(
-        message: "$runtimeType.relation | key: $key - not found", 
+        message: "$runtimeType.relation | id: $id - not found", 
         stackTrace: StackTrace.current,
       ));
     }

@@ -1,21 +1,26 @@
+import 'package:flowers_admin/src/infrostructure/schames/relation.dart';
+
+///
+/// Replresentation settings for table column
 class Field {
   final String _key;
   final String _name;
   final bool _hidden;
   final bool _edit;
-  final String _relation;
+  final Relation _relation;
+  ///
   const Field({
     required String key,
     String? name,
     bool hidden = false,
     bool edit = true,
-    String relation = '',
+    Relation? relation,
   }) :
     _key = key,
     _name = name ?? key,
     _hidden = hidden,
     _edit = edit,
-    _relation = relation;
+    _relation = relation ?? const Relation.empty();
   ///
   ///
   String get key => _key;
@@ -30,5 +35,5 @@ class Field {
   bool get edit => _edit;
   ///
   ///
-  String get relation => _relation;
+  Relation get relation => _relation;
 }
