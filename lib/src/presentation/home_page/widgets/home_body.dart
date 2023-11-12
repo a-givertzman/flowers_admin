@@ -70,7 +70,7 @@ class _HomeBodyState extends State<HomeBody> {
                   'deleted',
                 ],
                 fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from customer;');
+                  return Sql(sql: 'select * from customer order by id;');
                 },
                 updateSqlBuilder: updateSqlBuilder_Customer,
                 debug: true,
@@ -95,7 +95,7 @@ class _HomeBodyState extends State<HomeBody> {
                   'deleted',
                 ],
                 fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from transaction;');
+                  return Sql(sql: 'select * from transaction order by id;');
                 },
                 updateSqlBuilder: updateSqlBuilder_Transaction,
                 debug: true,
@@ -118,7 +118,7 @@ class _HomeBodyState extends State<HomeBody> {
                   'deleted',
                 ],
                 fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from product_category;');
+                  return Sql(sql: 'select * from product_category order by id;');
                 },
                 updateSqlBuilder: updateSqlBuilder_ProductCategory,
                 debug: true,
@@ -146,7 +146,7 @@ class _HomeBodyState extends State<HomeBody> {
                   'deleted',
                 ],
                 fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from product_view;');
+                  return Sql(sql: 'select * from product_view order by id;');
                 },
                 updateSqlBuilder: updateSqlBuilder_Product,
                 debug: true,
@@ -171,7 +171,7 @@ class _HomeBodyState extends State<HomeBody> {
                 'deleted',
                 ],
                 fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from purchase;');
+                  return Sql(sql: 'select * from purchase order by id;');
                 },
                 updateSqlBuilder: updateSqlBuilder_Purchase,
                 debug: true,
@@ -201,7 +201,7 @@ class _HomeBodyState extends State<HomeBody> {
                   'deleted',
                 ],
                 fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from purchase_content_view;');
+                  return Sql(sql: 'select * from purchase_content_view order by id;');
                 },
                 updateSqlBuilder: updateSqlBuilder_PurchaseContent,
                 debug: true,
@@ -230,7 +230,7 @@ class _HomeBodyState extends State<HomeBody> {
                   'deleted',
                 ],
                 fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from customer_order_view;');
+                  return Sql(sql: 'select * from customer_order_view order by id;');
                 },
                 updateSqlBuilder: updateSqlBuilder_CustomerOrder,
                 debug: true,

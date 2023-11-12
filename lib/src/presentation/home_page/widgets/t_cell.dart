@@ -1,4 +1,5 @@
 
+import 'package:flowers_admin/src/core/log/log.dart';
 import 'package:flutter/material.dart';
 
 ///
@@ -24,6 +25,10 @@ class TCell extends StatefulWidget {
 }
 
 class _TCellState extends State<TCell> {
+  final _log = Log("$_TCellState._");
+  final _textPaddingV = 8.0;
+  final _textPaddingH = 16.0;
+  final _textAlign = TextAlign.left;
   bool _isEditing = false;
   late final TextEditingController _controller = TextEditingController();
   ///
@@ -31,6 +36,7 @@ class _TCellState extends State<TCell> {
   @override
   void initState() {
     _controller.text = widget._value;
+    // _log.debug("initState | _controller.text: ${_controller.text}");
     super.initState();
   }
   ///
@@ -40,63 +46,45 @@ class _TCellState extends State<TCell> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _controller.text = widget._value;
           _isEditing = true;
         });
       },
       child: _isEditing
         ? TextField(
           controller: _controller,
+          style: widget._stile,
+          textAlign: _textAlign,
            decoration: InputDecoration(
-            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
+            border: const OutlineInputBorder(borderSide: BorderSide(width: 0.1)),
+            // border: const OutlineInputBorder(),
+            isDense: true,
             // labelText: 'Password',
           ),
+          onTapOutside: (_) {
+            _applyNewValue(_controller.text);
+          },
           onEditingComplete: () {
-            setState(() {
-              _isEditing = false;
-            });
-            final onComplete = widget._onComplete;
-            if (onComplete != null) onComplete(_controller.text);
+            _applyNewValue(_controller.text);
           },
         )
-        : Text(
-          _controller.text,
-          style: widget._stile,
-        ),
-    );
-  }
-}
-
-///
-///
-class TRow extends StatelessWidget {
-  final List<TCell> _cells;
-  const TRow({
-    super.key,
-    required List<TCell> cells,
-  }) :
-    _cells = cells;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: _buildCells(context, _cells),
-    );
-  }
-  ///
-  ///
-  List<Widget> _buildCells(BuildContext context, List<TCell> cells) {
-    return cells.map((cell) {
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: 1.5, horizontal: 2.5),
-        decoration: BoxDecoration(
-          border: Border.symmetric(
-            vertical: BorderSide(),
+        : Padding(
+          padding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH),
+          child: Text(
+            _controller.text,
+            style: widget._stile,
+            textAlign: _textAlign,
           ),
         ),
-        child: cell,
-      );
-    }).toList();
+    );
+  }
+  ///
+  ///
+  _applyNewValue(String value) {
+    setState(() {
+      _isEditing = false;
+    });
+    final onComplete = widget._onComplete;
+    if (onComplete != null) onComplete(value);
   }
 }
-

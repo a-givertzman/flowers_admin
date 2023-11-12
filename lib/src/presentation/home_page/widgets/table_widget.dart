@@ -1,6 +1,6 @@
 import 'package:flowers_admin/src/infrostructure/schames/scheme.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
-import 'package:flowers_admin/src/presentation/home_page/widgets/table_widgets.dart';
+import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
@@ -16,18 +16,18 @@ class TableWidget extends StatefulWidget {
   ///
   @override
   // ignore: no_logic_in_create_state
-  State<TableWidget> createState() => _HomeBodyState(
+  State<TableWidget> createState() => _TableWidgetState(
     scheme: _scheme,
   );
 }
 ///
 ///
-class _HomeBodyState extends State<TableWidget> {
-  final _log = Log("$_HomeBodyState._");
+class _TableWidgetState extends State<TableWidget> {
+  final _log = Log("$_TableWidgetState._");
   final Scheme _scheme;
   ///
   ///
-  _HomeBodyState({
+  _TableWidgetState({
     required Scheme scheme,
   }) :
     _scheme = scheme;
