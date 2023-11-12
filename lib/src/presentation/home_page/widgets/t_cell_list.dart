@@ -112,7 +112,7 @@ class _TCellListState extends State<TCellList> {
               );
             }).toList(),
             onChanged: (value) {
-              _applyNewValue('$value');
+              _applyNewValue(value);
             },
             style: _style,
             iconSize: 0.0,
@@ -137,6 +137,6 @@ class _TCellListState extends State<TCellList> {
       _id = id;
     });
     final onComplete = _onComplete;
-    if (onComplete != null) onComplete(id);
+    if (onComplete != null) onComplete('$id');
   }
 }
