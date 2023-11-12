@@ -5,9 +5,28 @@ import 'package:flutter/material.dart';
 
 ///
 ///
+class TCellEntry {
+  final String _id;
+  final Map<String, String> _values;
+  const TCellEntry({
+    required String id,
+    required Map<String, String> values,
+  }) :
+    _id = id,
+    _values = values;
+  const TCellEntry.empty() :
+    _id = '',
+    _values = const {};
+  String get id => _id;
+  Map<String, String> get values => _values;
+  String get value => _values[_id] ?? '';
+}
+
+///
+///
 class TCellList extends StatefulWidget {
   final dynamic _id;
-  final List<SchemeEntry> _relation;
+  final TCellEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
   final bool _editable;
@@ -16,13 +35,13 @@ class TCellList extends StatefulWidget {
   const TCellList({
     super.key,
     required dynamic id,
-    List<SchemeEntry> relation = const [],
+    TCellEntry? relation,
     TextStyle? style,
     void Function(String value)? onComplete,
     bool editable = true,
   }) :
     _id = id,
-    _relation = relation,
+    _relation = relation ?? const TCellEntry.empty(),
     _style = style,
     _onComplete = onComplete,
     _editable = editable;
@@ -42,8 +61,8 @@ class TCellList extends StatefulWidget {
 class _TCellListState extends State<TCellList> {
   final _log = Log("$_TCellListState._");
   dynamic _id;
-  String _value = '';
-  final List<SchemeEntry> _relation;
+  // String _value = '';
+  final TCellEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
   final bool _editable;
@@ -53,7 +72,7 @@ class _TCellListState extends State<TCellList> {
   bool _isEditing = false;
   _TCellListState({
     required dynamic id,
-    required List<SchemeEntry> relation,
+    required TCellEntry relation,
     required TextStyle? style,
     required void Function(String value)? onComplete,
     required bool editable,
@@ -70,13 +89,13 @@ class _TCellListState extends State<TCellList> {
     // _controller.text = _value;
     // _log.debug("initState | _controller.text: ${_controller.text}");
     _log.debug("._build | id '$_id'");
-    for (final entry in _relation) {
-      if (entry.value('id').value == _id) {
-        _value = entry.value('name').value.toString();
-        break;
-      }
-    }
-    _log.debug("._build | value '$_value'");
+    // for (final entry in _relation) {
+    //   if (entry.value('id').value == _id) {
+    //     _value = entry.value('name').value.toString();
+    //     break;
+    //   }
+    // }
+    // _log.debug("._build | value '$_value'");
     super.initState();
   }
   ///
@@ -94,14 +113,11 @@ class _TCellListState extends State<TCellList> {
       child: _isEditing
         ? DropdownButton(
             value: _id,
-            items: _relation.map((entry) {
-              final id = entry.value('id').value;
-              final value = entry.value('name').value;
-              _log.debug("._build | item '$value'");
+            items: _relation.values.entries.map((entry) {
               return DropdownMenuItem(
-                value: id,
+                value: entry.key,
                 child: Text(
-                  '$value',
+                  entry.value,
                   style: _style,
                 ),
               );
@@ -117,7 +133,7 @@ class _TCellListState extends State<TCellList> {
         : Padding(
           padding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH),
           child: Text(
-            _value,
+            _relation.value,
             style: _style,
             textAlign: _textAlign,
           ),
@@ -130,7 +146,6 @@ class _TCellListState extends State<TCellList> {
     setState(() {
       _isEditing = false;
       _id = id;
-      _value = _relation.firstWhere((entry) => '${entry.value('id').value}' == _id).value('name').value.toString();
     });
     final onComplete = _onComplete;
     if (onComplete != null) onComplete(id);
