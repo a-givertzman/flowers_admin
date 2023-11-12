@@ -23,6 +23,8 @@ class HomeBody extends StatefulWidget {
 
 class _HomeBodyState extends State<HomeBody> {
   final _log = Log("$_HomeBodyState._");
+  final _authToken = 'some auth token';
+  final _database = 'flowers_app_server';
   final _paddingH = 8.0;
   final _paddingV = 8.0;
   ///
@@ -56,8 +58,8 @@ class _HomeBodyState extends State<HomeBody> {
               child: TableWidget(
                 scheme: Scheme<EntryCustomer>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: 'some auth token', 
-                  database: 'flowers_app_server', 
+                  authToken: _authToken, 
+                  database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'role'),
@@ -87,8 +89,8 @@ class _HomeBodyState extends State<HomeBody> {
               child: TableWidget(
                 scheme: Scheme<EntryTransaction>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: 'some auth token', 
-                  database: 'flowers_app_server', 
+                  authToken: _authToken, 
+                  database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'timestamp'),
@@ -96,7 +98,7 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: false, edit: true, key: 'value'),
                     const Field(hidden: false, edit: true, key: 'description'),
                     const Field(hidden: false, edit: true, key: 'order_id'),
-                    const Field(hidden: false, edit: true, key: 'customer_id'),
+                    const Field(hidden: false, edit: true, key: 'customer_id', relation: 'customer_id'),
                     const Field(hidden: false, edit: true, key: 'customer_account'),
                     const Field(hidden: false, edit: true, key: 'created'),
                     const Field(hidden: false, edit: true, key: 'updated'),
@@ -107,6 +109,36 @@ class _HomeBodyState extends State<HomeBody> {
                   },
                   updateSqlBuilder: updateSqlBuilder_Transaction,
                   debug: true,
+                  relations: {
+
+                    'customer_id': Scheme<EntryCustomer>(
+                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                      authToken: _authToken, 
+                      database: _database, 
+                      fields: [
+                        const Field(hidden: false, edit: false, key: 'id'),
+                        // const Field(hidden: false, edit: true, key: 'role'),
+                        // const Field(hidden: false, edit: true, key: 'email'),
+                        // const Field(hidden: false, edit: true, key: 'phone'),
+                        const Field(hidden: false, edit: true, key: 'name'),
+                        // const Field(hidden: false, edit: true, key: 'location'),
+                        // const Field(hidden: false, edit: true, key: 'login'),
+                        // const Field(hidden: false, edit: true, key: 'pass'),
+                        // const Field(hidden: false, edit: true, key: 'account'),
+                        // const Field(hidden: false, edit: true, key: 'last_act'),
+                        // const Field(hidden: false, edit: true, key: 'blocked'),
+                        // const Field(hidden: true, edit: true, key: 'created'),
+                        // const Field(hidden: true, edit: true, key: 'updated'),
+                        // const Field(hidden: true, edit: true, key: 'deleted'),
+                      ],
+                      fetchSqlBuilder: (values) {
+                        return Sql(sql: 'select * from customer order by id;');
+                      },
+                      updateSqlBuilder: updateSqlBuilder_Customer,
+                      debug: true,
+                    ),
+
+                  },
                 ),
               ),
             ),
@@ -115,8 +147,8 @@ class _HomeBodyState extends State<HomeBody> {
               child: TableWidget(
                 scheme: Scheme<EntryProductCategory>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: 'some auth token', 
-                  database: 'flowers_app_server', 
+                  authToken: _authToken, 
+                  database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'category_id'),
@@ -141,8 +173,8 @@ class _HomeBodyState extends State<HomeBody> {
               child: TableWidget(
                 scheme: Scheme<EntryProduct>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: 'some auth token', 
-                  database: 'flowers_app_server', 
+                  authToken: _authToken, 
+                  database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'product_category_id'),
@@ -172,8 +204,8 @@ class _HomeBodyState extends State<HomeBody> {
               child: TableWidget(
                 scheme: Scheme<EntryPurchase>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: 'some auth token', 
-                  database: 'flowers_app_server', 
+                  authToken: _authToken, 
+                  database: _database, 
                   fields: [
                   const Field(hidden: false, edit: false, key: 'id'),
                   const Field(hidden: false, edit: true, key: 'name'),
@@ -200,8 +232,8 @@ class _HomeBodyState extends State<HomeBody> {
               child: TableWidget(
                 scheme: Scheme<EntryPurchaseContent>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: 'some auth token', 
-                  database: 'flowers_app_server', 
+                  authToken: _authToken, 
+                  database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'purchase_id'),
@@ -233,8 +265,8 @@ class _HomeBodyState extends State<HomeBody> {
               child: TableWidget(
                 scheme: Scheme<EntryCustomerOrder>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: 'some auth token', 
-                  database: 'flowers_app_server', 
+                  authToken: _authToken, 
+                  database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'customer_id'),
