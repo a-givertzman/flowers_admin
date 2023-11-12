@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 ///
 ///
 class TCellEntry {
-  final String _id;
+  final dynamic _id;
   final Map<String, String> _values;
   const TCellEntry({
-    required String id,
+    required dynamic id,
     required Map<String, String> values,
   }) :
     _id = id,
@@ -17,7 +17,7 @@ class TCellEntry {
   const TCellEntry.empty() :
     _id = '',
     _values = const {};
-  String get id => _id;
+  dynamic get id => _id;
   Map<String, String> get values => _values;
   String get value => _values[_id] ?? '';
 }
