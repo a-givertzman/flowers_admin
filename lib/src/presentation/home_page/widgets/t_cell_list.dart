@@ -131,7 +131,7 @@ class _TCellListState extends State<TCellList> {
   }
   ///
   ///
-  _applyNewValue(String id) {
+  _applyNewValue(id) {
     setState(() {
       _isEditing = false;
       _id = id;
