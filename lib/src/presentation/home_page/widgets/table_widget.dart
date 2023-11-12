@@ -60,7 +60,7 @@ class _TableWidgetState extends State<TableWidget> {
                   //   0: IntrinsicColumnWidth(),
                   //   1: FlexColumnWidth(),
                   // },
-                  children: _buildClientRows(_scheme.keys, rows),
+                  children: _buildRows(_scheme, rows),
                 );
               } else {
                 return Center(child: Text("No orders received", style: textStile,));
@@ -76,17 +76,47 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<TableRow> _buildClientRows(List<String> keys, List<SchemeEntry> entries) {
+  List<TableRow> _buildRows(Scheme<SchemeEntry> scheme, List<SchemeEntry> entries) {
     final textStile = Theme.of(context).textTheme.bodyMedium;
-    return entries.map((entry) {
-      return TableRow(
-        children: _buildClientRow(keys, entry, textStile),
-      );
-    }).toList();
+    final rows = [TableRow(children: _buildHead(scheme.keys, textStile))];
+    rows.addAll(
+      entries.map((entry) {
+        return TableRow(
+          children: _buildRow(scheme.keys, entry, textStile),
+        );
+      }),
+    );
+    return rows;
   }
   ///
   ///
-  List<TCell> _buildClientRow(List<String> keys, SchemeEntry entry, textStyle) {
+  List<TCell> _buildHead(List<String> names, textStyle) {
+    final cells = names.map((name) {
+      return TCell(
+        // key: Key(entry.key),
+        value: name,
+        style: textStyle,
+        // onComplete: (value) {
+        //   entry.update(key, value);
+        //   _scheme.update(entry).then((result) {
+        //     if (result.hasError) {
+        //       showDialog(
+        //           context: context,
+        //           builder: (_) => AlertDialog(
+        //               title: Text('Update error'),
+        //               content: Text('error: ${result.error}'),
+        //           )
+        //       );          
+        //     }
+        //   });
+        // },
+      );
+    }).toList();
+    return cells;
+  }
+  ///
+  ///
+  List<TCell> _buildRow(List<String> keys, SchemeEntry entry, textStyle) {
     final cells = keys.map((key) {
       final value = entry.value(key);
       return TCell(

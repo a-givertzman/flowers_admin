@@ -52,6 +52,11 @@ class Scheme<T extends SchemeEntry> {
     // _schemeBuilder = schemeBuilder;
   ///
   /// Returns a list of table field names
+  List<Field> get fields {
+    return _fields;
+  }
+  ///
+  /// Returns a list of table field keys
   List<String> get keys {
     return _fields.map((field) => field.key).toList();
   }
