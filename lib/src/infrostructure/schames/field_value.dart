@@ -35,9 +35,13 @@ class FieldValue<T> {
   ///
   FieldType get type => _type;
   ///
-  ///
-  void update(T value) {
-    _value = value;
+  /// Returns true if changed
+  bool update(T value) {
+    if (_value != value) {
+      _value = value;
+      return true;
+    }
+    return false;
   }
 }
 

@@ -15,4 +15,7 @@ abstract class SchemeEntry {
   ///
   /// Updates field value by field name [key]
   void update(String key, String value);
+  ///
+  ///
+  bool get isChanged;
 }

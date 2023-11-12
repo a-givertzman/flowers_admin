@@ -100,9 +100,9 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: false, edit: true, key: 'order_id'),
                     const Field(hidden: false, edit: true, key: 'customer_id', relation: 'customer_id'),
                     const Field(hidden: false, edit: true, key: 'customer_account'),
-                    const Field(hidden: false, edit: true, key: 'created'),
-                    const Field(hidden: false, edit: true, key: 'updated'),
-                    const Field(hidden: false, edit: true, key: 'deleted'),
+                    const Field(hidden: true, edit: true, key: 'created'),
+                    const Field(hidden: true, edit: true, key: 'updated'),
+                    const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
                   fetchSqlBuilder: (values) {
                     return Sql(sql: 'select * from transaction order by id;');
@@ -110,34 +110,19 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilder_Transaction,
                   debug: true,
                   relations: {
-
                     'customer_id': Scheme<EntryCustomer>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
                       fields: [
-                        const Field(hidden: false, edit: false, key: 'id'),
-                        // const Field(hidden: false, edit: true, key: 'role'),
-                        // const Field(hidden: false, edit: true, key: 'email'),
-                        // const Field(hidden: false, edit: true, key: 'phone'),
-                        const Field(hidden: false, edit: true, key: 'name'),
-                        // const Field(hidden: false, edit: true, key: 'location'),
-                        // const Field(hidden: false, edit: true, key: 'login'),
-                        // const Field(hidden: false, edit: true, key: 'pass'),
-                        // const Field(hidden: false, edit: true, key: 'account'),
-                        // const Field(hidden: false, edit: true, key: 'last_act'),
-                        // const Field(hidden: false, edit: true, key: 'blocked'),
-                        // const Field(hidden: true, edit: true, key: 'created'),
-                        // const Field(hidden: true, edit: true, key: 'updated'),
-                        // const Field(hidden: true, edit: true, key: 'deleted'),
+                        const Field(key: 'id'),
+                        const Field(key: 'name'),
                       ],
                       fetchSqlBuilder: (values) {
-                        return Sql(sql: 'select * from customer order by id;');
+                        return Sql(sql: 'select id, name from customer order by id;');
                       },
-                      updateSqlBuilder: updateSqlBuilder_Customer,
                       debug: true,
                     ),
-
                   },
                 ),
               ),
@@ -151,20 +136,35 @@ class _HomeBodyState extends State<HomeBody> {
                   database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'category_id'),
+                    const Field(hidden: false, edit: true, key: 'category_id', relation: 'category_id'),
                     const Field(hidden: false, edit: true, key: 'name'),
                     const Field(hidden: false, edit: true, key: 'details'),
                     const Field(hidden: false, edit: true, key: 'description'),
                     const Field(hidden: false, edit: true, key: 'picture'),
-                    const Field(hidden: false, edit: true, key: 'created'),
-                    const Field(hidden: false, edit: true, key: 'updated'),
-                    const Field(hidden: false, edit: true, key: 'deleted'),
+                    const Field(hidden: true, edit: true, key: 'created'),
+                    const Field(hidden: true, edit: true, key: 'updated'),
+                    const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
                   fetchSqlBuilder: (values) {
                     return Sql(sql: 'select * from product_category order by id;');
                   },
                   updateSqlBuilder: updateSqlBuilder_ProductCategory,
                   debug: true,
+                  relations: {
+                    'category_id': Scheme<EntryProductCategory>(
+                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                      authToken: _authToken, 
+                      database: _database, 
+                      fields: [
+                        const Field(key: 'id'),
+                        const Field(key: 'name'),
+                      ],
+                      fetchSqlBuilder: (values) {
+                        return Sql(sql: 'select id, name from product_category order by id;');
+                      },
+                      debug: true,
+                    ),
+                  },
                 ),
               ),
             ),
@@ -177,8 +177,8 @@ class _HomeBodyState extends State<HomeBody> {
                   database: _database, 
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'product_category_id'),
-                    const Field(hidden: false, edit: true, key: 'category'),
+                    const Field(hidden: false, edit: true, key: 'product_category_id', relation: 'category_id'),
+                    // const Field(hidden: false, edit: true, key: 'category'),
                     const Field(hidden: false, edit: true, key: 'name'),
                     const Field(hidden: false, edit: true, key: 'details'),
                     const Field(hidden: false, edit: true, key: 'primary_price'),
@@ -187,15 +187,30 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: false, edit: true, key: 'order_quantity'),
                     const Field(hidden: false, edit: true, key: 'description'),
                     const Field(hidden: false, edit: true, key: 'picture'),
-                    const Field(hidden: false, edit: true, key: 'created'),
-                    const Field(hidden: false, edit: true, key: 'updated'),
-                    const Field(hidden: false, edit: true, key: 'deleted'),
+                    const Field(hidden: true, edit: true, key: 'created'),
+                    const Field(hidden: true, edit: true, key: 'updated'),
+                    const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
                   fetchSqlBuilder: (values) {
                     return Sql(sql: 'select * from product_view order by id;');
                   },
                   updateSqlBuilder: updateSqlBuilder_Product,
                   debug: true,
+                  relations: {
+                    'category_id': Scheme<EntryProductCategory>(
+                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                      authToken: _authToken, 
+                      database: _database, 
+                      fields: [
+                        const Field(key: 'id'),
+                        const Field(key: 'name'),
+                      ],
+                      fetchSqlBuilder: (values) {
+                        return Sql(sql: 'select id, name from product_category order by id;');
+                      },
+                      debug: true,
+                    ),
+                  },
                 ),
               ),
             ),
@@ -215,9 +230,9 @@ class _HomeBodyState extends State<HomeBody> {
                   const Field(hidden: false, edit: true, key: 'date_of_end'),
                   const Field(hidden: false, edit: true, key: 'description'),
                   const Field(hidden: false, edit: true, key: 'picture'),
-                  const Field(hidden: false, edit: true, key: 'created'),
-                  const Field(hidden: false, edit: true, key: 'updated'),
-                  const Field(hidden: false, edit: true, key: 'deleted'),
+                  const Field(hidden: true, edit: true, key: 'created'),
+                  const Field(hidden: true, edit: true, key: 'updated'),
+                  const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
                   fetchSqlBuilder: (values) {
                     return Sql(sql: 'select * from purchase order by id;');
@@ -237,9 +252,9 @@ class _HomeBodyState extends State<HomeBody> {
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'purchase_id'),
-                    const Field(hidden: false, edit: true, key: 'purchase'),
+                    const Field(hidden: false, edit: true, key: 'purchase', relation: 'purchase_id'),
                     const Field(hidden: false, edit: true, key: 'product_id'),
-                    const Field(hidden: false, edit: true, key: 'product'),
+                    const Field(hidden: false, edit: true, key: 'product', relation: 'product_id'),
                     const Field(hidden: false, edit: true, key: 'sale_price'),
                     const Field(hidden: false, edit: true, key: 'sale_currency'),
                     const Field(hidden: false, edit: true, key: 'shipping'),
@@ -248,15 +263,43 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: false, edit: true, key: 'details'),
                     const Field(hidden: false, edit: true, key: 'description'),
                     const Field(hidden: false, edit: true, key: 'picture'),
-                    const Field(hidden: false, edit: true, key: 'created'),
-                    const Field(hidden: false, edit: true, key: 'updated'),
-                    const Field(hidden: false, edit: true, key: 'deleted'),
+                    const Field(hidden: true, edit: true, key: 'created'),
+                    const Field(hidden: true, edit: true, key: 'updated'),
+                    const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
                   fetchSqlBuilder: (values) {
                     return Sql(sql: 'select * from purchase_content_view order by id;');
                   },
                   updateSqlBuilder: updateSqlBuilder_PurchaseContent,
                   debug: true,
+                  relations: {
+                    'purchase_id': Scheme<EntryPurchase>(
+                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                      authToken: _authToken, 
+                      database: _database, 
+                      fields: [
+                        const Field(key: 'id'),
+                        const Field(key: 'name'),
+                      ],
+                      fetchSqlBuilder: (values) {
+                        return Sql(sql: 'select id, name from purchase order by id;');
+                      },
+                      debug: true,
+                    ),
+                    'product_id': Scheme<EntryProduct>(
+                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                      authToken: _authToken, 
+                      database: _database, 
+                      fields: [
+                        const Field(key: 'id'),
+                        const Field(key: 'name'),
+                      ],
+                      fetchSqlBuilder: (values) {
+                        return Sql(sql: 'select id, name from product order by id;');
+                      },
+                      debug: true,
+                    ),
+                  },                  
                 ),
               ),
             ),

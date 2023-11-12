@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 /// Single row of table "Customer"
 class EntryCustomer implements SchemeEntry {
   final _id = const Uuid().v1();  // v1 time-based id
+  bool _changed = false;
   late final Map<String, FieldValue> _map;
   ///
   /// Single row of table "Customer"
@@ -19,6 +20,10 @@ class EntryCustomer implements SchemeEntry {
   //
   @override
   String get key => _id;
+  //
+  //
+  @override
+  bool get isChanged => _changed;
   //
   //
   @override
@@ -51,7 +56,7 @@ class EntryCustomer implements SchemeEntry {
     }
     final field = _map[key];
     if (field != null) {
-      field.update(value);
+      _changed = field.update(value);
     }
   }
 }

@@ -152,48 +152,40 @@ class _TableWidgetState extends State<TableWidget> {
           value: value.value.toString(),
           editable: field.edit,
           style: textStyle,
-          onComplete: (value) {
-            entry.update(field.key, value);
-            _scheme.update(entry).then((result) {
-              if (result.hasError) {
-                showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    title: const Text('Update error'),
-                    content: Text('error: ${result.error}'),
-                  ),
-                );          
-              }
-            });
-          },
+          onComplete: (value) => _updateEntry(entry, field.key, value),
         );
       } else {
         final rel = _relations[field.relation] ?? [];
         _log.debug("._buildRow | relation '${field.relation}': $rel");
         return TCellList(
           // key: Key(entry.key),
-          id: value.value.toString(),
+          id: value.value,
           relation: rel,
           editable: field.edit,
           style: textStyle,
-          onComplete: (value) {
-            entry.update(field.key, value);
-            _scheme.update(entry).then((result) {
-              if (result.hasError) {
-                showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    title: const Text('Update error'),
-                    content: Text('error: ${result.error}'),
-                  ),
-                );          
-              }
-            });
-          },
+          onComplete: (value) => _updateEntry(entry, field.key, value),
         );
       }
     }).toList();
     return cells;
+  }
+  ///
+  ///
+  _updateEntry(SchemeEntry entry, String key, String value) {
+    entry.update(key, value);
+    if (entry.isChanged) {
+      _scheme.update(entry).then((result) {
+        if (result.hasError) {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text('Update error'),
+              content: Text('error: ${result.error}'),
+            ),
+          );          
+        }
+      });
+    }
   }
 }
 
