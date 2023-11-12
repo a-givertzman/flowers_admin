@@ -23,6 +23,8 @@ class HomeBody extends StatefulWidget {
 
 class _HomeBodyState extends State<HomeBody> {
   final _log = Log("$_HomeBodyState._");
+  final _paddingH = 8.0;
+  final _paddingV = 8.0;
   ///
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,9 @@ class _HomeBodyState extends State<HomeBody> {
           indicatorColor: Colors.amber,
           indicatorSize: TabBarIndicatorSize.tab, 
           isScrollable: true,
-          indicator: BoxDecoration(
-            color: Theme.of(context).cardColor,
-          ),
+          // indicator: BoxDecoration(
+          //   color: Theme.of(context).cardColor,
+          // ),
           tabs: [
             Tab(child: Text("customer", style: tabHeadesStyle)),
             Tab(child: Text("transaction", style: tabHeadesStyle)),
@@ -49,192 +51,213 @@ class _HomeBodyState extends State<HomeBody> {
         ),
         body: TabBarView(
           children: [
-            TableWidget(
-              scheme: Scheme<EntryCustomer>(
-                address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                authToken: 'some auth token', 
-                database: 'flowers_app_server', 
-                fields: [
-                  Field(key: 'id'),
-                  Field(key: 'role'),
-                  Field(key: 'email'),
-                  Field(key: 'phone'),
-                  Field(key: 'name'),
-                  Field(key: 'location'),
-                  Field(key: 'login'),
-                  Field(key: 'pass'),
-                  Field(key: 'account'),
-                  Field(key: 'last_act'),
-                  Field(key: 'blocked'),
-                  Field(key: 'created'),
-                  Field(key: 'updated'),
-                  Field(key: 'deleted'),
-                ],
-                fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from customer order by id;');
-                },
-                updateSqlBuilder: updateSqlBuilder_Customer,
-                debug: true,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
+              child: TableWidget(
+                scheme: Scheme<EntryCustomer>(
+                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                  authToken: 'some auth token', 
+                  database: 'flowers_app_server', 
+                  fields: [
+                    const Field(hidden: false, edit: false, key: 'id'),
+                    const Field(hidden: false, edit: true, key: 'role'),
+                    const Field(hidden: false, edit: true, key: 'email'),
+                    const Field(hidden: false, edit: true, key: 'phone'),
+                    const Field(hidden: false, edit: true, key: 'name'),
+                    const Field(hidden: false, edit: true, key: 'location'),
+                    const Field(hidden: false, edit: true, key: 'login'),
+                    const Field(hidden: false, edit: true, key: 'pass'),
+                    const Field(hidden: false, edit: true, key: 'account'),
+                    const Field(hidden: false, edit: true, key: 'last_act'),
+                    const Field(hidden: false, edit: true, key: 'blocked'),
+                    const Field(hidden: false, edit: true, key: 'created'),
+                    const Field(hidden: false, edit: true, key: 'updated'),
+                    const Field(hidden: false, edit: true, key: 'deleted'),
+                  ],
+                  fetchSqlBuilder: (values) {
+                    return Sql(sql: 'select * from customer order by id;');
+                  },
+                  updateSqlBuilder: updateSqlBuilder_Customer,
+                  debug: true,
+                ),
               ),
             ),
-            TableWidget(
-              scheme: Scheme<EntryTransaction>(
-                address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                authToken: 'some auth token', 
-                database: 'flowers_app_server', 
-                fields: [
-                  Field(key: 'id'),
-                  Field(key: 'timestamp'),
-                  Field(key: 'account_owner'),
-                  Field(key: 'value'),
-                  Field(key: 'description'),
-                  Field(key: 'order_id'),
-                  Field(key: 'customer_id'),
-                  Field(key: 'customer_account'),
-                  Field(key: 'created'),
-                  Field(key: 'updated'),
-                  Field(key: 'deleted'),
-                ],
-                fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from transaction order by id;');
-                },
-                updateSqlBuilder: updateSqlBuilder_Transaction,
-                debug: true,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
+              child: TableWidget(
+                scheme: Scheme<EntryTransaction>(
+                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                  authToken: 'some auth token', 
+                  database: 'flowers_app_server', 
+                  fields: [
+                    const Field(hidden: false, edit: false, key: 'id'),
+                    const Field(hidden: false, edit: true, key: 'timestamp'),
+                    const Field(hidden: false, edit: true, key: 'account_owner'),
+                    const Field(hidden: false, edit: true, key: 'value'),
+                    const Field(hidden: false, edit: true, key: 'description'),
+                    const Field(hidden: false, edit: true, key: 'order_id'),
+                    const Field(hidden: false, edit: true, key: 'customer_id'),
+                    const Field(hidden: false, edit: true, key: 'customer_account'),
+                    const Field(hidden: false, edit: true, key: 'created'),
+                    const Field(hidden: false, edit: true, key: 'updated'),
+                    const Field(hidden: false, edit: true, key: 'deleted'),
+                  ],
+                  fetchSqlBuilder: (values) {
+                    return Sql(sql: 'select * from transaction order by id;');
+                  },
+                  updateSqlBuilder: updateSqlBuilder_Transaction,
+                  debug: true,
+                ),
               ),
             ),
-            TableWidget(
-              scheme: Scheme<EntryProductCategory>(
-                address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                authToken: 'some auth token', 
-                database: 'flowers_app_server', 
-                fields: [
-                  Field(key: 'id'),
-                  Field(key: 'category_id'),
-                  Field(key: 'name'),
-                  Field(key: 'details'),
-                  Field(key: 'description'),
-                  Field(key: 'picture'),
-                  Field(key: 'created'),
-                  Field(key: 'updated'),
-                  Field(key: 'deleted'),
-                ],
-                fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from product_category order by id;');
-                },
-                updateSqlBuilder: updateSqlBuilder_ProductCategory,
-                debug: true,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
+              child: TableWidget(
+                scheme: Scheme<EntryProductCategory>(
+                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                  authToken: 'some auth token', 
+                  database: 'flowers_app_server', 
+                  fields: [
+                    const Field(hidden: false, edit: false, key: 'id'),
+                    const Field(hidden: false, edit: true, key: 'category_id'),
+                    const Field(hidden: false, edit: true, key: 'name'),
+                    const Field(hidden: false, edit: true, key: 'details'),
+                    const Field(hidden: false, edit: true, key: 'description'),
+                    const Field(hidden: false, edit: true, key: 'picture'),
+                    const Field(hidden: false, edit: true, key: 'created'),
+                    const Field(hidden: false, edit: true, key: 'updated'),
+                    const Field(hidden: false, edit: true, key: 'deleted'),
+                  ],
+                  fetchSqlBuilder: (values) {
+                    return Sql(sql: 'select * from product_category order by id;');
+                  },
+                  updateSqlBuilder: updateSqlBuilder_ProductCategory,
+                  debug: true,
+                ),
               ),
             ),
-            TableWidget(
-              scheme: Scheme<EntryProduct>(
-                address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                authToken: 'some auth token', 
-                database: 'flowers_app_server', 
-                fields: [
-                  Field(key: 'id'),
-                  Field(key: 'product_category_id'),
-                  Field(key: 'category'),
-                  Field(key: 'name'),
-                  Field(key: 'details'),
-                  Field(key: 'primary_price'),
-                  Field(key: 'primary_currency'),
-                  Field(key: 'primary_order_quantity'),
-                  Field(key: 'order_quantity'),
-                  Field(key: 'description'),
-                  Field(key: 'picture'),
-                  Field(key: 'created'),
-                  Field(key: 'updated'),
-                  Field(key: 'deleted'),
-                ],
-                fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from product_view order by id;');
-                },
-                updateSqlBuilder: updateSqlBuilder_Product,
-                debug: true,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
+              child: TableWidget(
+                scheme: Scheme<EntryProduct>(
+                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                  authToken: 'some auth token', 
+                  database: 'flowers_app_server', 
+                  fields: [
+                    const Field(hidden: false, edit: false, key: 'id'),
+                    const Field(hidden: false, edit: true, key: 'product_category_id'),
+                    const Field(hidden: false, edit: true, key: 'category'),
+                    const Field(hidden: false, edit: true, key: 'name'),
+                    const Field(hidden: false, edit: true, key: 'details'),
+                    const Field(hidden: false, edit: true, key: 'primary_price'),
+                    const Field(hidden: false, edit: true, key: 'primary_currency'),
+                    const Field(hidden: false, edit: true, key: 'primary_order_quantity'),
+                    const Field(hidden: false, edit: true, key: 'order_quantity'),
+                    const Field(hidden: false, edit: true, key: 'description'),
+                    const Field(hidden: false, edit: true, key: 'picture'),
+                    const Field(hidden: false, edit: true, key: 'created'),
+                    const Field(hidden: false, edit: true, key: 'updated'),
+                    const Field(hidden: false, edit: true, key: 'deleted'),
+                  ],
+                  fetchSqlBuilder: (values) {
+                    return Sql(sql: 'select * from product_view order by id;');
+                  },
+                  updateSqlBuilder: updateSqlBuilder_Product,
+                  debug: true,
+                ),
               ),
             ),
-            TableWidget(
-              scheme: Scheme<EntryPurchase>(
-                address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                authToken: 'some auth token', 
-                database: 'flowers_app_server', 
-                fields: [
-                Field(key: 'id'),
-                Field(key: 'name'),
-                Field(key: 'details'),
-                Field(key: 'status'),
-                Field(key: 'date_of_start'),
-                Field(key: 'date_of_end'),
-                Field(key: 'description'),
-                Field(key: 'picture'),
-                Field(key: 'created'),
-                Field(key: 'updated'),
-                Field(key: 'deleted'),
-                ],
-                fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from purchase order by id;');
-                },
-                updateSqlBuilder: updateSqlBuilder_Purchase,
-                debug: true,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
+              child: TableWidget(
+                scheme: Scheme<EntryPurchase>(
+                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                  authToken: 'some auth token', 
+                  database: 'flowers_app_server', 
+                  fields: [
+                  const Field(hidden: false, edit: false, key: 'id'),
+                  const Field(hidden: false, edit: true, key: 'name'),
+                  const Field(hidden: false, edit: true, key: 'details'),
+                  const Field(hidden: false, edit: true, key: 'status'),
+                  const Field(hidden: false, edit: true, key: 'date_of_start'),
+                  const Field(hidden: false, edit: true, key: 'date_of_end'),
+                  const Field(hidden: false, edit: true, key: 'description'),
+                  const Field(hidden: false, edit: true, key: 'picture'),
+                  const Field(hidden: false, edit: true, key: 'created'),
+                  const Field(hidden: false, edit: true, key: 'updated'),
+                  const Field(hidden: false, edit: true, key: 'deleted'),
+                  ],
+                  fetchSqlBuilder: (values) {
+                    return Sql(sql: 'select * from purchase order by id;');
+                  },
+                  updateSqlBuilder: updateSqlBuilder_Purchase,
+                  debug: true,
+                ),
               ),
             ),
-            TableWidget(
-              scheme: Scheme<EntryPurchaseContent>(
-                address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                authToken: 'some auth token', 
-                database: 'flowers_app_server', 
-                fields: [
-                  Field(key: 'id'),
-                  Field(key: 'purchase_id'),
-                  Field(key: 'purchase'),
-                  Field(key: 'product_id'),
-                  Field(key: 'product'),
-                  Field(key: 'sale_price'),
-                  Field(key: 'sale_currency'),
-                  Field(key: 'shipping'),
-                  Field(key: 'amount'),
-                  Field(key: 'name'),
-                  Field(key: 'details'),
-                  Field(key: 'description'),
-                  Field(key: 'picture'),
-                  Field(key: 'created'),
-                  Field(key: 'updated'),
-                  Field(key: 'deleted'),
-                ],
-                fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from purchase_content_view order by id;');
-                },
-                updateSqlBuilder: updateSqlBuilder_PurchaseContent,
-                debug: true,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
+              child: TableWidget(
+                scheme: Scheme<EntryPurchaseContent>(
+                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                  authToken: 'some auth token', 
+                  database: 'flowers_app_server', 
+                  fields: [
+                    const Field(hidden: false, edit: false, key: 'id'),
+                    const Field(hidden: false, edit: true, key: 'purchase_id'),
+                    const Field(hidden: false, edit: true, key: 'purchase'),
+                    const Field(hidden: false, edit: true, key: 'product_id'),
+                    const Field(hidden: false, edit: true, key: 'product'),
+                    const Field(hidden: false, edit: true, key: 'sale_price'),
+                    const Field(hidden: false, edit: true, key: 'sale_currency'),
+                    const Field(hidden: false, edit: true, key: 'shipping'),
+                    const Field(hidden: false, edit: true, key: 'amount'),
+                    const Field(hidden: false, edit: true, key: 'name'),
+                    const Field(hidden: false, edit: true, key: 'details'),
+                    const Field(hidden: false, edit: true, key: 'description'),
+                    const Field(hidden: false, edit: true, key: 'picture'),
+                    const Field(hidden: false, edit: true, key: 'created'),
+                    const Field(hidden: false, edit: true, key: 'updated'),
+                    const Field(hidden: false, edit: true, key: 'deleted'),
+                  ],
+                  fetchSqlBuilder: (values) {
+                    return Sql(sql: 'select * from purchase_content_view order by id;');
+                  },
+                  updateSqlBuilder: updateSqlBuilder_PurchaseContent,
+                  debug: true,
+                ),
               ),
             ),
-            TableWidget(
-              scheme: Scheme<EntryCustomerOrder>(
-                address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                authToken: 'some auth token', 
-                database: 'flowers_app_server', 
-                fields: [
-                  Field(key: 'id'),
-                  Field(key: 'customer_id'),
-                  Field(key: 'customer'),
-                  Field(key: 'purchase_content_id'),
-                  Field(key: 'purchase'),
-                  Field(key: 'product'),
-                  Field(key: 'count'),
-                  Field(key: 'paid'),
-                  Field(key: 'distributed'),
-                  Field(key: 'to_refound'),
-                  Field(key: 'refounded'),
-                  Field(key: 'description'),
-                  Field(key: 'created'),
-                  Field(key: 'updated'),
-                  Field(key: 'deleted'),
-                ],
-                fetchSqlBuilder: (values) {
-                  return Sql(sql: 'select * from customer_order_view order by id;');
-                },
-                updateSqlBuilder: updateSqlBuilder_CustomerOrder,
-                debug: true,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
+              child: TableWidget(
+                scheme: Scheme<EntryCustomerOrder>(
+                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                  authToken: 'some auth token', 
+                  database: 'flowers_app_server', 
+                  fields: [
+                    const Field(hidden: false, edit: false, key: 'id'),
+                    const Field(hidden: false, edit: true, key: 'customer_id'),
+                    const Field(hidden: false, edit: true, key: 'customer'),
+                    const Field(hidden: false, edit: true, key: 'purchase_content_id'),
+                    const Field(hidden: false, edit: true, key: 'purchase'),
+                    const Field(hidden: false, edit: true, key: 'product'),
+                    const Field(hidden: false, edit: true, key: 'count'),
+                    const Field(hidden: false, edit: true, key: 'paid'),
+                    const Field(hidden: false, edit: true, key: 'distributed'),
+                    const Field(hidden: false, edit: true, key: 'to_refound'),
+                    const Field(hidden: false, edit: true, key: 'refounded'),
+                    const Field(hidden: false, edit: true, key: 'description'),
+                    const Field(hidden: true, edit: true, key: 'created'),
+                    const Field(hidden: true, edit: true, key: 'updated'),
+                    const Field(hidden: true, edit: true, key: 'deleted'),
+                  ],
+                  fetchSqlBuilder: (values) {
+                    return Sql(sql: 'select * from customer_order_view order by id;');
+                  },
+                  updateSqlBuilder: updateSqlBuilder_CustomerOrder,
+                  debug: true,
+                ),
               ),
             ),
           ],

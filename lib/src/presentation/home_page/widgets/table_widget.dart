@@ -1,3 +1,4 @@
+import 'package:flowers_admin/src/infrostructure/schames/field.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell.dart';
@@ -78,11 +79,11 @@ class _TableWidgetState extends State<TableWidget> {
   ///
   List<TableRow> _buildRows(Scheme<SchemeEntry> scheme, List<SchemeEntry> entries) {
     final textStile = Theme.of(context).textTheme.bodyMedium;
-    final rows = [TableRow(children: _buildHead(scheme.keys, textStile))];
+    final rows = [TableRow(children: _buildHead(scheme.fields, textStile))];
     rows.addAll(
       entries.map((entry) {
         return TableRow(
-          children: _buildRow(scheme.keys, entry, textStile),
+          children: _buildRow(scheme.fields, entry, textStile),
         );
       }),
     );
@@ -90,49 +91,39 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<TCell> _buildHead(List<String> names, textStyle) {
-    final cells = names.map((name) {
+  List<TCell> _buildHead(List<Field> fields, textStyle) {
+    final cells = fields
+    .where((field) => !field.hidden)
+    .map((field) {
       return TCell(
         // key: Key(entry.key),
-        value: name,
+        value: field.name,
         style: textStyle,
-        // onComplete: (value) {
-        //   entry.update(key, value);
-        //   _scheme.update(entry).then((result) {
-        //     if (result.hasError) {
-        //       showDialog(
-        //           context: context,
-        //           builder: (_) => AlertDialog(
-        //               title: Text('Update error'),
-        //               content: Text('error: ${result.error}'),
-        //           )
-        //       );          
-        //     }
-        //   });
-        // },
+        editable: false,
       );
     }).toList();
     return cells;
   }
   ///
   ///
-  List<TCell> _buildRow(List<String> keys, SchemeEntry entry, textStyle) {
-    final cells = keys.map((key) {
-      final value = entry.value(key);
+  List<TCell> _buildRow(List<Field> fields, SchemeEntry entry, textStyle) {
+    final cells = fields.map((field) {
+      final value = entry.value(field.key);
       return TCell(
         // key: Key(entry.key),
         value: value.value.toString(),
+        editable: field.edit,
         style: textStyle,
         onComplete: (value) {
-          entry.update(key, value);
+          entry.update(field.key, value);
           _scheme.update(entry).then((result) {
             if (result.hasError) {
               showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
-                      title: Text('Update error'),
+                      title: const Text('Update error'),
                       content: Text('error: ${result.error}'),
-                  )
+                  ),
               );          
             }
           });
