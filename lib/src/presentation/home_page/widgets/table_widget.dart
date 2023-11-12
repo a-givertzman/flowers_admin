@@ -2,6 +2,7 @@ import 'package:flowers_admin/src/infrostructure/schames/field.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell.dart';
+import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
@@ -139,26 +140,52 @@ class _TableWidgetState extends State<TableWidget> {
     .where((field) => !field.hidden)
     .map((field) {
       final value = entry.value(field.key);
-      return TCell(
-        // key: Key(entry.key),
-        value: value.value.toString(),
-        editable: field.edit,
-        style: textStyle,
-        onComplete: (value) {
-          entry.update(field.key, value);
-          _scheme.update(entry).then((result) {
-            if (result.hasError) {
-              showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                      title: const Text('Update error'),
-                      content: Text('error: ${result.error}'),
-                  ),
-              );          
-            }
-          });
-        },
-      );
+      if (field.relation.isEmpty) {
+        return TCell(
+          // key: Key(entry.key),
+          value: value.value.toString(),
+          editable: field.edit,
+          style: textStyle,
+          onComplete: (value) {
+            entry.update(field.key, value);
+            _scheme.update(entry).then((result) {
+              if (result.hasError) {
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                        title: const Text('Update error'),
+                        content: Text('error: ${result.error}'),
+                    ),
+                );          
+              }
+            });
+          },
+        );
+      } else {
+        final rel = _relations[field.relation] ?? [];
+        _log.debug("._buildRow | relation '${field.relation}': $rel");
+        return TCellList(
+          // key: Key(entry.key),
+          value: value.value.toString(),
+          relation: rel,
+          editable: field.edit,
+          style: textStyle,
+          onComplete: (value) {
+            entry.update(field.key, value);
+            _scheme.update(entry).then((result) {
+              if (result.hasError) {
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                        title: const Text('Update error'),
+                        content: Text('error: ${result.error}'),
+                    ),
+                );          
+              }
+            });
+          },
+        );
+      }
     }).toList();
     return cells;
   }
