@@ -53,7 +53,7 @@ class _HomeBodyState extends State<HomeBody> {
                 address: const ApiAddress(host: '127.0.0.1', port: 8080),
                 authToken: 'some auth token', 
                 database: 'flowers_app_server', 
-                keys: [
+                fields: [
                   'id',
                   'role',
                   'email',
@@ -81,7 +81,7 @@ class _HomeBodyState extends State<HomeBody> {
                 address: const ApiAddress(host: '127.0.0.1', port: 8080),
                 authToken: 'some auth token', 
                 database: 'flowers_app_server', 
-                keys: [
+                fields: [
                   'id',
                   'timestamp',
                   'account_owner',
@@ -106,7 +106,7 @@ class _HomeBodyState extends State<HomeBody> {
                 address: const ApiAddress(host: '127.0.0.1', port: 8080),
                 authToken: 'some auth token', 
                 database: 'flowers_app_server', 
-                keys: [
+                fields: [
                   'id',
                   'category_id',
                   'name',
@@ -129,7 +129,7 @@ class _HomeBodyState extends State<HomeBody> {
                 address: const ApiAddress(host: '127.0.0.1', port: 8080),
                 authToken: 'some auth token', 
                 database: 'flowers_app_server', 
-                keys: [
+                fields: [
                   'id',
                   'product_category_id',
                   'category',
@@ -157,7 +157,7 @@ class _HomeBodyState extends State<HomeBody> {
                 address: const ApiAddress(host: '127.0.0.1', port: 8080),
                 authToken: 'some auth token', 
                 database: 'flowers_app_server', 
-                keys: [
+                fields: [
                 'id',
                 'name',
                 'details',
@@ -182,7 +182,7 @@ class _HomeBodyState extends State<HomeBody> {
                 address: const ApiAddress(host: '127.0.0.1', port: 8080),
                 authToken: 'some auth token', 
                 database: 'flowers_app_server', 
-                keys: [
+                fields: [
                   'id',
                   'purchase_id',
                   'purchase',
@@ -212,7 +212,7 @@ class _HomeBodyState extends State<HomeBody> {
                 address: const ApiAddress(host: '127.0.0.1', port: 8080),
                 authToken: 'some auth token', 
                 database: 'flowers_app_server', 
-                keys: [
+                fields: [
                   'id',
                   'customer_id',
                   'customer',

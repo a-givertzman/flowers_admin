@@ -31,7 +31,7 @@ class Scheme<T extends SchemeEntry> {
     required ApiAddress address,
     required String authToken,
     required String database,
-    required List<String> keys,
+    required List<String> fields,
     bool keepAlive = false,
     bool debug = false,
     required Sql Function(List<dynamic>? values) fetchSqlBuilder,

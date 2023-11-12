@@ -11,7 +11,7 @@ abstract class SchemeEntry {
   String get key;
   ///
   /// Returns field value by field name [key]
-  Field value(String key);
+  FieldValue value(String key);
   ///
   /// Updates field value by field name [key]
   void update(String key, String value);

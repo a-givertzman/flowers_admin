@@ -7,12 +7,12 @@ import 'package:uuid/uuid.dart';
 /// Single row of table "Customer"
 class EntryProductCategory implements SchemeEntry {
   final _id = const Uuid().v1();  // v1 time-based id
-  late final Map<String, Field> _map;
+  late final Map<String, FieldValue> _map;
   ///
   /// Single row of table "Customer"
   /// - [keys] - list of field names
   EntryProductCategory({
-    required Map<String, Field> map,
+    required Map<String, FieldValue> map,
   }) :
     _map = map;
   //
@@ -22,7 +22,7 @@ class EntryProductCategory implements SchemeEntry {
   //
   //
   @override
-  Field value(String key) {
+  FieldValue value(String key) {
     final value = _map[key];
     if (value != null) {
       return value;
@@ -36,7 +36,7 @@ class EntryProductCategory implements SchemeEntry {
   @override
   EntryProductCategory.from(Map<String, dynamic> row) {
     _map =row.map((key, value) {
-      return MapEntry(key, Field(value));
+      return MapEntry(key, FieldValue(value));
     });
   }
   //

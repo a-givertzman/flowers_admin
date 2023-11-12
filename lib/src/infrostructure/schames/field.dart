@@ -1,9 +1,9 @@
-class Field<T> {
+class FieldValue<T> {
   T _value;
   final FieldType _type;
   ///
   ///
-  Field(
+  FieldValue(
     T value, {
     FieldType type = FieldType.string,
   }) :
