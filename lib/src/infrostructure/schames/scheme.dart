@@ -24,6 +24,7 @@ class Scheme<T extends SchemeEntry> {
   final SqlBuilder? _insertSqlBuilder;
   final SqlBuilder? _updateSqlBuilder;
   final Map<String, Scheme> _relations;
+  final List _values = [];
   // final SchemeEntry Function(Map<String, dynamic> row) _schemeBuilder;
   ///
   /// A collection of the SchameEntry, 
@@ -65,13 +66,15 @@ class Scheme<T extends SchemeEntry> {
   }
   ///
   ///
-  Future<Result<List<SchemeEntry>>> refresh(values) {
-    final sql = _fetchSqlBuilder(values);
+  Future<Result<List<SchemeEntry>>> refresh() {
+    final sql = _fetchSqlBuilder(_values);
     return fetchWith(sql);
   }
   ///
   ///
-  Future<Result<List<SchemeEntry>>> fetch(values) {
+  Future<Result<List<SchemeEntry>>> fetch(List values) {
+    _values.clear();
+    _values.addAll(values);
     final sql = _fetchSqlBuilder(values);
     return fetchWith(sql);
   }

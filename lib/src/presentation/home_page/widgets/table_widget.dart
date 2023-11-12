@@ -24,14 +24,42 @@ class TableWidget extends StatefulWidget {
 ///
 ///
 class _TableWidgetState extends State<TableWidget> {
-  final _log = Log("$_TableWidgetState._");
+  final _log = Log("$_TableWidgetState");
   final Scheme _scheme;
+  final Map<String, List<SchemeEntry>> _relations = {};
   ///
   ///
   _TableWidgetState({
     required Scheme scheme,
   }) :
     _scheme = scheme;
+  ///
+  ///
+  @override
+  void initState() {
+    for (final field in _scheme.fields) {
+      if (field.relation.isNotEmpty) {
+        _scheme.relation(field.relation).fold(
+          onData: (scheme) {
+            scheme.refresh().then((result) {
+              result.fold(
+                onData: (entries) {
+                  _relations[field.relation] = entries;
+                },
+                onError: (err) {
+                  _log.warning(".initState | relation '${field.relation}' refresh error: $err");
+                },
+              );
+            });
+          }, 
+          onError: (err) {
+            _log.warning(".initState | relation '${field.relation}' - not found\n\terror: $err");
+          },
+        );
+      }
+    }
+    super.initState();
+  }
   ///
   ///
   @override
@@ -45,7 +73,7 @@ class _TableWidgetState extends State<TableWidget> {
             child: CircularProgressIndicator(backgroundColor: Colors.blue),
           );
         } else {        
-          _log.debug("build | snapshot: $snapshot");
+          _log.debug(".build | snapshot: $snapshot");
           final result = snapshot.data;
           if (result != null) {
             if (result.hasData) {
