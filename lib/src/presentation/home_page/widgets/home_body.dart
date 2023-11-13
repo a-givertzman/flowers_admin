@@ -313,8 +313,8 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
                     const Field(hidden: false, edit: false, key: 'customer'),
-                    const Field(hidden: false, edit: true, key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'field')),// 
-                    const Field(hidden: false, edit: true, key: 'purchase_content_id'),// relation: Relation(id: 'purchase_content_id', field: field)),
+                    const Field(hidden: false, edit: true, name: 'purchase_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'purchase')),
+                    const Field(hidden: false, edit: true, name: 'product_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'product')),
                     const Field(hidden: false, edit: true, key: 'purchase'),
                     const Field(hidden: false, edit: true, key: 'product'),
                     const Field(hidden: false, edit: true, key: 'count'),
@@ -343,6 +343,22 @@ class _HomeBodyState extends State<HomeBody> {
                       ],
                       fetchSqlBuilder: (values) {
                         return Sql(sql: 'select id, name from customer order by id;');
+                      },
+                      debug: true,
+                    ),
+                    'purchase_content_id': Scheme<EntryPurchaseContent>(
+                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
+                      authToken: _authToken, 
+                      database: _database, 
+                      fields: [
+                        const Field(key: 'id'),
+                        const Field(key: 'purchase_id'),
+                        const Field(key: 'purchase'),
+                        const Field(key: 'product_id'),
+                        const Field(key: 'product'),
+                      ],
+                      fetchSqlBuilder: (values) {
+                        return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_content_view order by id;');
                       },
                       debug: true,
                     ),
