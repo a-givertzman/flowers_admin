@@ -27,7 +27,7 @@ class TableWidget extends StatefulWidget {
 class _TableWidgetState extends State<TableWidget> {
   final _log = Log("$_TableWidgetState");
   final Scheme _scheme;
-  final Map<String, List<SchemeEntry>> _relations = {};
+  // final Map<String, List<SchemeEntry>> _relations = {};
   ///
   ///
   _TableWidgetState({
@@ -155,7 +155,13 @@ class _TableWidgetState extends State<TableWidget> {
           onComplete: (value) => _updateEntry(entry, field.key, value),
         );
       } else {
-        final relation = TCellEntry(entries: _relations[field.relation.id] ?? [], field: field.relation.field);
+        final List<SchemeEntry> relEntries = _scheme.relation(field.relation.id).fold(
+          onData: (relSchame) {
+            return relSchame.entries;
+          }, 
+          onError: (_) => [],
+        );
+        final relation = TCellEntry(entries: relEntries, field: field.relation.field);
         _log.debug("._buildRow | relation '${field.relation.id}': $relation");
         return TCellList(
           // key: Key(entry.key),

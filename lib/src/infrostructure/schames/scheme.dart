@@ -21,7 +21,7 @@ class Scheme<T extends SchemeEntry> {
   final bool _keepAlive;
   final bool _debug;
   final List<Field> _fields;
-  final Map<String, SchemeEntry> _entries = {};
+  final Map<String, T> _entries = {};
   final Sql Function(List<dynamic>? values) _fetchSqlBuilder;
   final SqlBuilder<T>? _insertSqlBuilder;
   final SqlBuilder<T>? _updateSqlBuilder;
@@ -70,12 +70,15 @@ class Scheme<T extends SchemeEntry> {
   }
   ///
   ///
+  List<T> get entries => _entries.values.toList();
+  ///
+  ///
   Future<Result<List<SchemeEntry>>> refresh() {
     return fetch();
   }
   ///
   ///
-  Future<Result<List<SchemeEntry>>> fetch({List? values}) async {
+  Future<Result<List<T>>> fetch({List? values}) async {
     await fetchRelations();
     if (values != null) {
       _values.clear();
@@ -109,7 +112,7 @@ class Scheme<T extends SchemeEntry> {
   }
   ///
   ///
-  Future<Result<List<SchemeEntry>>> fetchWith(Sql sql) {
+  Future<Result<List<T>>> fetchWith(Sql sql) {
     final request = ApiRequest(
       address: _address, 
       query: SqlQuery(
@@ -193,6 +196,17 @@ class Scheme<T extends SchemeEntry> {
         await relation(field.relation.id).fold(
           onData: (scheme) async {
             await scheme.refresh();
+          }, 
+          onError: (err) {
+            _log.warning(".fetchRelations | relation '${field.relation}' - not found\n\terror: $err");
+          },
+        );
+      }
+    }
+  }
+}
+
+
             // .then((result) {
             //   result.fold(
             //     onData: (entries) {
@@ -203,13 +217,3 @@ class Scheme<T extends SchemeEntry> {
             //     },
             //   );
             // });
-          }, 
-          onError: (err) {
-            _log.warning(".fetchRelations | relation '${field.relation}' - not found\n\terror: $err");
-          },
-        );
-      }
-    }
-  }
-
-}
