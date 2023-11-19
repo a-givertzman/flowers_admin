@@ -1,4 +1,5 @@
 import 'package:dart_api_client/dart_api_client.dart';
+import 'package:flowers_admin/src/infrostructure/customer/customer_sqls.dart';
 import 'package:flowers_admin/src/infrostructure/schames/entry_customer_order.dart';
 import 'package:flowers_admin/src/infrostructure/schames/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/schames/entry_product_category.dart';
@@ -11,6 +12,7 @@ import 'package:flowers_admin/src/infrostructure/schames/scheme.dart';
 import 'package:flowers_admin/src/infrostructure/schames/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
 import 'package:flowers_admin/src/infrostructure/schames/sql.dart';
+import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/table_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
@@ -80,7 +82,8 @@ class _HomeBodyState extends State<HomeBody> {
                   fetchSqlBuilder: (values) {
                     return Sql(sql: 'select * from customer order by id;');
                   },
-                  updateSqlBuilder: updateSqlBuilder_Customer,
+                  updateSqlBuilder: updateSqlBuilderCustomer,
+                  insertSqlBuilder: insertSqlBuilderCustomer,
                   debug: true,
                 ),
               ),
@@ -89,6 +92,7 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
                 scheme: Scheme<EntryTransaction>(
+                  debug: true,
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -108,8 +112,8 @@ class _HomeBodyState extends State<HomeBody> {
                   fetchSqlBuilder: (values) {
                     return Sql(sql: 'select * from transaction order by id;');
                   },
-                  updateSqlBuilder: updateSqlBuilder_Transaction,
-                  debug: true,
+                  updateSqlBuilder: updateSqlBuilderTransaction,
+                  insertSqlBuilder: insertSqlBuilderTransaction,
                   relations: {
                     'customer_id': Scheme<EntryCustomer>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
@@ -371,74 +375,6 @@ class _HomeBodyState extends State<HomeBody> {
       ),
     );
   }
-}
-///
-///
-Sql updateSqlBuilder_Customer(Sql sql, SchemeEntry entry) {
-  return Sql(sql: """UPDATE customer SET (
-    id,
-    role,
-    email,
-    phone,
-    name,
-    location,
-    login,
-    pass,
-    account,
-    last_act,
-    blocked,
-    created,
-    updated,
-    deleted
-  ) = (
-    ${entry.value('id').str},
-    ${entry.value('role').str},
-    ${entry.value('email').str},
-    ${entry.value('phone').str},
-    ${entry.value('name').str},
-    ${entry.value('location').str},
-    ${entry.value('login').str},
-    ${entry.value('pass').str},
-    ${entry.value('account').str},
-    ${entry.value('last_act').str},
-    ${entry.value('blocked').str},
-    ${entry.value('created').str},
-    ${entry.value('updated').str},
-    ${entry.value('deleted').str}
-  )
-  WHERE id = ${entry.value('id').str};
-""");
-}
-///
-///
-Sql updateSqlBuilder_Transaction(Sql sql, SchemeEntry entry) {
-  return Sql(sql: """UPDATE transaction SET (
-    id,
-    timestamp,
-    account_owner,
-    value,
-    description,
-    order_id,
-    customer_id,
-    customer_account,
-    created,
-    updated,
-    deleted
-  ) = (
-    ${entry.value('id').str},
-    ${entry.value('timestamp').str},
-    ${entry.value('account_owner').str},
-    ${entry.value('value').str},
-    ${entry.value('description').str},
-    ${entry.value('order_id').str},
-    ${entry.value('customer_id').str},
-    ${entry.value('customer_account').str},
-    ${entry.value('created').str},
-    ${entry.value('updated').str},
-    ${entry.value('deleted').str}
-  )
-  WHERE id = ${entry.value('id').str};
-""");
 }
 ///
 ///

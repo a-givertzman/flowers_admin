@@ -18,6 +18,23 @@ class EntryTransaction implements SchemeEntry {
     _map = map;
   //
   //
+  EntryTransaction.empty() {
+    _map = {
+      'id': FieldValue(null),
+      'timestamp': FieldValue( DateTime.now().toIso8601String() ),
+      'account_owner': FieldValue(''),
+      'value': FieldValue('0'),
+      'description': FieldValue(''),
+      'order_id': FieldValue(null),
+      'customer_id': FieldValue('0'),
+      'customer_account': FieldValue('0'),
+      'created': FieldValue(null),
+      'updated': FieldValue(null),
+      'deleted': FieldValue(null),
+    };
+  }
+  //
+  //
   @override
   String get key => _id;
   //

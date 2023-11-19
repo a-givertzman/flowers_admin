@@ -18,6 +18,26 @@ class EntryCustomer implements SchemeEntry {
     _map = map;
   //
   //
+  EntryCustomer.empty() {
+    _map = {
+      'id': FieldValue(null),
+      'role': FieldValue('customer'),
+      'email': FieldValue('@'),
+      'phone': FieldValue('+7'),
+      'name': FieldValue(''),
+      'location': FieldValue(''),
+      'login': FieldValue(''),
+      'pass': FieldValue(''),
+      'account': FieldValue('0'),
+      'last_act': FieldValue(null),
+      'blocked': FieldValue(null),
+      'created': FieldValue(null),
+      'updated': FieldValue(null),
+      'deleted': FieldValue(null),
+    };
+  }
+  //
+  //
   @override
   String get key => _id;
   //

@@ -7,7 +7,7 @@ import 'package:flowers_admin/src/infrostructure/schames/entry_purchase_content.
 import 'package:flowers_admin/src/infrostructure/schames/entry_transaction.dart';
 
 
-final entryFactories = <Type, Function>{
+final entryFromFactories = <Type, Function>{
   EntryCustomer: (Map<String, dynamic> row) => EntryCustomer.from(row),
   EntryProductCategory: (Map<String, dynamic> row) => EntryProductCategory.from(row),
   EntryProduct: (Map<String, dynamic> row) => EntryProduct.from(row),
@@ -15,4 +15,14 @@ final entryFactories = <Type, Function>{
   EntryPurchase: (Map<String, dynamic> row) => EntryPurchase.from(row),
   EntryTransaction: (Map<String, dynamic> row) => EntryTransaction.from(row),
   EntryCustomerOrder: (Map<String, dynamic> row) => EntryCustomerOrder.from(row),
+};
+
+final entryEmptyFactories = <Type, Function>{
+  EntryCustomer: () => EntryCustomer.empty(),
+  EntryProductCategory: () => EntryProductCategory.empty(),
+  EntryProduct: () => EntryProduct.empty(),
+  EntryPurchaseContent: () => EntryPurchaseContent.empty(),
+  EntryPurchase: () => EntryPurchase.empty(),
+  EntryTransaction: () => EntryTransaction.empty(),
+  EntryCustomerOrder: () => EntryCustomerOrder.empty(),
 };

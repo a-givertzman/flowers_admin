@@ -18,6 +18,9 @@ class EntryPurchaseContent implements SchemeEntry {
     _map = map;
   //
   //
+  EntryPurchaseContent.empty();
+  //
+  //
   @override
   String get key => _id;
   //

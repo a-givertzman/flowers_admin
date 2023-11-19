@@ -27,7 +27,6 @@ class Scheme<T extends SchemeEntry> {
   final SqlBuilder<T>? _updateSqlBuilder;
   final Map<String, Scheme> _relations;
   Sql _sql = Sql(sql: '');
-  // final SchemeEntry Function(Map<String, dynamic> row) _schemeBuilder;
   ///
   /// A collection of the SchameEntry, 
   /// abstruction on the SQL table rows
@@ -42,7 +41,6 @@ class Scheme<T extends SchemeEntry> {
     required Sql Function(List<dynamic>? values) fetchSqlBuilder,
     SqlBuilder<T>? insertSqlBuilder,
     SqlBuilder<T>? updateSqlBuilder,
-    // required SchemeEntry Function(Map<String, dynamic> row) schemeBuilder,
     Map<String, Scheme> relations = const {},
   }) :
     _address = address,
@@ -54,7 +52,6 @@ class Scheme<T extends SchemeEntry> {
     _fetchSqlBuilder = fetchSqlBuilder,
     _insertSqlBuilder = insertSqlBuilder,
     _updateSqlBuilder = updateSqlBuilder,
-    // _schemeBuilder = schemeBuilder,
     _relations = relations {
       _log = Log("$runtimeType");
     }
@@ -100,7 +97,7 @@ class Scheme<T extends SchemeEntry> {
   }
   ///
   T _makeEntry(Map<String, dynamic> row) {
-    final constructor = entryFactories[T];
+    final constructor = entryFromFactories[T];
     if (constructor != null) {
       return constructor(row);
     }
@@ -151,14 +148,28 @@ class Scheme<T extends SchemeEntry> {
   }
   ///
   /// Inserts new entry into the table scheme
-  Future<Result<void>> insert(T entry) {
+  Future<Result<void>> insert({T? entry}) {
+    T entry_;
+    if (entry != null) {
+      entry_ = entry;
+    } else {
+      final constructor = entryEmptyFactories[T];
+      if (constructor != null) {
+        entry_ = constructor();
+      } else {
+        throw Failure(
+          message: "$runtimeType._makeEntry | Can't find constructor for $T", 
+          stackTrace: StackTrace.current,
+        );
+      }
+    }
     final builder = _insertSqlBuilder;
     if (builder != null) {
       final initialSql = Sql(sql: '');
-      final sql = builder(initialSql, entry);
+      final sql = builder(initialSql, entry_);
       return fetchWith(sql).then((result) {
         if (!result.hasError) {
-          _entries[entry.key] = entry;
+          _entries[entry_.key] = entry_;
         }
         return result;
       });

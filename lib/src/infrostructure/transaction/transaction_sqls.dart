@@ -1,0 +1,56 @@
+import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schames/sql.dart';
+
+///
+///
+Sql updateSqlBuilderTransaction(Sql sql, SchemeEntry entry) {
+  return Sql(sql: """UPDATE transaction SET (
+    id,
+    timestamp,
+    account_owner,
+    value,
+    description,
+    order_id,
+    customer_id,
+    customer_account,
+    created,
+    updated,
+    deleted
+  ) = (
+    ${entry.value('id').str},
+    ${entry.value('timestamp').str},
+    ${entry.value('account_owner').str},
+    ${entry.value('value').str},
+    ${entry.value('description').str},
+    ${entry.value('order_id').str},
+    ${entry.value('customer_id').str},
+    ${entry.value('customer_account').str},
+    ${entry.value('created').str},
+    ${entry.value('updated').str},
+    ${entry.value('deleted').str}
+  )
+  WHERE id = ${entry.value('id').str};
+""");
+}
+///
+///
+Sql insertSqlBuilderTransaction(Sql sql, SchemeEntry entry) {
+  return Sql(sql: """UPDATE transaction SET (
+    timestamp,
+    account_owner,
+    value,
+    description,
+    order_id,
+    customer_id,
+    customer_account
+  ) = (
+    ${entry.value('timestamp').str},
+    ${entry.value('account_owner').str},
+    ${entry.value('value').str},
+    ${entry.value('description').str},
+    ${entry.value('order_id').str},
+    ${entry.value('customer_id').str},
+    ${entry.value('customer_account').str}
+  );
+""");
+}

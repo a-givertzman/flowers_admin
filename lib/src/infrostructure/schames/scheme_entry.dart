@@ -7,6 +7,9 @@ abstract class SchemeEntry {
   /// Creates entry from database row
   SchemeEntry.from(Map<String, dynamic> row);
   ///
+  /// Creates entry with empty / default values
+  SchemeEntry.empty();
+  ///
   /// Returns inner unique identificator of the entry, not related to the database table
   String get key;
   ///

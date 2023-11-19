@@ -18,6 +18,9 @@ class EntryCustomerOrder implements SchemeEntry {
     _map = map;
   //
   //
+  EntryCustomerOrder.empty();
+  //
+  //
   @override
   String get key => _id;
   //

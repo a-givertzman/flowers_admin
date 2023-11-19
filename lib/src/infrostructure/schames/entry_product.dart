@@ -18,6 +18,9 @@ class EntryProduct implements SchemeEntry {
     _map = map;
   //
   //
+  EntryProduct.empty();
+  //
+  //
   @override
   String get key => _id;
   //

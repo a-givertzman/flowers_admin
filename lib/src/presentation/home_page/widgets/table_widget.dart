@@ -44,43 +44,69 @@ class _TableWidgetState extends State<TableWidget> {
   ///
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Result<List<SchemeEntry>>>(
-      future: _scheme.fetch([]),
-      builder: (BuildContext context, AsyncSnapshot<Result<List<SchemeEntry>>> snapshot) {
-        final textStile = Theme.of(context).textTheme.bodyMedium;
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Center(
-            child: CircularProgressIndicator(backgroundColor: Colors.blue),
-          );
-        } else {        
-          _log.debug(".build | snapshot: $snapshot");
-          final result = snapshot.data;
-          if (result != null) {
-            if (result.hasData) {
-              final entries = result.data;
-              if (entries.isNotEmpty) {
-                // final count = entries.length;
-                final rows = entries;
-                return Table(
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  border: TableBorder.all(),
-                  columnWidths: { for (var i in [for (var i = 0; i <= 14; i++) i]) i : const IntrinsicColumnWidth() },
-                  // {
-                  //   0: IntrinsicColumnWidth(),
-                  //   1: FlexColumnWidth(),
-                  // },
-                  children: _buildRows(_scheme, rows),
-                );
-              } else {
-                return Center(child: Text("No orders received", style: textStile,));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(children: [
+          const Expanded(child: SizedBox.shrink()),
+          IconButton(
+            onPressed: () {
+              _scheme.insert().then((result) {
+                if (result.hasError) {
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('Insert error'),
+                      content: Text('error: ${result.error}'),
+                    ),
+                  );
+                  return;
+                }
+                setState(() {});
+              });
+            }, 
+            icon: const Icon(Icons.add),
+          ),
+        ]),
+        FutureBuilder<Result<List<SchemeEntry>>>(
+          future: _scheme.fetch([]),
+          builder: (BuildContext context, AsyncSnapshot<Result<List<SchemeEntry>>> snapshot) {
+            final textStile = Theme.of(context).textTheme.bodyMedium;
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(
+                child: CircularProgressIndicator(backgroundColor: Colors.blue),
+              );
+            } else {        
+              _log.debug(".build | snapshot: $snapshot");
+              final result = snapshot.data;
+              if (result != null) {
+                if (result.hasData) {
+                  final entries = result.data;
+                  if (entries.isNotEmpty) {
+                    // final count = entries.length;
+                    final rows = entries;
+                    return Table(
+                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                      border: TableBorder.all(),
+                      columnWidths: { for (var i in [for (var i = 0; i <= 14; i++) i]) i : const IntrinsicColumnWidth() },
+                      // {
+                      //   0: IntrinsicColumnWidth(),
+                      //   1: FlexColumnWidth(),
+                      // },
+                      children: _buildRows(_scheme, rows),
+                    );
+                  } else {
+                    return Center(child: Text("No orders received", style: textStile,));
+                  }
+                } else {
+                  return Center(child: Text("Error: ${result.error}", style: textStile,));
+                }
               }
-            } else {
-              return Center(child: Text("Error: ${result.error}", style: textStile,));
             }
-          }
-        }
-        return Center(child: Text("No orders received", style: textStile,));
-      },
+            return Center(child: Text("No orders received", style: textStile,));
+          },
+        ),
+      ],
     );
   }
   ///
