@@ -38,7 +38,6 @@ class _TableWidgetState extends State<TableWidget> {
   ///
   @override
   void initState() {
-    _scheme.fetch([]);
     super.initState();
   }
   ///
@@ -46,7 +45,7 @@ class _TableWidgetState extends State<TableWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Result<List<SchemeEntry>>>(
-      future: _scheme.refresh(),
+      future: _scheme.fetch([]),
       builder: (BuildContext context, AsyncSnapshot<Result<List<SchemeEntry>>> snapshot) {
         final textStile = Theme.of(context).textTheme.bodyMedium;
         if (snapshot.connectionState != ConnectionState.done) {
