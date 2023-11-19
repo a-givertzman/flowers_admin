@@ -74,6 +74,9 @@ class Scheme<T extends SchemeEntry> {
   ///
   /// Fetchs data with existing sql
   Future<Result<List<SchemeEntry>>> refresh() {
+    if (_sql.build().isEmpty) {
+      _sql = _fetchSqlBuilder([]);
+  }
     return fetchWith(_sql);
   }
   ///
