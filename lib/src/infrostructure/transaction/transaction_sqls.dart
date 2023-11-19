@@ -35,7 +35,7 @@ Sql updateSqlBuilderTransaction(Sql sql, SchemeEntry entry) {
 ///
 ///
 Sql insertSqlBuilderTransaction(Sql sql, SchemeEntry entry) {
-  return Sql(sql: """UPDATE transaction SET (
+  return Sql(sql: """insert into transaction (
     timestamp,
     account_owner,
     value,
@@ -43,7 +43,7 @@ Sql insertSqlBuilderTransaction(Sql sql, SchemeEntry entry) {
     order_id,
     customer_id,
     customer_account
-  ) = (
+  ) values (
     ${entry.value('timestamp').str},
     ${entry.value('account_owner').str},
     ${entry.value('value').str},
