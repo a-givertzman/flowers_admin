@@ -38,6 +38,7 @@ class _TableWidgetState extends State<TableWidget> {
   ///
   @override
   void initState() {
+    _scheme.fetch([]);
     super.initState();
   }
   ///
