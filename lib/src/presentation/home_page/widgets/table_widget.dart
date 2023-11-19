@@ -104,7 +104,6 @@ class _TableWidgetState extends State<TableWidget> {
     .where((field) => !field.hidden)
     .map((field) {
       return TCell(
-        // key: Key(entry.key),
         value: field.name,
         style: textStyle,
         editable: false,
@@ -121,7 +120,6 @@ class _TableWidgetState extends State<TableWidget> {
       final value = entry.value(field.key);
       if (field.relation.isEmpty) {
         return TCell(
-          // key: Key(entry.key),
           value: value.value.toString(),
           editable: field.edit,
           style: textStyle,
@@ -137,7 +135,6 @@ class _TableWidgetState extends State<TableWidget> {
         final relation = TCellEntry(entries: relEntries, field: field.relation.field);
         _log.debug("._buildRow | relation '${field.relation.id}': $relation");
         return TCellList(
-          // key: Key(entry.key),
           id: value.value,
           relation: relation,
           editable: field.edit,
