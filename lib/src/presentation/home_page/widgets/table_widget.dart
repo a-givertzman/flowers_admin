@@ -34,33 +34,33 @@ class _TableWidgetState extends State<TableWidget> {
     required Scheme scheme,
   }) :
     _scheme = scheme;
-  ///
-  ///
-  Future<Result<List<SchemeEntry>>> _fetch() async {
-    final entries = _scheme.fetch([]);
-    for (final field in _scheme.fields) {
-      if (field.relation.isNotEmpty) {
-        await _scheme.relation(field.relation.id).fold(
-          onData: (scheme) async {
-            await scheme.refresh().then((result) {
-              result.fold(
-                onData: (entries) {
-                  _relations[field.relation.id] = entries;
-                },
-                onError: (err) {
-                  _log.warning(".initState | relation '${field.relation}' refresh error: $err");
-                },
-              );
-            });
-          }, 
-          onError: (err) {
-            _log.warning(".initState | relation '${field.relation}' - not found\n\terror: $err");
-          },
-        );
-      }
-    }
-    return entries;
-  }
+  // ///
+  // ///
+  // Future<Result<List<SchemeEntry>>> _fetch() async {
+  //   final entries = _scheme.fetch([]);
+  //   for (final field in _scheme.fields) {
+  //     if (field.relation.isNotEmpty) {
+  //       await _scheme.relation(field.relation.id).fold(
+  //         onData: (scheme) async {
+  //           await scheme.refresh().then((result) {
+  //             result.fold(
+  //               onData: (entries) {
+  //                 _relations[field.relation.id] = entries;
+  //               },
+  //               onError: (err) {
+  //                 _log.warning(".initState | relation '${field.relation}' refresh error: $err");
+  //               },
+  //             );
+  //           });
+  //         }, 
+  //         onError: (err) {
+  //           _log.warning(".initState | relation '${field.relation}' - not found\n\terror: $err");
+  //         },
+  //       );
+  //     }
+  //   }
+  //   return entries;
+  // }
   ///
   ///
   @override
@@ -72,7 +72,7 @@ class _TableWidgetState extends State<TableWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Result<List<SchemeEntry>>>(
-      future: _fetch(),
+      future: _scheme.fetch(),
       builder: (BuildContext context, AsyncSnapshot<Result<List<SchemeEntry>>> snapshot) {
         final textStile = Theme.of(context).textTheme.bodyMedium;
         if (snapshot.connectionState != ConnectionState.done) {

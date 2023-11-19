@@ -4,15 +4,17 @@ import 'package:flowers_admin/src/infrostructure/schames/field.dart';
 import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
 import 'package:flowers_admin/src/infrostructure/schames/sql.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 
-typedef SqlBuilder<T> = Sql Function(Sql sql, SchemeEntry entry);
+typedef SqlBuilder<T extends SchemeEntry> = Sql Function(Sql sql, T entry);
 
 
 ///
 /// A collection of the SchameEntry, 
 /// abstruction on the SQL table rows
 class Scheme<T extends SchemeEntry> {
+  late final Log _log;
   final ApiAddress _address;
   final String _authToken;
   final String _database;
@@ -21,8 +23,8 @@ class Scheme<T extends SchemeEntry> {
   final List<Field> _fields;
   final Map<String, SchemeEntry> _entries = {};
   final Sql Function(List<dynamic>? values) _fetchSqlBuilder;
-  final SqlBuilder? _insertSqlBuilder;
-  final SqlBuilder? _updateSqlBuilder;
+  final SqlBuilder<T>? _insertSqlBuilder;
+  final SqlBuilder<T>? _updateSqlBuilder;
   final Map<String, Scheme> _relations;
   final List _values = [];
   // final SchemeEntry Function(Map<String, dynamic> row) _schemeBuilder;
@@ -38,8 +40,8 @@ class Scheme<T extends SchemeEntry> {
     bool keepAlive = false,
     bool debug = false,
     required Sql Function(List<dynamic>? values) fetchSqlBuilder,
-    SqlBuilder? insertSqlBuilder,
-    SqlBuilder? updateSqlBuilder,
+    SqlBuilder<T>? insertSqlBuilder,
+    SqlBuilder<T>? updateSqlBuilder,
     // required SchemeEntry Function(Map<String, dynamic> row) schemeBuilder,
     Map<String, Scheme> relations = const {},
   }) :
@@ -53,7 +55,9 @@ class Scheme<T extends SchemeEntry> {
     _insertSqlBuilder = insertSqlBuilder,
     _updateSqlBuilder = updateSqlBuilder,
     // _schemeBuilder = schemeBuilder,
-    _relations = relations;
+    _relations = relations {
+      _log = Log("$runtimeType");
+    }
   ///
   /// Returns a list of table field names
   List<Field> get fields {
@@ -67,15 +71,17 @@ class Scheme<T extends SchemeEntry> {
   ///
   ///
   Future<Result<List<SchemeEntry>>> refresh() {
-    final sql = _fetchSqlBuilder(_values);
-    return fetchWith(sql);
+    return fetch();
   }
   ///
   ///
-  Future<Result<List<SchemeEntry>>> fetch(List values) {
-    _values.clear();
-    _values.addAll(values);
-    final sql = _fetchSqlBuilder(values);
+  Future<Result<List<SchemeEntry>>> fetch({List? values}) async {
+    await fetchRelations();
+    if (values != null) {
+      _values.clear();
+      _values.addAll(values);
+    }
+    final sql = _fetchSqlBuilder(_values);
     return fetchWith(sql);
   }
   ///
@@ -143,7 +149,7 @@ class Scheme<T extends SchemeEntry> {
   }
   ///
   /// Inserts new entry into the table scheme
-  Future<Result<void>> insert(SchemeEntry entry) {
+  Future<Result<void>> insert(T entry) {
     final builder = _insertSqlBuilder;
     if (builder != null) {
       final initialSql = Sql(sql: '');
@@ -162,7 +168,7 @@ class Scheme<T extends SchemeEntry> {
   }
   ///
   /// Updates entry of the table scheme
-  Future<Result<void>> update(SchemeEntry entry) {
+  Future<Result<void>> update(T entry) {
     final builder = _updateSqlBuilder;
     if (builder != null) {
       final initialSql = Sql(sql: '');
@@ -179,4 +185,31 @@ class Scheme<T extends SchemeEntry> {
       stackTrace: StackTrace.current,
     );
   }
+  ///
+  ///
+  Future<void> fetchRelations() async {
+    for (final field in _fields) {
+      if (field.relation.isNotEmpty) {
+        await relation(field.relation.id).fold(
+          onData: (scheme) async {
+            await scheme.refresh();
+            // .then((result) {
+            //   result.fold(
+            //     onData: (entries) {
+            //       _relations[field.relation.id] = entries;
+            //     },
+            //     onError: (err) {
+            //       _log.warning(".initState | relation '${field.relation}' refresh error: $err");
+            //     },
+            //   );
+            // });
+          }, 
+          onError: (err) {
+            _log.warning(".fetchRelations | relation '${field.relation}' - not found\n\terror: $err");
+          },
+        );
+      }
+    }
+  }
+
 }
