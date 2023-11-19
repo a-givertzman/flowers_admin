@@ -26,7 +26,7 @@ class Scheme<T extends SchemeEntry> {
   final SqlBuilder<T>? _insertSqlBuilder;
   final SqlBuilder<T>? _updateSqlBuilder;
   final Map<String, Scheme> _relations;
-  final List _values = [];
+  Sql _sql = Sql(sql: '');
   // final SchemeEntry Function(Map<String, dynamic> row) _schemeBuilder;
   ///
   /// A collection of the SchameEntry, 
@@ -72,23 +72,19 @@ class Scheme<T extends SchemeEntry> {
   ///
   List<T> get entries => _entries.values.toList();
   ///
-  ///
+  /// Fetchs data with existing sql
   Future<Result<List<SchemeEntry>>> refresh() {
-    return fetch();
+    return fetchWith(_sql);
   }
   ///
-  ///
-  Future<Result<List<T>>> fetch({List? values}) async {
+  /// Fetchs data with new sql built from [values] calling fetchSqlBuilder(values)
+  Future<Result<List<T>>> fetch(List values) async {
     await fetchRelations();
-    if (values != null) {
-      _values.clear();
-      _values.addAll(values);
-    }
-    final sql = _fetchSqlBuilder(_values);
-    return fetchWith(sql);
+    _sql = _fetchSqlBuilder(values);
+    return fetchWith(_sql);
   }
   ///
-  ///
+  /// Returns relation Result<Scheme> if exists else Result<Failure>
   Result<Scheme> relation(String id) {
     if (_relations.containsKey(id)) {
       return Result(data: _relations[id]);
@@ -111,7 +107,7 @@ class Scheme<T extends SchemeEntry> {
     );
   }
   ///
-  ///
+  /// Fetchs data with new [sql]
   Future<Result<List<T>>> fetchWith(Sql sql) {
     final request = ApiRequest(
       address: _address, 
@@ -189,7 +185,7 @@ class Scheme<T extends SchemeEntry> {
     );
   }
   ///
-  ///
+  /// Fetchs data of the relation schemes only (with existing sql)
   Future<void> fetchRelations() async {
     for (final field in _fields) {
       if (field.relation.isNotEmpty) {
