@@ -1,5 +1,5 @@
-import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/sql.dart';
+
+import 'package:dart_api_client/dart_api_client.dart';
 
 ///
 /// CUSTOMER

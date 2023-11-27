@@ -7,12 +7,7 @@ import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.
 import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_content.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/field.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/relation.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/schema.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/sql.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/table_widget.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,4 @@
-import 'package:flowers_admin/src/infrostructure/schamas/field.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/schema.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
+import 'package:dart_api_client/dart_api_client.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell_list.dart';
 import 'package:flutter/material.dart';
