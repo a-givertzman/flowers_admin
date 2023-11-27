@@ -1,6 +1,7 @@
 import 'package:dart_api_client/dart_api_client.dart';
 import 'package:flowers_admin/src/infrostructure/customer/customer_sqls.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_factory.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase.dart';
@@ -60,6 +61,8 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
                 scheme: Schema<EntryCustomer>(
+                  entryFromFactories: entryFromFactories.cast(),
+                  entryEmptyFactories: entryEmptyFactories.cast(),
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -92,6 +95,8 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
                 scheme: Schema<EntryTransaction>(
+                  entryFromFactories: entryFromFactories.cast(),
+                  entryEmptyFactories: entryEmptyFactories.cast(),
                   debug: true,
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
@@ -116,6 +121,8 @@ class _HomeBodyState extends State<HomeBody> {
                   insertSqlBuilder: insertSqlBuilderTransaction,
                   relations: {
                     'customer_id': Schema<EntryCustomer>(
+                      entryFromFactories: entryFromFactories.cast(),
+                      entryEmptyFactories: entryEmptyFactories.cast(),
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -136,6 +143,8 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
                 scheme: Schema<EntryProductCategory>(
+                  entryFromFactories: entryFromFactories.cast(),
+                  entryEmptyFactories: entryEmptyFactories.cast(),
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -157,6 +166,8 @@ class _HomeBodyState extends State<HomeBody> {
                   debug: true,
                   relations: {
                     'category_id': Schema<EntryProductCategory>(
+                      entryFromFactories: entryFromFactories.cast(),
+                      entryEmptyFactories: entryEmptyFactories.cast(),
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -177,6 +188,8 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
                 scheme: Schema<EntryProduct>(
+                  entryFromFactories: entryFromFactories.cast(),
+                  entryEmptyFactories: entryEmptyFactories.cast(),
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -203,6 +216,8 @@ class _HomeBodyState extends State<HomeBody> {
                   debug: true,
                   relations: {
                     'category_id': Schema<EntryProductCategory>(
+                      entryFromFactories: entryFromFactories.cast(),
+                      entryEmptyFactories: entryEmptyFactories.cast(),
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -223,6 +238,8 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
                 scheme: Schema<EntryPurchase>(
+                  entryFromFactories: entryFromFactories.cast(),
+                  entryEmptyFactories: entryEmptyFactories.cast(),
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -251,6 +268,8 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
                 scheme: Schema<EntryPurchaseContent>(
+                  entryFromFactories: entryFromFactories.cast(),
+                  entryEmptyFactories: entryEmptyFactories.cast(),
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -277,6 +296,8 @@ class _HomeBodyState extends State<HomeBody> {
                   debug: true,
                   relations: {
                     'purchase_id': Schema<EntryPurchase>(
+                      entryFromFactories: entryFromFactories.cast(),
+                      entryEmptyFactories: entryEmptyFactories.cast(),
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -290,6 +311,8 @@ class _HomeBodyState extends State<HomeBody> {
                       debug: true,
                     ),
                     'product_id': Schema<EntryProduct>(
+                      entryFromFactories: entryFromFactories.cast(),
+                      entryEmptyFactories: entryEmptyFactories.cast(),
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -310,6 +333,8 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
                 scheme: Schema<EntryCustomerOrder>(
+                  entryFromFactories: entryFromFactories.cast(),
+                  entryEmptyFactories: entryEmptyFactories.cast(),
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -338,6 +363,8 @@ class _HomeBodyState extends State<HomeBody> {
                   debug: true,
                   relations: {
                     'customer_id': Schema<EntryCustomer>(
+                      entryFromFactories: entryFromFactories.cast(),
+                      entryEmptyFactories: entryEmptyFactories.cast(),
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -351,6 +378,8 @@ class _HomeBodyState extends State<HomeBody> {
                       debug: true,
                     ),
                     'purchase_content_id': Schema<EntryPurchaseContent>(
+                      entryFromFactories: entryFromFactories.cast(),
+                      entryEmptyFactories: entryEmptyFactories.cast(),
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 

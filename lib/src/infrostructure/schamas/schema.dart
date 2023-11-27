@@ -1,5 +1,4 @@
 import 'package:dart_api_client/dart_api_client.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_factory.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/field.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/sql.dart';
@@ -26,6 +25,8 @@ class Schema<T extends SchemaEntry> {
   final SqlBuilder<T>? _insertSqlBuilder;
   final SqlBuilder<T>? _updateSqlBuilder;
   final Map<String, Schema> _relations;
+  final Map<T, Function> _entryFromFactories;
+  final Map<T, Function> _entryEmptyFactories;
   Sql _sql = Sql(sql: '');
   ///
   /// A collection of the SchameEntry, 
@@ -42,6 +43,8 @@ class Schema<T extends SchemaEntry> {
     SqlBuilder<T>? insertSqlBuilder,
     SqlBuilder<T>? updateSqlBuilder,
     Map<String, Schema> relations = const {},
+    required Map<T, Function> entryFromFactories,
+    required Map<T, Function> entryEmptyFactories,
   }) :
     _address = address,
     _authToken = authToken,
@@ -52,7 +55,9 @@ class Schema<T extends SchemaEntry> {
     _fetchSqlBuilder = fetchSqlBuilder,
     _insertSqlBuilder = insertSqlBuilder,
     _updateSqlBuilder = updateSqlBuilder,
-    _relations = relations {
+    _relations = relations, 
+    _entryFromFactories = entryFromFactories,
+    _entryEmptyFactories = entryEmptyFactories {
       _log = Log("$runtimeType");
     }
   ///
@@ -98,7 +103,7 @@ class Schema<T extends SchemaEntry> {
   }
   ///
   T _makeEntry(Map<String, dynamic> row) {
-    final constructor = entryFromFactories[T];
+    final constructor = _entryFromFactories[T];
     if (constructor != null) {
       return constructor(row);
     }
@@ -154,7 +159,7 @@ class Schema<T extends SchemaEntry> {
     if (entry != null) {
       entry_ = entry;
     } else {
-      final constructor = entryEmptyFactories[T];
+      final constructor = _entryEmptyFactories[T];
       if (constructor != null) {
         entry_ = constructor();
       } else {

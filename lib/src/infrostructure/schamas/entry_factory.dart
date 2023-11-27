@@ -5,6 +5,7 @@ import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.
 import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_content.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 
 
 final entryFromFactories = <Type, Function>{
