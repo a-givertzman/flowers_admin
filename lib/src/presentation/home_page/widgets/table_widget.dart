@@ -4,8 +4,9 @@ import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell_list.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 
 class TableWidget extends StatefulWidget {
   final Schema _scheme;
@@ -52,12 +53,12 @@ class _TableWidgetState extends State<TableWidget> {
           IconButton(
             onPressed: () {
               _scheme.insert().then((result) {
-                if (result.hasError) {
+                if (result is Err) {
                   showDialog(
                     context: context,
                     builder: (_) => AlertDialog(
                       title: const Text('Insert error'),
-                      content: Text('error: ${result.error}'),
+                      content: Text('error: $result'),
                     ),
                   );
                   return;
@@ -68,9 +69,9 @@ class _TableWidgetState extends State<TableWidget> {
             icon: const Icon(Icons.add),
           ),
         ]),
-        FutureBuilder<Result<List<SchemaEntry>>>(
+        FutureBuilder<Result<List<SchemaEntry>, Failure>>(
           future: _scheme.fetch([]),
-          builder: (BuildContext context, AsyncSnapshot<Result<List<SchemaEntry>>> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<Result<List<SchemaEntry>, Failure>> snapshot) {
             final textStile = Theme.of(context).textTheme.bodyMedium;
             if (snapshot.connectionState != ConnectionState.done) {
               return const Center(
@@ -80,27 +81,29 @@ class _TableWidgetState extends State<TableWidget> {
               _log.debug(".build | snapshot: $snapshot");
               final result = snapshot.data;
               if (result != null) {
-                if (result.hasData) {
-                  final entries = result.data;
-                  if (entries.isNotEmpty) {
-                    // final count = entries.length;
-                    final rows = entries;
-                    return Table(
-                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                      border: TableBorder.all(),
-                      columnWidths: { for (var i in [for (var i = 0; i <= 14; i++) i]) i : const IntrinsicColumnWidth() },
-                      // {
-                      //   0: IntrinsicColumnWidth(),
-                      //   1: FlexColumnWidth(),
-                      // },
-                      children: _buildRows(_scheme, rows),
-                    );
-                  } else {
-                    return Center(child: Text("No orders received", style: textStile,));
-                  }
-                } else {
-                  return Center(child: Text("Error: ${result.error}", style: textStile,));
-                }
+                return switch(result) {
+                  Ok(:final value) => () {
+                    final entries = value;
+                    if (entries.isNotEmpty) {
+                      final rows = entries;
+                      return Table(
+                        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                        border: TableBorder.all(),
+                        columnWidths: { for (var i in [for (var i = 0; i <= 14; i++) i]) i : const IntrinsicColumnWidth() },
+                        // {
+                        //   0: IntrinsicColumnWidth(),
+                        //   1: FlexColumnWidth(),
+                        // },
+                        children: _buildRows(_scheme, rows),
+                      );
+                    } else {
+                      return Center(child: Text("No orders received", style: textStile,));
+                    }
+                  }(),
+                  Err(:final error) => () {
+                    return Center(child: Text("Error: $error", style: textStile,));
+                  }(),
+                };
               }
             }
             return Center(child: Text("No orders received", style: textStile,));
@@ -152,12 +155,10 @@ class _TableWidgetState extends State<TableWidget> {
           onComplete: (value) => _updateEntry(entry, field.key, value),
         );
       } else {
-        final List<SchemaEntry> relEntries = _scheme.relation(field.relation.id).fold(
-          onData: (relSchame) {
-            return relSchame.entries;
-          }, 
-          onError: (_) => [],
-        );
+        final List<SchemaEntry> relEntries = switch (_scheme.relation(field.relation.id)) {
+          Ok(:final value) => value.entries,
+          Err() => [],
+        };
         final relation = TCellEntry(entries: relEntries, field: field.relation.field);
         _log.debug("._buildRow | relation '${field.relation.id}': $relation");
         return TCellList(
@@ -177,12 +178,12 @@ class _TableWidgetState extends State<TableWidget> {
     entry.update(key, value);
     if (entry.isChanged) {
       _scheme.update(entry).then((result) {
-        if (result.hasError) {
+        if (result is Err) {
           showDialog(
             context: context,
             builder: (_) => AlertDialog(
               title: const Text('Update error'),
-              content: Text('error: ${result.error}'),
+              content: Text('error: $result'),
             ),
           );          
         }
