@@ -164,7 +164,7 @@ packages:
   ext_rw:
     dependency: "direct main"
     description:
-      path: "../dart_api_client"
+      path: "../ext_rw"
       relative: true
     source: path
     version: "0.0.1"
