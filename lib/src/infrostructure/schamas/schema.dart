@@ -1,19 +1,19 @@
 import 'package:dart_api_client/dart_api_client.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_factory.dart';
-import 'package:flowers_admin/src/infrostructure/schames/field.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
-import 'package:flowers_admin/src/infrostructure/schames/sql.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_factory.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/field.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/sql.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 
-typedef SqlBuilder<T extends SchemeEntry> = Sql Function(Sql sql, T entry);
+typedef SqlBuilder<T extends SchemaEntry> = Sql Function(Sql sql, T entry);
 
 
 ///
 /// A collection of the SchameEntry, 
 /// abstruction on the SQL table rows
-class Scheme<T extends SchemeEntry> {
+class Schem<T extends SchemaEntry> {
   late final Log _log;
   final ApiAddress _address;
   final String _authToken;
@@ -25,13 +25,13 @@ class Scheme<T extends SchemeEntry> {
   final Sql Function(List<dynamic>? values) _fetchSqlBuilder;
   final SqlBuilder<T>? _insertSqlBuilder;
   final SqlBuilder<T>? _updateSqlBuilder;
-  final Map<String, Scheme> _relations;
+  final Map<String, Schem> _relations;
   Sql _sql = Sql(sql: '');
   ///
   /// A collection of the SchameEntry, 
   /// abstruction on the SQL table rows
   /// - [keys] - list of table field names
-  Scheme({
+  Schem({
     required ApiAddress address,
     required String authToken,
     required String database,
@@ -41,7 +41,7 @@ class Scheme<T extends SchemeEntry> {
     required Sql Function(List<dynamic>? values) fetchSqlBuilder,
     SqlBuilder<T>? insertSqlBuilder,
     SqlBuilder<T>? updateSqlBuilder,
-    Map<String, Scheme> relations = const {},
+    Map<String, Schem> relations = const {},
   }) :
     _address = address,
     _authToken = authToken,
@@ -70,7 +70,7 @@ class Scheme<T extends SchemeEntry> {
   List<T> get entries => _entries.values.toList();
   ///
   /// Fetchs data with existing sql
-  Future<Result<List<SchemeEntry>>> refresh() {
+  Future<Result<List<SchemaEntry>>> refresh() {
     if (_sql.build().isEmpty) {
       _sql = _fetchSqlBuilder([]);
   }
@@ -85,7 +85,7 @@ class Scheme<T extends SchemeEntry> {
   }
   ///
   /// Returns relation Result<Scheme> if exists else Result<Failure>
-  Result<Scheme> relation(String id) {
+  Result<Schem> relation(String id) {
     if (_relations.containsKey(id)) {
       return Result(data: _relations[id]);
     } else {

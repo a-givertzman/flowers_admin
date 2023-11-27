@@ -1,24 +1,24 @@
 import 'package:flowers_admin/src/core/error/failure.dart';
-import 'package:flowers_admin/src/infrostructure/schames/field_value.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/field_value.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 import 'package:uuid/uuid.dart';
 
 ///
 /// Single row of table "Customer"
-class EntryPurchaseContent implements SchemeEntry {
+class EntryProductCategory implements SchemaEntry {
   final _id = const Uuid().v1();  // v1 time-based id
   bool _changed = false;
   late final Map<String, FieldValue> _map;
   ///
   /// Single row of table "Customer"
   /// - [keys] - list of field names
-  EntryPurchaseContent({
+  EntryProductCategory({
     required Map<String, FieldValue> map,
   }) :
     _map = map;
   //
   //
-  EntryPurchaseContent.empty();
+  EntryProductCategory.empty();
   //
   //
   @override
@@ -42,7 +42,7 @@ class EntryPurchaseContent implements SchemeEntry {
   }
   //
   @override
-  EntryPurchaseContent.from(Map<String, dynamic> row) {
+  EntryProductCategory.from(Map<String, dynamic> row) {
     _map =row.map((key, value) {
       return MapEntry(key, FieldValue(value));
     });
@@ -62,4 +62,5 @@ class EntryPurchaseContent implements SchemeEntry {
       _changed = field.update(value);
     }
   }
+
 }

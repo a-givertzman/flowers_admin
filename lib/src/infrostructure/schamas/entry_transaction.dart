@@ -1,21 +1,38 @@
 import 'package:flowers_admin/src/core/error/failure.dart';
-import 'package:flowers_admin/src/infrostructure/schames/field_value.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/field_value.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 import 'package:uuid/uuid.dart';
 
 ///
 /// Single row of table "Customer"
-class EntryTemplate implements SchemeEntry {
+class EntryTransaction implements SchemaEntry {
   final _id = const Uuid().v1();  // v1 time-based id
   bool _changed = false;
   late final Map<String, FieldValue> _map;
   ///
   /// Single row of table "Customer"
   /// - [keys] - list of field names
-  EntryTemplate({
+  EntryTransaction({
     required Map<String, FieldValue> map,
   }) :
     _map = map;
+  //
+  //
+  EntryTransaction.empty() {
+    _map = {
+      'id': FieldValue(null),
+      'timestamp': FieldValue( DateTime.now().toIso8601String() ),
+      'account_owner': FieldValue(''),
+      'value': FieldValue('0'),
+      'description': FieldValue(''),
+      'order_id': FieldValue(null),
+      'customer_id': FieldValue('0'),
+      'customer_account': FieldValue('0'),
+      'created': FieldValue(null),
+      'updated': FieldValue(null),
+      'deleted': FieldValue(null),
+    };
+  }
   //
   //
   @override
@@ -36,13 +53,12 @@ class EntryTemplate implements SchemeEntry {
       message: "$runtimeType.value | key '$key' - not found", 
       stackTrace: StackTrace.current,
     );
-  }
-  //
+  }  //
   //
   @override
-  EntryTemplate.from(Map<String, dynamic> row) {
+  EntryTransaction.from(Map<String, dynamic> row) {
     _map =row.map((key, value) {
-      return MapEntry(key, value);
+      return MapEntry(key, FieldValue(value));
     });
   }
   //

@@ -1,17 +1,17 @@
 import 'package:dart_api_client/dart_api_client.dart';
 import 'package:flowers_admin/src/infrostructure/customer/customer_sqls.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_customer_order.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_product.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_product_category.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_purchase.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_purchase_content.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_transaction.dart';
-import 'package:flowers_admin/src/infrostructure/schames/field.dart';
-import 'package:flowers_admin/src/infrostructure/schames/relation.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_customer.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
-import 'package:flowers_admin/src/infrostructure/schames/sql.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_content.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/field.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/relation.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/sql.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/table_widget.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +59,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Scheme<EntryCustomer>(
+                scheme: Schem<EntryCustomer>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -91,7 +91,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Scheme<EntryTransaction>(
+                scheme: Schem<EntryTransaction>(
                   debug: true,
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
@@ -115,7 +115,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilderTransaction,
                   insertSqlBuilder: insertSqlBuilderTransaction,
                   relations: {
-                    'customer_id': Scheme<EntryCustomer>(
+                    'customer_id': Schem<EntryCustomer>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -135,7 +135,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Scheme<EntryProductCategory>(
+                scheme: Schem<EntryProductCategory>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -156,7 +156,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilder_ProductCategory,
                   debug: true,
                   relations: {
-                    'category_id': Scheme<EntryProductCategory>(
+                    'category_id': Schem<EntryProductCategory>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -176,7 +176,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Scheme<EntryProduct>(
+                scheme: Schem<EntryProduct>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -202,7 +202,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilder_Product,
                   debug: true,
                   relations: {
-                    'category_id': Scheme<EntryProductCategory>(
+                    'category_id': Schem<EntryProductCategory>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -222,7 +222,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Scheme<EntryPurchase>(
+                scheme: Schem<EntryPurchase>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -250,7 +250,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Scheme<EntryPurchaseContent>(
+                scheme: Schem<EntryPurchaseContent>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -276,7 +276,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilder_PurchaseContent,
                   debug: true,
                   relations: {
-                    'purchase_id': Scheme<EntryPurchase>(
+                    'purchase_id': Schem<EntryPurchase>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -289,7 +289,7 @@ class _HomeBodyState extends State<HomeBody> {
                       },
                       debug: true,
                     ),
-                    'product_id': Scheme<EntryProduct>(
+                    'product_id': Schem<EntryProduct>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -309,7 +309,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Scheme<EntryCustomerOrder>(
+                scheme: Schem<EntryCustomerOrder>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -337,7 +337,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilder_CustomerOrder,
                   debug: true,
                   relations: {
-                    'customer_id': Scheme<EntryCustomer>(
+                    'customer_id': Schem<EntryCustomer>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -350,7 +350,7 @@ class _HomeBodyState extends State<HomeBody> {
                       },
                       debug: true,
                     ),
-                    'purchase_content_id': Scheme<EntryPurchaseContent>(
+                    'purchase_content_id': Schem<EntryPurchaseContent>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -378,7 +378,7 @@ class _HomeBodyState extends State<HomeBody> {
 }
 ///
 ///
-Sql updateSqlBuilder_ProductCategory(Sql sql, SchemeEntry entry) {
+Sql updateSqlBuilder_ProductCategory(Sql sql, SchemaEntry entry) {
   return Sql(sql: """UPDATE product_category SET (
     id,
     category_id,
@@ -405,7 +405,7 @@ Sql updateSqlBuilder_ProductCategory(Sql sql, SchemeEntry entry) {
 }
 ///
 ///
-Sql updateSqlBuilder_Product(Sql sql, SchemeEntry entry) {
+Sql updateSqlBuilder_Product(Sql sql, SchemaEntry entry) {
   return Sql(sql: """UPDATE product SET (
     id,
     product_category_id,
@@ -440,7 +440,7 @@ Sql updateSqlBuilder_Product(Sql sql, SchemeEntry entry) {
 }
 ///
 ///
-Sql updateSqlBuilder_Purchase(Sql sql, SchemeEntry entry) {
+Sql updateSqlBuilder_Purchase(Sql sql, SchemaEntry entry) {
   return Sql(sql: """UPDATE purchase SET (
     id,
     name,
@@ -471,7 +471,7 @@ Sql updateSqlBuilder_Purchase(Sql sql, SchemeEntry entry) {
 }
 ///
 ///
-Sql updateSqlBuilder_PurchaseContent(Sql sql, SchemeEntry entry) {
+Sql updateSqlBuilder_PurchaseContent(Sql sql, SchemaEntry entry) {
   return Sql(sql: """UPDATE purchase_content SET (
     id,
     purchase_id,
@@ -508,7 +508,7 @@ Sql updateSqlBuilder_PurchaseContent(Sql sql, SchemeEntry entry) {
 }
 ///
 ///
-Sql updateSqlBuilder_CustomerOrder(Sql sql, SchemeEntry entry) {
+Sql updateSqlBuilder_CustomerOrder(Sql sql, SchemaEntry entry) {
   return Sql(sql: """UPDATE customer_order SET (
     id,
     customer_id,
@@ -535,7 +535,7 @@ Sql updateSqlBuilder_CustomerOrder(Sql sql, SchemeEntry entry) {
 }
 ///
 ///
-Sql updateSqlBuilder(Sql sql, SchemeEntry entry) {
+Sql updateSqlBuilder(Sql sql, SchemaEntry entry) {
   return Sql(sql: """UPDATE _____ SET (
   ) = (
     '${entry.value('')}'

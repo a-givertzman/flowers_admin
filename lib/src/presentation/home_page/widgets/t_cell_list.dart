@@ -1,6 +1,6 @@
 
 import 'package:flowers_admin/src/core/log/log.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 import 'package:flutter/material.dart';
 
 ///
@@ -9,7 +9,7 @@ class TCellEntry {
   late final Map<dynamic, String> _values;
   TCellEntry({
     required String field,
-    required List<SchemeEntry> entries,
+    required List<SchemaEntry> entries,
   }) {
     _values = entries.asMap().map((_, entry) {
       return MapEntry(entry.value('id').value, '${entry.value(field).value}');

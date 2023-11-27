@@ -1,24 +1,24 @@
 import 'package:flowers_admin/src/core/error/failure.dart';
-import 'package:flowers_admin/src/infrostructure/schames/field_value.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/field_value.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 import 'package:uuid/uuid.dart';
 
 ///
 /// Single row of table "Customer"
-class EntryProductCategory implements SchemeEntry {
+class EntryProduct implements SchemaEntry {
   final _id = const Uuid().v1();  // v1 time-based id
   bool _changed = false;
   late final Map<String, FieldValue> _map;
   ///
   /// Single row of table "Customer"
   /// - [keys] - list of field names
-  EntryProductCategory({
+  EntryProduct({
     required Map<String, FieldValue> map,
   }) :
     _map = map;
   //
   //
-  EntryProductCategory.empty();
+  EntryProduct.empty();
   //
   //
   @override
@@ -42,7 +42,7 @@ class EntryProductCategory implements SchemeEntry {
   }
   //
   @override
-  EntryProductCategory.from(Map<String, dynamic> row) {
+  EntryProduct.from(Map<String, dynamic> row) {
     _map =row.map((key, value) {
       return MapEntry(key, FieldValue(value));
     });

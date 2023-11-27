@@ -1,6 +1,6 @@
-import 'package:flowers_admin/src/infrostructure/schames/field.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/field.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell_list.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +8,10 @@ import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 
 class TableWidget extends StatefulWidget {
-  final Scheme _scheme;
+  final Schem _scheme;
   const TableWidget({
     super.key,
-    required Scheme scheme,
+    required Schem scheme,
   }) :
     _scheme = scheme;
   ///
@@ -26,12 +26,12 @@ class TableWidget extends StatefulWidget {
 ///
 class _TableWidgetState extends State<TableWidget> {
   final _log = Log("$_TableWidgetState");
-  final Scheme _scheme;
+  final Schem _scheme;
   // final Map<String, List<SchemeEntry>> _relations = {};
   ///
   ///
   _TableWidgetState({
-    required Scheme scheme,
+    required Schem scheme,
   }) :
     _scheme = scheme;
   ///
@@ -68,9 +68,9 @@ class _TableWidgetState extends State<TableWidget> {
             icon: const Icon(Icons.add),
           ),
         ]),
-        FutureBuilder<Result<List<SchemeEntry>>>(
+        FutureBuilder<Result<List<SchemaEntry>>>(
           future: _scheme.fetch([]),
-          builder: (BuildContext context, AsyncSnapshot<Result<List<SchemeEntry>>> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<Result<List<SchemaEntry>>> snapshot) {
             final textStile = Theme.of(context).textTheme.bodyMedium;
             if (snapshot.connectionState != ConnectionState.done) {
               return const Center(
@@ -111,7 +111,7 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<TableRow> _buildRows(Scheme<SchemeEntry> scheme, List<SchemeEntry> entries) {
+  List<TableRow> _buildRows(Schem<SchemaEntry> scheme, List<SchemaEntry> entries) {
     final textStile = Theme.of(context).textTheme.bodyMedium;
     final rows = [TableRow(children: _buildHead(scheme.fields, textStile))];
     rows.addAll(
@@ -139,7 +139,7 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<Widget> _buildRow(List<Field> fields, SchemeEntry entry, textStyle) {
+  List<Widget> _buildRow(List<Field> fields, SchemaEntry entry, textStyle) {
     final cells = fields
     .where((field) => !field.hidden)
     .map((field) {
@@ -152,7 +152,7 @@ class _TableWidgetState extends State<TableWidget> {
           onComplete: (value) => _updateEntry(entry, field.key, value),
         );
       } else {
-        final List<SchemeEntry> relEntries = _scheme.relation(field.relation.id).fold(
+        final List<SchemaEntry> relEntries = _scheme.relation(field.relation.id).fold(
           onData: (relSchame) {
             return relSchame.entries;
           }, 
@@ -173,7 +173,7 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  _updateEntry(SchemeEntry entry, String key, String value) {
+  _updateEntry(SchemaEntry entry, String key, String value) {
     entry.update(key, value);
     if (entry.isChanged) {
       _scheme.update(entry).then((result) {

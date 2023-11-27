@@ -1,9 +1,9 @@
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
-import 'package:flowers_admin/src/infrostructure/schames/sql.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/sql.dart';
 
 ///
 /// CUSTOMER
-Sql updateSqlBuilderCustomer(Sql sql, SchemeEntry entry) {
+Sql updateSqlBuilderCustomer(Sql sql, SchemaEntry entry) {
   return Sql(sql: """UPDATE customer SET (
     id,
     role,
@@ -40,7 +40,7 @@ Sql updateSqlBuilderCustomer(Sql sql, SchemeEntry entry) {
 }
 ///
 ///
-Sql insertSqlBuilderCustomer(Sql sql, SchemeEntry entry) {
+Sql insertSqlBuilderCustomer(Sql sql, SchemaEntry entry) {
   return Sql(sql: """insert into customer (
     role,
     email,

@@ -1,9 +1,9 @@
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
-import 'package:flowers_admin/src/infrostructure/schames/sql.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/sql.dart';
 
 ///
 ///
-Sql updateSqlBuilderTransaction(Sql sql, SchemeEntry entry) {
+Sql updateSqlBuilderTransaction(Sql sql, SchemaEntry entry) {
   return Sql(sql: """UPDATE transaction SET (
     id,
     timestamp,
@@ -34,7 +34,7 @@ Sql updateSqlBuilderTransaction(Sql sql, SchemeEntry entry) {
 }
 ///
 ///
-Sql insertSqlBuilderTransaction(Sql sql, SchemeEntry entry) {
+Sql insertSqlBuilderTransaction(Sql sql, SchemaEntry entry) {
   return Sql(sql: """insert into transaction (
     timestamp,
     account_owner,

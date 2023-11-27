@@ -1,41 +1,24 @@
 import 'package:flowers_admin/src/core/error/failure.dart';
-import 'package:flowers_admin/src/infrostructure/schames/field_value.dart';
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/field_value.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 import 'package:uuid/uuid.dart';
 
 ///
 /// Single row of table "Customer"
-class EntryCustomer implements SchemeEntry {
+class EntryPurchase implements SchemaEntry {
   final _id = const Uuid().v1();  // v1 time-based id
   bool _changed = false;
   late final Map<String, FieldValue> _map;
   ///
   /// Single row of table "Customer"
   /// - [keys] - list of field names
-  EntryCustomer({
+  EntryPurchase({
     required Map<String, FieldValue> map,
   }) :
     _map = map;
   //
   //
-  EntryCustomer.empty() {
-    _map = {
-      'id': FieldValue(null),
-      'role': FieldValue('customer'),
-      'email': FieldValue('@'),
-      'phone': FieldValue('+7'),
-      'name': FieldValue(''),
-      'location': FieldValue(''),
-      'login': FieldValue(''),
-      'pass': FieldValue(''),
-      'account': FieldValue('0'),
-      'last_act': FieldValue(null),
-      'blocked': FieldValue(null),
-      'created': FieldValue(null),
-      'updated': FieldValue(null),
-      'deleted': FieldValue(null),
-    };
-  }
+  EntryPurchase.empty();
   //
   //
   @override
@@ -58,8 +41,9 @@ class EntryCustomer implements SchemeEntry {
     );
   }
   //
+  //
   @override
-  EntryCustomer.from(Map<String, dynamic> row) {
+  EntryPurchase.from(Map<String, dynamic> row) {
     _map =row.map((key, value) {
       return MapEntry(key, FieldValue(value));
     });

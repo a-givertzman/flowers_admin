@@ -1,10 +1,10 @@
-import 'package:flowers_admin/src/infrostructure/schames/entry_customer.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_customer_order.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_product.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_product_category.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_purchase.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_purchase_content.dart';
-import 'package:flowers_admin/src/infrostructure/schames/entry_transaction.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_content.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 
 
 final entryFromFactories = <Type, Function>{

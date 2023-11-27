@@ -1,4 +1,4 @@
-import 'package:flowers_admin/src/infrostructure/schames/relation.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/relation.dart';
 
 ///
 /// Replresentation settings for table column

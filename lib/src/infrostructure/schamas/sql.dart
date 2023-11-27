@@ -1,4 +1,4 @@
-import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 
 ///
 /// - hosds simple SQL
@@ -6,17 +6,17 @@ import 'package:flowers_admin/src/infrostructure/schames/scheme_entry.dart';
 class Sql {
   ///
   final String _sql;
-  List<SchemeEntry> _values;
+  List<SchemaEntry> _values;
   ///
   Sql({
     required String sql,
-    List<SchemeEntry> values = const [],
+    List<SchemaEntry> values = const [],
   }) :
     _sql = sql,
     _values = values;
   ///
   /// adding values to the sql
-  void addValues(SchemeEntry entry) {
+  void addValues(SchemaEntry entry) {
     _values.add(entry);
   }
   /// 
