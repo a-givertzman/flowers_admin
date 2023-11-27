@@ -22,7 +22,7 @@ dependencies:
   dart_api_client:
     path: ../dart_api_client
     # git:
-    #   url: https://github.com/a-givertzman/dart_api_client
+    #   url: https://github.com/a-givertzman/dart_ext_rw
     #   ref: master
   web_socket_channel: ^2.4.0
   uuid: ^3.0.7
