@@ -5,7 +5,7 @@ import 'package:flowers_admin/src/infrostructure/schamas/schema_entry.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/sql.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 
 typedef SqlBuilder<T extends SchemaEntry> = Sql Function(Sql sql, T entry);
 
@@ -13,7 +13,7 @@ typedef SqlBuilder<T extends SchemaEntry> = Sql Function(Sql sql, T entry);
 ///
 /// A collection of the SchameEntry, 
 /// abstruction on the SQL table rows
-class Schem<T extends SchemaEntry> {
+class Schema<T extends SchemaEntry> {
   late final Log _log;
   final ApiAddress _address;
   final String _authToken;
@@ -25,13 +25,13 @@ class Schem<T extends SchemaEntry> {
   final Sql Function(List<dynamic>? values) _fetchSqlBuilder;
   final SqlBuilder<T>? _insertSqlBuilder;
   final SqlBuilder<T>? _updateSqlBuilder;
-  final Map<String, Schem> _relations;
+  final Map<String, Schema> _relations;
   Sql _sql = Sql(sql: '');
   ///
   /// A collection of the SchameEntry, 
   /// abstruction on the SQL table rows
   /// - [keys] - list of table field names
-  Schem({
+  Schema({
     required ApiAddress address,
     required String authToken,
     required String database,
@@ -41,7 +41,7 @@ class Schem<T extends SchemaEntry> {
     required Sql Function(List<dynamic>? values) fetchSqlBuilder,
     SqlBuilder<T>? insertSqlBuilder,
     SqlBuilder<T>? updateSqlBuilder,
-    Map<String, Schem> relations = const {},
+    Map<String, Schema> relations = const {},
   }) :
     _address = address,
     _authToken = authToken,
@@ -70,7 +70,7 @@ class Schem<T extends SchemaEntry> {
   List<T> get entries => _entries.values.toList();
   ///
   /// Fetchs data with existing sql
-  Future<Result<List<SchemaEntry>>> refresh() {
+  Future<Result<List<SchemaEntry>, Failure>> refresh() {
     if (_sql.build().isEmpty) {
       _sql = _fetchSqlBuilder([]);
   }
@@ -78,18 +78,19 @@ class Schem<T extends SchemaEntry> {
   }
   ///
   /// Fetchs data with new sql built from [values] calling fetchSqlBuilder(values)
-  Future<Result<List<T>>> fetch(List values) async {
+  Future<Result<List<T>, Failure>> fetch(List values) async {
     await fetchRelations();
     _sql = _fetchSqlBuilder(values);
     return fetchWith(_sql);
   }
   ///
   /// Returns relation Result<Scheme> if exists else Result<Failure>
-  Result<Schem> relation(String id) {
-    if (_relations.containsKey(id)) {
-      return Result(data: _relations[id]);
+  Result<Schema, Failure> relation(String id) {
+    final rel = _relations[id];
+    if (rel != null) {
+      return Ok(rel);
     } else {
-      return Result(error: Failure(
+      return Err(Failure(
         message: "$runtimeType.relation | id: $id - not found", 
         stackTrace: StackTrace.current,
       ));
@@ -108,7 +109,7 @@ class Schem<T extends SchemaEntry> {
   }
   ///
   /// Fetchs data with new [sql]
-  Future<Result<List<T>>> fetchWith(Sql sql) {
+  Future<Result<List<T>, Failure>> fetchWith(Sql sql) {
     final request = ApiRequest(
       address: _address, 
       query: SqlQuery(
@@ -123,7 +124,7 @@ class Schem<T extends SchemaEntry> {
       return result.fold(
         onData: (replay) {
           if (replay.hasError) {
-            return Result(error: Failure(message: replay.error.message, stackTrace: StackTrace.current));
+            return Err(Failure(message: replay.error.message, stackTrace: StackTrace.current));
           } else {
             _entries.clear();
             final rows = replay.data;
@@ -138,17 +139,17 @@ class Schem<T extends SchemaEntry> {
               _entries[entry.key] = entry;
             }
           }
-          return Result(data: _entries.values.toList());
+          return Ok(_entries.values.toList());
         }, 
         onError: (err) {
-          return Result(error: err);
+          return Err(err);
         },
       );
     });
   }
   ///
   /// Inserts new entry into the table scheme
-  Future<Result<void>> insert({T? entry}) {
+  Future<Result<void, Failure>> insert({T? entry}) {
     T entry_;
     if (entry != null) {
       entry_ = entry;
@@ -168,7 +169,7 @@ class Schem<T extends SchemaEntry> {
       final initialSql = Sql(sql: '');
       final sql = builder(initialSql, entry_);
       return fetchWith(sql).then((result) {
-        if (!result.hasError) {
+        if (result is Ok) {
           _entries[entry_.key] = entry_;
         }
         return result;
@@ -181,13 +182,13 @@ class Schem<T extends SchemaEntry> {
   }
   ///
   /// Updates entry of the table scheme
-  Future<Result<void>> update(T entry) {
+  Future<Result<void, Failure>> update(T entry) {
     final builder = _updateSqlBuilder;
     if (builder != null) {
       final initialSql = Sql(sql: '');
       final sql = builder(initialSql, entry);
       return fetchWith(sql).then((result) {
-        if (!result.hasError) {
+        if (result is Ok) {
           _entries[entry.key] = entry;
         }
         return result;
@@ -203,14 +204,12 @@ class Schem<T extends SchemaEntry> {
   Future<void> fetchRelations() async {
     for (final field in _fields) {
       if (field.relation.isNotEmpty) {
-        await relation(field.relation.id).fold(
-          onData: (scheme) async {
-            await scheme.refresh();
-          }, 
-          onError: (err) {
-            _log.warning(".fetchRelations | relation '${field.relation}' - not found\n\terror: $err");
-          },
-        );
+        switch (relation(field.relation.id)) {
+          case Ok(:final value):
+            await value.refresh();
+          case Err(:final error):
+            _log.warning(".fetchRelations | relation '${field.relation}' - not found\n\terror: $error");
+        }
       }
     }
   }

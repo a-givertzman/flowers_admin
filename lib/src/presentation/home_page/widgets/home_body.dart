@@ -59,7 +59,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schem<EntryCustomer>(
+                scheme: Schema<EntryCustomer>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -91,7 +91,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schem<EntryTransaction>(
+                scheme: Schema<EntryTransaction>(
                   debug: true,
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
@@ -115,7 +115,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilderTransaction,
                   insertSqlBuilder: insertSqlBuilderTransaction,
                   relations: {
-                    'customer_id': Schem<EntryCustomer>(
+                    'customer_id': Schema<EntryCustomer>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -135,7 +135,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schem<EntryProductCategory>(
+                scheme: Schema<EntryProductCategory>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -156,7 +156,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilder_ProductCategory,
                   debug: true,
                   relations: {
-                    'category_id': Schem<EntryProductCategory>(
+                    'category_id': Schema<EntryProductCategory>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -176,7 +176,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schem<EntryProduct>(
+                scheme: Schema<EntryProduct>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -202,7 +202,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilder_Product,
                   debug: true,
                   relations: {
-                    'category_id': Schem<EntryProductCategory>(
+                    'category_id': Schema<EntryProductCategory>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -222,7 +222,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schem<EntryPurchase>(
+                scheme: Schema<EntryPurchase>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -250,7 +250,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schem<EntryPurchaseContent>(
+                scheme: Schema<EntryPurchaseContent>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -276,7 +276,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilder_PurchaseContent,
                   debug: true,
                   relations: {
-                    'purchase_id': Schem<EntryPurchase>(
+                    'purchase_id': Schema<EntryPurchase>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -289,7 +289,7 @@ class _HomeBodyState extends State<HomeBody> {
                       },
                       debug: true,
                     ),
-                    'product_id': Schem<EntryProduct>(
+                    'product_id': Schema<EntryProduct>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -309,7 +309,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schem<EntryCustomerOrder>(
+                scheme: Schema<EntryCustomerOrder>(
                   address: const ApiAddress(host: '127.0.0.1', port: 8080),
                   authToken: _authToken, 
                   database: _database, 
@@ -337,7 +337,7 @@ class _HomeBodyState extends State<HomeBody> {
                   updateSqlBuilder: updateSqlBuilder_CustomerOrder,
                   debug: true,
                   relations: {
-                    'customer_id': Schem<EntryCustomer>(
+                    'customer_id': Schema<EntryCustomer>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 
@@ -350,7 +350,7 @@ class _HomeBodyState extends State<HomeBody> {
                       },
                       debug: true,
                     ),
-                    'purchase_content_id': Schem<EntryPurchaseContent>(
+                    'purchase_content_id': Schema<EntryPurchaseContent>(
                       address: const ApiAddress(host: '127.0.0.1', port: 8080),
                       authToken: _authToken, 
                       database: _database, 

@@ -8,10 +8,10 @@ import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 
 class TableWidget extends StatefulWidget {
-  final Schem _scheme;
+  final Schema _scheme;
   const TableWidget({
     super.key,
-    required Schem scheme,
+    required Schema scheme,
   }) :
     _scheme = scheme;
   ///
@@ -26,12 +26,12 @@ class TableWidget extends StatefulWidget {
 ///
 class _TableWidgetState extends State<TableWidget> {
   final _log = Log("$_TableWidgetState");
-  final Schem _scheme;
+  final Schema _scheme;
   // final Map<String, List<SchemeEntry>> _relations = {};
   ///
   ///
   _TableWidgetState({
-    required Schem scheme,
+    required Schema scheme,
   }) :
     _scheme = scheme;
   ///
@@ -111,7 +111,7 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<TableRow> _buildRows(Schem<SchemaEntry> scheme, List<SchemaEntry> entries) {
+  List<TableRow> _buildRows(Schema<SchemaEntry> scheme, List<SchemaEntry> entries) {
     final textStile = Theme.of(context).textTheme.bodyMedium;
     final rows = [TableRow(children: _buildHead(scheme.fields, textStile))];
     rows.addAll(
