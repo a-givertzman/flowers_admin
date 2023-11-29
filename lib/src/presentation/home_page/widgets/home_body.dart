@@ -13,6 +13,7 @@ import 'package:flowers_admin/src/presentation/home_page/widgets/table_widget.da
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 
+
 class HomeBody extends StatefulWidget {
   const HomeBody({super.key});
 
@@ -24,6 +25,7 @@ class _HomeBodyState extends State<HomeBody> {
   final _log = Log("$_HomeBodyState._");
   final _authToken = 'some auth token';
   final _database = 'flowers_app_server';
+  final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   final _paddingH = 8.0;
   final _paddingV = 8.0;
   ///
@@ -55,12 +57,27 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryCustomer>(
-                  entryFromFactories: entryFromFactories.cast(),
-                  entryEmptyFactories: entryEmptyFactories.cast(),
-                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: _authToken, 
-                  database: _database, 
+                scheme: Schema<EntryCustomer, void>(
+                  read: SqlRead<EntryCustomer, void>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    sqlBuilder: (values) {
+                      return Sql(sql: 'select * from customer order by id;');
+                    },
+                    entryFromFactories: entryFromFactories.cast(),
+                    debug: true,
+                  ),
+                  write: SqlWrite<EntryCustomer>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    updateSqlBuilder: updateSqlBuilderCustomer,
+                    insertSqlBuilder: insertSqlBuilderCustomer,
+                    entryFromFactories: entryFromFactories.cast(), 
+                    entryEmptyFactories: entryEmptyFactories.cast(),
+                    debug: true,
+                  ),
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'role'),
@@ -77,25 +94,33 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: true, edit: true, key: 'updated'),
                     const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
-                  fetchSqlBuilder: (values) {
-                    return Sql(sql: 'select * from customer order by id;');
-                  },
-                  updateSqlBuilder: updateSqlBuilderCustomer,
-                  insertSqlBuilder: insertSqlBuilderCustomer,
-                  debug: true,
                 ),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryTransaction>(
-                  entryFromFactories: entryFromFactories.cast(),
-                  entryEmptyFactories: entryEmptyFactories.cast(),
-                  debug: true,
-                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: _authToken, 
-                  database: _database, 
+                scheme: Schema<EntryTransaction, void>(
+                  read: SqlRead<EntryTransaction, void>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    sqlBuilder: (params) {
+                      return Sql(sql: 'select * from transaction order by id;');
+                    },
+                    entryFromFactories: entryFromFactories.cast(),
+                    debug: true,
+                  ),
+                  write: SqlWrite<EntryTransaction>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    entryFromFactories: entryFromFactories.cast(), 
+                    entryEmptyFactories: entryEmptyFactories.cast(),
+                    debug: true,
+                    updateSqlBuilder: updateSqlBuilderTransaction,
+                    insertSqlBuilder: insertSqlBuilderTransaction,
+                  ),
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'timestamp'),
@@ -109,26 +134,22 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: true, edit: true, key: 'updated'),
                     const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
-                  fetchSqlBuilder: (values) {
-                    return Sql(sql: 'select * from transaction order by id;');
-                  },
-                  updateSqlBuilder: updateSqlBuilderTransaction,
-                  insertSqlBuilder: insertSqlBuilderTransaction,
                   relations: {
-                    'customer_id': Schema<EntryCustomer>(
-                      entryFromFactories: entryFromFactories.cast(),
-                      entryEmptyFactories: entryEmptyFactories.cast(),
-                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                      authToken: _authToken, 
-                      database: _database, 
+                    'customer_id': Schema<EntryCustomer, void>(
+                      read: SqlRead<EntryCustomer, void>(
+                        address: _apiAddress, 
+                        authToken: _authToken, 
+                        database: _database, 
+                        sqlBuilder: (values) {
+                          return Sql(sql: 'select id, name from customer order by id;');
+                        },
+                        entryFromFactories: entryFromFactories.cast(),
+                        debug: true,
+                      ),
                       fields: [
                         const Field(key: 'id'),
                         const Field(key: 'name'),
                       ],
-                      fetchSqlBuilder: (values) {
-                        return Sql(sql: 'select id, name from customer order by id;');
-                      },
-                      debug: true,
                     ),
                   },
                 ),
@@ -137,12 +158,27 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryProductCategory>(
-                  entryFromFactories: entryFromFactories.cast(),
-                  entryEmptyFactories: entryEmptyFactories.cast(),
-                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: _authToken, 
-                  database: _database, 
+                scheme: Schema<EntryProductCategory, void>(
+                  read: SqlRead<EntryProductCategory, void>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    sqlBuilder: (values) {
+                      return Sql(sql: 'select * from product_category order by id;');
+                    },
+                    entryFromFactories: entryFromFactories.cast(),
+                    debug: true,
+                  ),
+                  write: SqlWrite<EntryProductCategory>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    updateSqlBuilder: updateSqlBuilderProductCategory,
+                    // insertSqlBuilder: insertSqlBuilderProductCategory,
+                    entryFromFactories: entryFromFactories.cast(), 
+                    entryEmptyFactories: entryEmptyFactories.cast(),
+                    debug: true,
+                  ),
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'category_id', relation: Relation(id: 'category_id', field: 'name')),
@@ -154,26 +190,22 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: true, edit: true, key: 'updated'),
                     const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
-                  fetchSqlBuilder: (values) {
-                    return Sql(sql: 'select * from product_category order by id;');
-                  },
-                  updateSqlBuilder: updateSqlBuilder_ProductCategory,
-                  debug: true,
                   relations: {
-                    'category_id': Schema<EntryProductCategory>(
-                      entryFromFactories: entryFromFactories.cast(),
-                      entryEmptyFactories: entryEmptyFactories.cast(),
-                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                      authToken: _authToken, 
-                      database: _database, 
+                    'category_id': Schema<EntryProductCategory, void>(
+                      read: SqlRead<EntryProductCategory, void>(
+                        address: _apiAddress, 
+                        authToken: _authToken, 
+                        database: _database, 
+                        sqlBuilder: (values) {
+                          return Sql(sql: 'select id, name from product_category order by id;');
+                        },
+                        entryFromFactories: entryFromFactories.cast(),
+                        debug: true,
+                      ),
                       fields: [
                         const Field(key: 'id'),
                         const Field(key: 'name'),
                       ],
-                      fetchSqlBuilder: (values) {
-                        return Sql(sql: 'select id, name from product_category order by id;');
-                      },
-                      debug: true,
                     ),
                   },
                 ),
@@ -182,12 +214,27 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryProduct>(
-                  entryFromFactories: entryFromFactories.cast(),
-                  entryEmptyFactories: entryEmptyFactories.cast(),
-                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: _authToken, 
-                  database: _database, 
+                scheme: Schema<EntryProduct, void>(
+                  read: SqlRead<EntryProduct, void>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    sqlBuilder: (values) {
+                      return Sql(sql: 'select * from product_view order by id;');
+                    },
+                    entryFromFactories: entryFromFactories.cast(),
+                    debug: true,
+                  ),
+                  write: SqlWrite<EntryProduct>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    updateSqlBuilder: updateSqlBuilderProduct,
+                    // insertSqlBuilder: insertSqlBuilderProduct,
+                    entryFromFactories: entryFromFactories.cast(), 
+                    entryEmptyFactories: entryEmptyFactories.cast(),
+                    debug: true,
+                  ),
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'product_category_id', relation: Relation(id: 'category_id', field: 'name')),
@@ -204,26 +251,22 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: true, edit: true, key: 'updated'),
                     const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
-                  fetchSqlBuilder: (values) {
-                    return Sql(sql: 'select * from product_view order by id;');
-                  },
-                  updateSqlBuilder: updateSqlBuilder_Product,
-                  debug: true,
                   relations: {
-                    'category_id': Schema<EntryProductCategory>(
-                      entryFromFactories: entryFromFactories.cast(),
-                      entryEmptyFactories: entryEmptyFactories.cast(),
-                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                      authToken: _authToken, 
-                      database: _database, 
+                    'category_id': Schema<EntryProductCategory, void>(
+                      read: SqlRead<EntryProductCategory, void>(
+                        address: _apiAddress, 
+                        authToken: _authToken, 
+                        database: _database, 
+                        sqlBuilder: (values) {
+                          return Sql(sql: 'select id, name from product_category order by id;');
+                        },
+                        entryFromFactories: entryFromFactories.cast(),
+                        debug: true,
+                      ),
                       fields: [
                         const Field(key: 'id'),
                         const Field(key: 'name'),
                       ],
-                      fetchSqlBuilder: (values) {
-                        return Sql(sql: 'select id, name from product_category order by id;');
-                      },
-                      debug: true,
                     ),
                   },
                 ),
@@ -232,12 +275,27 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryPurchase>(
-                  entryFromFactories: entryFromFactories.cast(),
-                  entryEmptyFactories: entryEmptyFactories.cast(),
-                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: _authToken, 
-                  database: _database, 
+                scheme: Schema<EntryPurchase, void>(
+                  read: SqlRead<EntryPurchase, void>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    sqlBuilder: (values) {
+                      return Sql(sql: 'select * from purchase order by id;');
+                    },
+                    entryFromFactories: entryFromFactories.cast(),
+                    debug: true,
+                  ),
+                  write: SqlWrite<EntryPurchase>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    updateSqlBuilder: updateSqlBuilderPurchase,
+                    // insertSqlBuilder: insertSqlBuilderPurchase,
+                    entryFromFactories: entryFromFactories.cast(), 
+                    entryEmptyFactories: entryEmptyFactories.cast(),
+                    debug: true,
+                  ),                  
                   fields: [
                   const Field(hidden: false, edit: false, key: 'id'),
                   const Field(hidden: false, edit: true, key: 'name'),
@@ -251,23 +309,33 @@ class _HomeBodyState extends State<HomeBody> {
                   const Field(hidden: true, edit: true, key: 'updated'),
                   const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
-                  fetchSqlBuilder: (values) {
-                    return Sql(sql: 'select * from purchase order by id;');
-                  },
-                  updateSqlBuilder: updateSqlBuilder_Purchase,
-                  debug: true,
                 ),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryPurchaseContent>(
-                  entryFromFactories: entryFromFactories.cast(),
-                  entryEmptyFactories: entryEmptyFactories.cast(),
-                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: _authToken, 
-                  database: _database, 
+                scheme: Schema<EntryPurchaseContent, void>(
+                  read: SqlRead<EntryPurchaseContent, void>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    sqlBuilder: (values) {
+                      return Sql(sql: 'select * from purchase_content_view order by id;');
+                    },
+                    entryFromFactories: entryFromFactories.cast(),
+                    debug: true,
+                  ),
+                  write: SqlWrite<EntryPurchaseContent>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    updateSqlBuilder: updateSqlBuilderPurchaseContent,
+                    // insertSqlBuilder: insertSqlBuilderPurchaseContent,
+                    entryFromFactories: entryFromFactories.cast(), 
+                    entryEmptyFactories: entryEmptyFactories.cast(),
+                    debug: true,
+                  ),                  
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
@@ -284,41 +352,38 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: true, edit: true, key: 'updated'),
                     const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
-                  fetchSqlBuilder: (values) {
-                    return Sql(sql: 'select * from purchase_content_view order by id;');
-                  },
-                  updateSqlBuilder: updateSqlBuilder_PurchaseContent,
-                  debug: true,
                   relations: {
-                    'purchase_id': Schema<EntryPurchase>(
-                      entryFromFactories: entryFromFactories.cast(),
-                      entryEmptyFactories: entryEmptyFactories.cast(),
-                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                      authToken: _authToken, 
-                      database: _database, 
+                    'purchase_id': Schema<EntryPurchase, void>(
+                      read: SqlRead<EntryPurchase, void>(
+                        address: _apiAddress, 
+                        authToken: _authToken, 
+                        database: _database, 
+                        sqlBuilder: (values) {
+                          return Sql(sql: 'select id, name from purchase order by id;');
+                        },
+                        entryFromFactories: entryFromFactories.cast(),
+                        debug: true,
+                      ),
                       fields: [
                         const Field(key: 'id'),
                         const Field(key: 'name'),
                       ],
-                      fetchSqlBuilder: (values) {
-                        return Sql(sql: 'select id, name from purchase order by id;');
-                      },
-                      debug: true,
                     ),
-                    'product_id': Schema<EntryProduct>(
-                      entryFromFactories: entryFromFactories.cast(),
-                      entryEmptyFactories: entryEmptyFactories.cast(),
-                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                      authToken: _authToken, 
-                      database: _database, 
+                    'product_id': Schema<EntryProduct, void>(
+                      read: SqlRead<EntryProduct, void>(
+                        address: _apiAddress, 
+                        authToken: _authToken, 
+                        database: _database, 
+                        sqlBuilder: (values) {
+                          return Sql(sql: 'select id, name from product order by id;');
+                        },
+                        entryFromFactories: entryFromFactories.cast(),
+                        debug: true,
+                      ),
                       fields: [
                         const Field(key: 'id'),
                         const Field(key: 'name'),
                       ],
-                      fetchSqlBuilder: (values) {
-                        return Sql(sql: 'select id, name from product order by id;');
-                      },
-                      debug: true,
                     ),
                   },                  
                 ),
@@ -327,12 +392,27 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryCustomerOrder>(
-                  entryFromFactories: entryFromFactories.cast(),
-                  entryEmptyFactories: entryEmptyFactories.cast(),
-                  address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                  authToken: _authToken, 
-                  database: _database, 
+                scheme: Schema<EntryCustomerOrder, void>(
+                  read: SqlRead<EntryCustomerOrder, void>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    sqlBuilder: (values) {
+                      return Sql(sql: 'select * from customer_order_view order by id;');
+                    },
+                    entryFromFactories: entryFromFactories.cast(),
+                    debug: true,
+                  ),
+                  write: SqlWrite<EntryCustomerOrder>(
+                    address: _apiAddress, 
+                    authToken: _authToken, 
+                    database: _database, 
+                    updateSqlBuilder: updateSqlBuilderCustomerOrder,
+                    // insertSqlBuilder: insertSqlBuilderCustomerOrder,
+                    entryFromFactories: entryFromFactories.cast(), 
+                    entryEmptyFactories: entryEmptyFactories.cast(),
+                    debug: true,
+                  ),                  
                   fields: [
                     const Field(hidden: false, edit: false, key: 'id'),
                     const Field(hidden: false, edit: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
@@ -351,33 +431,34 @@ class _HomeBodyState extends State<HomeBody> {
                     const Field(hidden: true, edit: true, key: 'updated'),
                     const Field(hidden: true, edit: true, key: 'deleted'),
                   ],
-                  fetchSqlBuilder: (values) {
-                    return Sql(sql: 'select * from customer_order_view order by id;');
-                  },
-                  updateSqlBuilder: updateSqlBuilder_CustomerOrder,
-                  debug: true,
                   relations: {
-                    'customer_id': Schema<EntryCustomer>(
-                      entryFromFactories: entryFromFactories.cast(),
-                      entryEmptyFactories: entryEmptyFactories.cast(),
-                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                      authToken: _authToken, 
-                      database: _database, 
+                    'customer_id': Schema<EntryCustomer, void>(
+                      read: SqlRead<EntryCustomer, void>(
+                        address: _apiAddress, 
+                        authToken: _authToken, 
+                        database: _database, 
+                        sqlBuilder: (values) {
+                          return Sql(sql: 'select id, name from customer order by id;');
+                        },
+                        entryFromFactories: entryFromFactories.cast(),
+                        debug: true,
+                      ),
                       fields: [
                         const Field(key: 'id'),
                         const Field(key: 'name'),
                       ],
-                      fetchSqlBuilder: (values) {
-                        return Sql(sql: 'select id, name from customer order by id;');
-                      },
-                      debug: true,
                     ),
-                    'purchase_content_id': Schema<EntryPurchaseContent>(
-                      entryFromFactories: entryFromFactories.cast(),
-                      entryEmptyFactories: entryEmptyFactories.cast(),
-                      address: const ApiAddress(host: '127.0.0.1', port: 8080),
-                      authToken: _authToken, 
-                      database: _database, 
+                    'purchase_content_id': Schema<EntryPurchaseContent, void>(
+                      read: SqlRead<EntryPurchaseContent, void>(
+                        address: _apiAddress, 
+                        authToken: _authToken, 
+                        database: _database, 
+                        sqlBuilder: (values) {
+                          return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_content_view order by id;');
+                        },
+                        entryFromFactories: entryFromFactories.cast(),
+                        debug: true,
+                      ),
                       fields: [
                         const Field(key: 'id'),
                         const Field(key: 'purchase_id'),
@@ -385,10 +466,6 @@ class _HomeBodyState extends State<HomeBody> {
                         const Field(key: 'product_id'),
                         const Field(key: 'product'),
                       ],
-                      fetchSqlBuilder: (values) {
-                        return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_content_view order by id;');
-                      },
-                      debug: true,
                     ),
                   },
                 ),
@@ -402,7 +479,7 @@ class _HomeBodyState extends State<HomeBody> {
 }
 ///
 ///
-Sql updateSqlBuilder_ProductCategory(Sql sql, SchemaEntry entry) {
+Sql updateSqlBuilderProductCategory(Sql sql, EntryProductCategory entry) {
   return Sql(sql: """UPDATE product_category SET (
     id,
     category_id,
@@ -429,7 +506,7 @@ Sql updateSqlBuilder_ProductCategory(Sql sql, SchemaEntry entry) {
 }
 ///
 ///
-Sql updateSqlBuilder_Product(Sql sql, SchemaEntry entry) {
+Sql updateSqlBuilderProduct(Sql sql, EntryProduct entry) {
   return Sql(sql: """UPDATE product SET (
     id,
     product_category_id,
@@ -464,7 +541,7 @@ Sql updateSqlBuilder_Product(Sql sql, SchemaEntry entry) {
 }
 ///
 ///
-Sql updateSqlBuilder_Purchase(Sql sql, SchemaEntry entry) {
+Sql updateSqlBuilderPurchase(Sql sql, EntryPurchase entry) {
   return Sql(sql: """UPDATE purchase SET (
     id,
     name,
@@ -495,7 +572,7 @@ Sql updateSqlBuilder_Purchase(Sql sql, SchemaEntry entry) {
 }
 ///
 ///
-Sql updateSqlBuilder_PurchaseContent(Sql sql, SchemaEntry entry) {
+Sql updateSqlBuilderPurchaseContent(Sql sql, EntryPurchaseContent entry) {
   return Sql(sql: """UPDATE purchase_content SET (
     id,
     purchase_id,
@@ -532,7 +609,7 @@ Sql updateSqlBuilder_PurchaseContent(Sql sql, SchemaEntry entry) {
 }
 ///
 ///
-Sql updateSqlBuilder_CustomerOrder(Sql sql, SchemaEntry entry) {
+Sql updateSqlBuilderCustomerOrder(Sql sql, EntryCustomerOrder entry) {
   return Sql(sql: """UPDATE customer_order SET (
     id,
     customer_id,

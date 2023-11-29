@@ -112,7 +112,7 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<TableRow> _buildRows(Schema<SchemaEntry> scheme, List<SchemaEntry> entries) {
+  List<TableRow> _buildRows(Schema<SchemaEntry, void> scheme, List<SchemaEntry> entries) {
     final textStile = Theme.of(context).textTheme.bodyMedium;
     final rows = [TableRow(children: _buildHead(scheme.fields, textStile))];
     rows.addAll(

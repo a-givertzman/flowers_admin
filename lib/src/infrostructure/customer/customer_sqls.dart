@@ -1,9 +1,10 @@
 
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 
 ///
 /// CUSTOMER
-Sql updateSqlBuilderCustomer(Sql sql, SchemaEntry entry) {
+Sql updateSqlBuilderCustomer(Sql sql, EntryCustomer entry) {
   return Sql(sql: """UPDATE customer SET (
     id,
     role,
@@ -40,7 +41,7 @@ Sql updateSqlBuilderCustomer(Sql sql, SchemaEntry entry) {
 }
 ///
 ///
-Sql insertSqlBuilderCustomer(Sql sql, SchemaEntry entry) {
+Sql insertSqlBuilderCustomer(Sql sql, EntryCustomer entry) {
   return Sql(sql: """insert into customer (
     role,
     email,
