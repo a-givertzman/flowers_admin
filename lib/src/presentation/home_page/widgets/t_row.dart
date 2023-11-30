@@ -1,35 +1,44 @@
 
-import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell.dart';
 import 'package:flutter/material.dart';
 
 ///
 ///
 class TRow extends StatelessWidget {
-  final List<TCell> _cells;
+  final List<Widget> _cells;
+  final void Function()? _onTap;
+  ///
+  ///
   const TRow({
     super.key,
-    required List<TCell> cells,
+    bool selected = false,
+    required List<Widget> children,
+    void Function()? onTap,
   }) :
-    _cells = cells;
+    _cells = children,
+    _onTap = onTap;
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: _buildCells(context, _cells),
     );
   }
   ///
   ///
-  List<Widget> _buildCells(BuildContext context, List<TCell> cells) {
+  List<Widget> _buildCells(BuildContext context, List<Widget> cells) {
     return cells.map((cell) {
-      return Container(
-        padding: const EdgeInsets.symmetric(vertical: 1.5, horizontal: 2.5),
-        decoration: const BoxDecoration(
-          border: Border.symmetric(
-            vertical: BorderSide(),
+      return InkWell(
+        onTap: _onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 1.5, horizontal: 2.5),
+          decoration: const BoxDecoration(
+            border: Border.symmetric(
+              vertical: BorderSide(),
+            ),
           ),
+          child: cell,
         ),
-        child: cell,
       );
     }).toList();
   }

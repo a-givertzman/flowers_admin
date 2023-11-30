@@ -1,6 +1,7 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell_list.dart';
+import 'package:flowers_admin/src/presentation/home_page/widgets/t_row.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_log.dart';
@@ -26,7 +27,7 @@ class TableWidget extends StatefulWidget {
 class _TableWidgetState extends State<TableWidget> {
   final _log = Log("$_TableWidgetState");
   final TableSchemaAbstract _scheme;
-  // final Map<String, List<SchemeEntry>> _relations = {};
+  final String _selected = '';
   ///
   ///
   _TableWidgetState({
@@ -51,12 +52,12 @@ class _TableWidgetState extends State<TableWidget> {
           IconButton(
             onPressed: () {
               _scheme.insert().then((result) {
-                if (result is Err) {
+                if (result case Err error) {
                   showDialog(
                     context: context,
                     builder: (_) => AlertDialog(
                       title: const Text('Insert error'),
-                      content: Text('error: $result'),
+                      content: Text('error: ${error.error}'),
                     ),
                   );
                   return;
@@ -66,6 +67,25 @@ class _TableWidgetState extends State<TableWidget> {
             }, 
             icon: const Icon(Icons.add),
           ),
+          IconButton(
+            onPressed: () {
+              _scheme.insert().then((result) {
+                if (result case Err error) {
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('Insert error'),
+                      content: Text('error: ${error.error}'),
+                    ),
+                  );
+                  return;
+                }
+                setState(() {return;});
+              });
+            }, 
+            icon: const Icon(Icons.remove),
+          ),
+
         ]),
         FutureBuilder<Result<List<SchemaEntry>, Failure>>(
           future: _scheme.fetch([]),
@@ -84,10 +104,11 @@ class _TableWidgetState extends State<TableWidget> {
                     final entries = value;
                     if (entries.isNotEmpty) {
                       final rows = entries;
-                      return Table(
-                        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                        border: TableBorder.all(),
-                        columnWidths: { for (var i in [for (var i = 0; i <= 14; i++) i]) i : const IntrinsicColumnWidth() },
+                      return ListView(
+                        shrinkWrap: true,
+                        // defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                        // border: TableBorder.all(),
+                        // columnWidths: { for (var i in [for (var i = 0; i <= 14; i++) i]) i : const IntrinsicColumnWidth() },
                         // {
                         //   0: IntrinsicColumnWidth(),
                         //   1: FlexColumnWidth(),
@@ -112,12 +133,13 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<TableRow> _buildRows(TableSchemaAbstract<SchemaEntry, void> scheme, List<SchemaEntry> entries) {
+  List<Widget> _buildRows(TableSchemaAbstract<SchemaEntry, void> scheme, List<SchemaEntry> entries) {
     final textStile = Theme.of(context).textTheme.bodyMedium;
-    final rows = [TableRow(children: _buildHead(scheme.fields, textStile))];
+    final rows = [TRow(children: _buildHead(scheme.fields, textStile))];
     rows.addAll(
       entries.map((entry) {
-        return TableRow(
+        return TRow(
+          selected: entry.isSelected,
           children: _buildRow(scheme.fields, entry, textStile),
         );
       }),
