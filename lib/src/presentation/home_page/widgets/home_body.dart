@@ -57,7 +57,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryCustomer, void>(
+                schema: TableSchema<EntryCustomer, void>(
                   read: SqlRead<EntryCustomer, void>(
                     address: _apiAddress, 
                     authToken: _authToken, 
@@ -100,42 +100,44 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryTransaction, void>(
-                  read: SqlRead<EntryTransaction, void>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    sqlBuilder: (sql, params) {
-                      return Sql(sql: 'select * from transaction order by id;');
-                    },
-                    entryFromFactories: entryFromFactories.cast(),
-                    debug: true,
+                schema: RelationSchema<EntryTransaction, void>(
+                  schema: TableSchema<EntryTransaction, void>(
+                    read: SqlRead<EntryTransaction, void>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      sqlBuilder: (sql, params) {
+                        return Sql(sql: 'select * from transaction order by id;');
+                      },
+                      entryFromFactories: entryFromFactories.cast(),
+                      debug: true,
+                    ),
+                    write: SqlWrite<EntryTransaction>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      entryFromFactories: entryFromFactories.cast(), 
+                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      debug: true,
+                      updateSqlBuilder: updateSqlBuilderTransaction,
+                      insertSqlBuilder: insertSqlBuilderTransaction,
+                    ),
+                    fields: [
+                      const Field(hidden: false, edit: false, key: 'id'),
+                      const Field(hidden: false, edit: true, key: 'timestamp'),
+                      const Field(hidden: false, edit: true, key: 'account_owner'),
+                      const Field(hidden: false, edit: true, key: 'value'),
+                      const Field(hidden: false, edit: true, key: 'description'),
+                      const Field(hidden: false, edit: true, key: 'order_id'),
+                      const Field(hidden: false, edit: true, name: 'Customer', key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+                      const Field(hidden: false, edit: true, key: 'customer_account'),
+                      const Field(hidden: true, edit: true, key: 'created'),
+                      const Field(hidden: true, edit: true, key: 'updated'),
+                      const Field(hidden: true, edit: true, key: 'deleted'),
+                    ],
                   ),
-                  write: SqlWrite<EntryTransaction>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    entryFromFactories: entryFromFactories.cast(), 
-                    entryEmptyFactories: entryEmptyFactories.cast(),
-                    debug: true,
-                    updateSqlBuilder: updateSqlBuilderTransaction,
-                    insertSqlBuilder: insertSqlBuilderTransaction,
-                  ),
-                  fields: [
-                    const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'timestamp'),
-                    const Field(hidden: false, edit: true, key: 'account_owner'),
-                    const Field(hidden: false, edit: true, key: 'value'),
-                    const Field(hidden: false, edit: true, key: 'description'),
-                    const Field(hidden: false, edit: true, key: 'order_id'),
-                    const Field(hidden: false, edit: true, name: 'Customer', key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
-                    const Field(hidden: false, edit: true, key: 'customer_account'),
-                    const Field(hidden: true, edit: true, key: 'created'),
-                    const Field(hidden: true, edit: true, key: 'updated'),
-                    const Field(hidden: true, edit: true, key: 'deleted'),
-                  ],
                   relations: {
-                    'customer_id': Schema<EntryCustomer, void>(
+                    'customer_id': TableSchema<EntryCustomer, void>(
                       read: SqlRead<EntryCustomer, void>(
                         address: _apiAddress, 
                         authToken: _authToken, 
@@ -151,47 +153,112 @@ class _HomeBodyState extends State<HomeBody> {
                         const Field(key: 'name'),
                       ],
                     ),
-                  },
+                  },                  
                 ),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryProductCategory, void>(
-                  read: SqlRead<EntryProductCategory, void>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    sqlBuilder: (sql, params) {
-                      return Sql(sql: 'select * from product_category order by id;');
-                    },
-                    entryFromFactories: entryFromFactories.cast(),
-                    debug: true,
+                schema: RelationSchema<EntryProductCategory, void>(
+                  schema: TableSchema<EntryProductCategory, void>(
+                    read: SqlRead<EntryProductCategory, void>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      sqlBuilder: (sql, params) {
+                        return Sql(sql: 'select * from product_category order by id;');
+                      },
+                      entryFromFactories: entryFromFactories.cast(),
+                      debug: true,
+                    ),
+                    write: SqlWrite<EntryProductCategory>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      updateSqlBuilder: updateSqlBuilderProductCategory,
+                      // insertSqlBuilder: insertSqlBuilderProductCategory,
+                      entryFromFactories: entryFromFactories.cast(), 
+                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      debug: true,
+                    ),
+                    fields: [
+                      const Field(hidden: false, edit: false, key: 'id'),
+                      const Field(hidden: false, edit: true, key: 'category_id', relation: Relation(id: 'category_id', field: 'name')),
+                      const Field(hidden: false, edit: true, key: 'name'),
+                      const Field(hidden: false, edit: true, key: 'details'),
+                      const Field(hidden: false, edit: true, key: 'description'),
+                      const Field(hidden: false, edit: true, key: 'picture'),
+                      const Field(hidden: true, edit: true, key: 'created'),
+                      const Field(hidden: true, edit: true, key: 'updated'),
+                      const Field(hidden: true, edit: true, key: 'deleted'),
+                    ],
                   ),
-                  write: SqlWrite<EntryProductCategory>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    updateSqlBuilder: updateSqlBuilderProductCategory,
-                    // insertSqlBuilder: insertSqlBuilderProductCategory,
-                    entryFromFactories: entryFromFactories.cast(), 
-                    entryEmptyFactories: entryEmptyFactories.cast(),
-                    debug: true,
-                  ),
-                  fields: [
-                    const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'category_id', relation: Relation(id: 'category_id', field: 'name')),
-                    const Field(hidden: false, edit: true, key: 'name'),
-                    const Field(hidden: false, edit: true, key: 'details'),
-                    const Field(hidden: false, edit: true, key: 'description'),
-                    const Field(hidden: false, edit: true, key: 'picture'),
-                    const Field(hidden: true, edit: true, key: 'created'),
-                    const Field(hidden: true, edit: true, key: 'updated'),
-                    const Field(hidden: true, edit: true, key: 'deleted'),
-                  ],
                   relations: {
-                    'category_id': Schema<EntryProductCategory, void>(
+                    'category_id': TableSchema<EntryProductCategory, void>(
+                      read: SqlRead<EntryProductCategory, void>(
+                        address: _apiAddress, 
+                        authToken: _authToken, 
+                        database: _database, 
+                        sqlBuilder: (sql, params) {
+                          return Sql(sql: 'select id, name from product_category order by id;');
+                        },
+                        entryFromFactories: entryFromFactories.cast(),
+                        debug: true,
+                      ),
+                      fields: [
+                        const Field(key: 'id'),
+                        const Field(key: 'name'),
+                      ],
+                    ),
+                  },                  
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
+              child: TableWidget(
+                schema: RelationSchema<EntryProduct, void>(
+                  schema: TableSchema<EntryProduct, void>(
+                    read: SqlRead<EntryProduct, void>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      sqlBuilder: (sql, params) {
+                        return Sql(sql: 'select * from product_view order by id;');
+                      },
+                      entryFromFactories: entryFromFactories.cast(),
+                      debug: true,
+                    ),
+                    write: SqlWrite<EntryProduct>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      updateSqlBuilder: updateSqlBuilderProduct,
+                      // insertSqlBuilder: insertSqlBuilderProduct,
+                      entryFromFactories: entryFromFactories.cast(), 
+                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      debug: true,
+                    ),
+                    fields: [
+                      const Field(hidden: false, edit: false, key: 'id'),
+                      const Field(hidden: false, edit: true, key: 'product_category_id', relation: Relation(id: 'category_id', field: 'name')),
+                      // const Field(hidden: false, edit: true, key: 'category'),
+                      const Field(hidden: false, edit: true, key: 'name'),
+                      const Field(hidden: false, edit: true, key: 'details'),
+                      const Field(hidden: false, edit: true, key: 'primary_price'),
+                      const Field(hidden: false, edit: true, key: 'primary_currency'),
+                      const Field(hidden: false, edit: true, key: 'primary_order_quantity'),
+                      const Field(hidden: false, edit: true, key: 'order_quantity'),
+                      const Field(hidden: false, edit: true, key: 'description'),
+                      const Field(hidden: false, edit: true, key: 'picture'),
+                      const Field(hidden: true, edit: true, key: 'created'),
+                      const Field(hidden: true, edit: true, key: 'updated'),
+                      const Field(hidden: true, edit: true, key: 'deleted'),
+                    ],
+                  ),
+                  relations: {
+                    'category_id': TableSchema<EntryProductCategory, void>(
                       read: SqlRead<EntryProductCategory, void>(
                         address: _apiAddress, 
                         authToken: _authToken, 
@@ -214,68 +281,7 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryProduct, void>(
-                  read: SqlRead<EntryProduct, void>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    sqlBuilder: (sql, params) {
-                      return Sql(sql: 'select * from product_view order by id;');
-                    },
-                    entryFromFactories: entryFromFactories.cast(),
-                    debug: true,
-                  ),
-                  write: SqlWrite<EntryProduct>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    updateSqlBuilder: updateSqlBuilderProduct,
-                    // insertSqlBuilder: insertSqlBuilderProduct,
-                    entryFromFactories: entryFromFactories.cast(), 
-                    entryEmptyFactories: entryEmptyFactories.cast(),
-                    debug: true,
-                  ),
-                  fields: [
-                    const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'product_category_id', relation: Relation(id: 'category_id', field: 'name')),
-                    // const Field(hidden: false, edit: true, key: 'category'),
-                    const Field(hidden: false, edit: true, key: 'name'),
-                    const Field(hidden: false, edit: true, key: 'details'),
-                    const Field(hidden: false, edit: true, key: 'primary_price'),
-                    const Field(hidden: false, edit: true, key: 'primary_currency'),
-                    const Field(hidden: false, edit: true, key: 'primary_order_quantity'),
-                    const Field(hidden: false, edit: true, key: 'order_quantity'),
-                    const Field(hidden: false, edit: true, key: 'description'),
-                    const Field(hidden: false, edit: true, key: 'picture'),
-                    const Field(hidden: true, edit: true, key: 'created'),
-                    const Field(hidden: true, edit: true, key: 'updated'),
-                    const Field(hidden: true, edit: true, key: 'deleted'),
-                  ],
-                  relations: {
-                    'category_id': Schema<EntryProductCategory, void>(
-                      read: SqlRead<EntryProductCategory, void>(
-                        address: _apiAddress, 
-                        authToken: _authToken, 
-                        database: _database, 
-                        sqlBuilder: (sql, params) {
-                          return Sql(sql: 'select id, name from product_category order by id;');
-                        },
-                        entryFromFactories: entryFromFactories.cast(),
-                        debug: true,
-                      ),
-                      fields: [
-                        const Field(key: 'id'),
-                        const Field(key: 'name'),
-                      ],
-                    ),
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
-              child: TableWidget(
-                scheme: Schema<EntryPurchase, void>(
+                schema: TableSchema<EntryPurchase, void>(
                   read: SqlRead<EntryPurchase, void>(
                     address: _apiAddress, 
                     authToken: _authToken, 
@@ -315,45 +321,47 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryPurchaseContent, void>(
-                  read: SqlRead<EntryPurchaseContent, void>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    sqlBuilder: (sql, params) {
-                      return Sql(sql: 'select * from purchase_content_view order by id;');
-                    },
-                    entryFromFactories: entryFromFactories.cast(),
-                    debug: true,
+                schema: RelationSchema<EntryPurchaseContent, void>(
+                  schema: TableSchema<EntryPurchaseContent, void>(
+                    read: SqlRead<EntryPurchaseContent, void>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      sqlBuilder: (sql, params) {
+                        return Sql(sql: 'select * from purchase_content_view order by id;');
+                      },
+                      entryFromFactories: entryFromFactories.cast(),
+                      debug: true,
+                    ),
+                    write: SqlWrite<EntryPurchaseContent>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      updateSqlBuilder: updateSqlBuilderPurchaseContent,
+                      // insertSqlBuilder: insertSqlBuilderPurchaseContent,
+                      entryFromFactories: entryFromFactories.cast(), 
+                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      debug: true,
+                    ),                  
+                    fields: [
+                      const Field(hidden: false, edit: false, key: 'id'),
+                      const Field(hidden: false, edit: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
+                      const Field(hidden: false, edit: true, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
+                      const Field(hidden: false, edit: true, key: 'sale_price'),
+                      const Field(hidden: false, edit: true, key: 'sale_currency'),
+                      const Field(hidden: false, edit: true, key: 'shipping'),
+                      const Field(hidden: false, edit: true, key: 'amount'),
+                      const Field(hidden: false, edit: true, key: 'name'),
+                      const Field(hidden: false, edit: true, key: 'details'),
+                      const Field(hidden: false, edit: true, key: 'description'),
+                      const Field(hidden: false, edit: true, key: 'picture'),
+                      const Field(hidden: true, edit: true, key: 'created'),
+                      const Field(hidden: true, edit: true, key: 'updated'),
+                      const Field(hidden: true, edit: true, key: 'deleted'),
+                    ],
                   ),
-                  write: SqlWrite<EntryPurchaseContent>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    updateSqlBuilder: updateSqlBuilderPurchaseContent,
-                    // insertSqlBuilder: insertSqlBuilderPurchaseContent,
-                    entryFromFactories: entryFromFactories.cast(), 
-                    entryEmptyFactories: entryEmptyFactories.cast(),
-                    debug: true,
-                  ),                  
-                  fields: [
-                    const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
-                    const Field(hidden: false, edit: true, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
-                    const Field(hidden: false, edit: true, key: 'sale_price'),
-                    const Field(hidden: false, edit: true, key: 'sale_currency'),
-                    const Field(hidden: false, edit: true, key: 'shipping'),
-                    const Field(hidden: false, edit: true, key: 'amount'),
-                    const Field(hidden: false, edit: true, key: 'name'),
-                    const Field(hidden: false, edit: true, key: 'details'),
-                    const Field(hidden: false, edit: true, key: 'description'),
-                    const Field(hidden: false, edit: true, key: 'picture'),
-                    const Field(hidden: true, edit: true, key: 'created'),
-                    const Field(hidden: true, edit: true, key: 'updated'),
-                    const Field(hidden: true, edit: true, key: 'deleted'),
-                  ],
                   relations: {
-                    'purchase_id': Schema<EntryPurchase, void>(
+                    'purchase_id': TableSchema<EntryPurchase, void>(
                       read: SqlRead<EntryPurchase, void>(
                         address: _apiAddress, 
                         authToken: _authToken, 
@@ -369,7 +377,7 @@ class _HomeBodyState extends State<HomeBody> {
                         const Field(key: 'name'),
                       ],
                     ),
-                    'product_id': Schema<EntryProduct, void>(
+                    'product_id': TableSchema<EntryProduct, void>(
                       read: SqlRead<EntryProduct, void>(
                         address: _apiAddress, 
                         authToken: _authToken, 
@@ -385,54 +393,56 @@ class _HomeBodyState extends State<HomeBody> {
                         const Field(key: 'name'),
                       ],
                     ),
-                  },                  
+                  },
                 ),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                scheme: Schema<EntryCustomerOrder, void>(
-                  read: SqlRead<EntryCustomerOrder, void>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    sqlBuilder: (sql, params) {
-                      return Sql(sql: 'select * from customer_order_view order by id;');
-                    },
-                    entryFromFactories: entryFromFactories.cast(),
-                    debug: true,
+                schema: RelationSchema<EntryCustomerOrder, void>(
+                  schema: TableSchema<EntryCustomerOrder, void>(
+                    read: SqlRead<EntryCustomerOrder, void>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      sqlBuilder: (sql, params) {
+                        return Sql(sql: 'select * from customer_order_view order by id;');
+                      },
+                      entryFromFactories: entryFromFactories.cast(),
+                      debug: true,
+                    ),
+                    write: SqlWrite<EntryCustomerOrder>(
+                      address: _apiAddress, 
+                      authToken: _authToken, 
+                      database: _database, 
+                      updateSqlBuilder: updateSqlBuilderCustomerOrder,
+                      // insertSqlBuilder: insertSqlBuilderCustomerOrder,
+                      entryFromFactories: entryFromFactories.cast(), 
+                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      debug: true,
+                    ),                  
+                    fields: [
+                      const Field(hidden: false, edit: false, key: 'id'),
+                      const Field(hidden: false, edit: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+                      const Field(hidden: false, edit: false, key: 'customer'),
+                      const Field(hidden: false, edit: true, name: 'purchase_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'purchase')),
+                      const Field(hidden: false, edit: true, name: 'product_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'product')),
+                      const Field(hidden: false, edit: true, key: 'purchase'),
+                      const Field(hidden: false, edit: true, key: 'product'),
+                      const Field(hidden: false, edit: true, key: 'count'),
+                      const Field(hidden: false, edit: true, key: 'paid'),
+                      const Field(hidden: false, edit: true, key: 'distributed'),
+                      const Field(hidden: false, edit: true, key: 'to_refound'),
+                      const Field(hidden: false, edit: true, key: 'refounded'),
+                      const Field(hidden: false, edit: true, key: 'description'),
+                      const Field(hidden: true, edit: true, key: 'created'),
+                      const Field(hidden: true, edit: true, key: 'updated'),
+                      const Field(hidden: true, edit: true, key: 'deleted'),
+                    ],
                   ),
-                  write: SqlWrite<EntryCustomerOrder>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    updateSqlBuilder: updateSqlBuilderCustomerOrder,
-                    // insertSqlBuilder: insertSqlBuilderCustomerOrder,
-                    entryFromFactories: entryFromFactories.cast(), 
-                    entryEmptyFactories: entryEmptyFactories.cast(),
-                    debug: true,
-                  ),                  
-                  fields: [
-                    const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
-                    const Field(hidden: false, edit: false, key: 'customer'),
-                    const Field(hidden: false, edit: true, name: 'purchase_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'purchase')),
-                    const Field(hidden: false, edit: true, name: 'product_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'product')),
-                    const Field(hidden: false, edit: true, key: 'purchase'),
-                    const Field(hidden: false, edit: true, key: 'product'),
-                    const Field(hidden: false, edit: true, key: 'count'),
-                    const Field(hidden: false, edit: true, key: 'paid'),
-                    const Field(hidden: false, edit: true, key: 'distributed'),
-                    const Field(hidden: false, edit: true, key: 'to_refound'),
-                    const Field(hidden: false, edit: true, key: 'refounded'),
-                    const Field(hidden: false, edit: true, key: 'description'),
-                    const Field(hidden: true, edit: true, key: 'created'),
-                    const Field(hidden: true, edit: true, key: 'updated'),
-                    const Field(hidden: true, edit: true, key: 'deleted'),
-                  ],
                   relations: {
-                    'customer_id': Schema<EntryCustomer, void>(
+                    'customer_id': TableSchema<EntryCustomer, void>(
                       read: SqlRead<EntryCustomer, void>(
                         address: _apiAddress, 
                         authToken: _authToken, 
@@ -448,7 +458,7 @@ class _HomeBodyState extends State<HomeBody> {
                         const Field(key: 'name'),
                       ],
                     ),
-                    'purchase_content_id': Schema<EntryPurchaseContent, void>(
+                    'purchase_content_id': TableSchema<EntryPurchaseContent, void>(
                       read: SqlRead<EntryPurchaseContent, void>(
                         address: _apiAddress, 
                         authToken: _authToken, 

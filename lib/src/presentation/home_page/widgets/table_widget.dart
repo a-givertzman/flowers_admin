@@ -7,12 +7,12 @@ import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
 
 class TableWidget extends StatefulWidget {
-  final Schema _scheme;
+  final TableSchemaAbstract _scheme;
   const TableWidget({
     super.key,
-    required Schema scheme,
+    required TableSchemaAbstract schema,
   }) :
-    _scheme = scheme;
+    _scheme = schema;
   ///
   ///
   @override
@@ -25,12 +25,12 @@ class TableWidget extends StatefulWidget {
 ///
 class _TableWidgetState extends State<TableWidget> {
   final _log = Log("$_TableWidgetState");
-  final Schema _scheme;
+  final TableSchemaAbstract _scheme;
   // final Map<String, List<SchemeEntry>> _relations = {};
   ///
   ///
   _TableWidgetState({
-    required Schema scheme,
+    required TableSchemaAbstract scheme,
   }) :
     _scheme = scheme;
   ///
@@ -112,7 +112,7 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<TableRow> _buildRows(Schema<SchemaEntry, void> scheme, List<SchemaEntry> entries) {
+  List<TableRow> _buildRows(TableSchemaAbstract<SchemaEntry, void> scheme, List<SchemaEntry> entries) {
     final textStile = Theme.of(context).textTheme.bodyMedium;
     final rows = [TableRow(children: _buildHead(scheme.fields, textStile))];
     rows.addAll(
