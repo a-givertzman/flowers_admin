@@ -61,7 +61,7 @@ class _TableWidgetState extends State<TableWidget> {
                   );
                   return;
                 }
-                setState(() {});
+                setState(() {return;});
               });
             }, 
             icon: const Icon(Icons.add),
