@@ -4,34 +4,50 @@ import 'package:window_manager/window_manager.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 ///
+///
 class AppWidget extends StatefulWidget {
   // final AppThemeSwitch _themeSwitch;
+  final String _authToken;
+  ///
   ///
   const AppWidget({
     Key? key,
     // required AppThemeSwitch themeSwitch,
+    required String authToken,
   }) : 
     // _themeSwitch = themeSwitch,
+    _authToken = authToken,
     super(key: key);
   //
+  //
   @override
+  // ignore: no_logic_in_create_state
   State<AppWidget> createState() => _AppWidgetState(
     // themeSwitch: _themeSwitch,
+      authToken: _authToken,
   );
 }
 
 ///
 class _AppWidgetState extends State<AppWidget> {
   // final AppThemeSwitch _themeSwitch;
-  _AppWidgetState() : 
+  final String _authToken;
+  ///
+  ///
+  _AppWidgetState({
+    required String authToken,
+  }) : 
     // _themeSwitch = themeSwitch,
+    _authToken = authToken,
     super();
+  //
   //
   @override
   void dispose() {
     // _themeSwitch.removeListener(_themeSwitchListener);
     super.dispose();
   }
+  //
   //
   @override
   void initState() {
@@ -64,13 +80,14 @@ class _AppWidgetState extends State<AppWidget> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const HomePage(
-
+      home: HomePage(
+        authToken: _authToken,
       ), 
           // themeSwitch: _themeSwitch,
       initialRoute: 'homePage',
       routes: {
-        'homePahe': (context) => const HomePage(
+        'homePahe': (context) => HomePage(
+          authToken: _authToken,
         ),
       },
       // theme: _themeSwitch.themeData,

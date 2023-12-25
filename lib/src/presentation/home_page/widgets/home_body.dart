@@ -11,23 +11,42 @@ import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
 import 'package:flowers_admin/src/presentation/home_page/widgets/table_widget.dart';
 import 'package:flutter/material.dart';
-// import 'package:hmi_core/hmi_core_log.dart';
 
-
+///
+///
 class HomeBody extends StatefulWidget {
-  const HomeBody({super.key});
-
+  final String _authToken;
+  ///
+  ///
+  const HomeBody({
+    super.key,
+    required String authToken,
+  }):
+    _authToken = authToken;
+  ///
+  ///
   @override
-  State<HomeBody> createState() => _HomeBodyState();
+  // ignore: no_logic_in_create_state
+  State<HomeBody> createState() => _HomeBodyState(
+    authToken: _authToken,
+  );
 }
-
+///
+///
 class _HomeBodyState extends State<HomeBody> {
   // final _log = Log("$_HomeBodyState._");
-  final _authToken = 'some auth token';
+  final String _authToken;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   final _paddingH = 8.0;
   final _paddingV = 8.0;
+  ///
+  ///
+  _HomeBodyState({
+    required String authToken,
+  }):
+    _authToken = authToken;
+  ///
   ///
   @override
   Widget build(BuildContext context) {
