@@ -1,133 +1,123 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/infrostructure/customer/customer_sqls.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_factory.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_result_new.dart';
 
 ///
 ///
 class CustomerBody extends StatefulWidget {
-  final EntryCustomer? _entry;
+  final String _authToken;
   ///
   ///
   const CustomerBody({
     super.key,
-    EntryCustomer? entry,
+    required String authToken,
   }):
-    _entry = entry;
-  //
-  //
+    _authToken = authToken;
+  ///
+  ///
   @override
   // ignore: no_logic_in_create_state
   State<CustomerBody> createState() => _CustomerBodyState(
-    entry: _entry,
+    authToken: _authToken,
   );
 }
 ///
 ///
 class _CustomerBodyState extends State<CustomerBody> {
   // final _log = Log("$_CustomerBodyState._");
-  final EntryCustomer? _entry;
-  final _apiAddress = ApiAddress.localhost(port: 8080);
-  final _paddingH = 8.0;
-  final _paddingV = 8.0;
+  final String _authToken;
+  final _database = 'flowers_app_server';
+  final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   ///
   ///
   _CustomerBodyState({
-    required EntryCustomer? entry,
+    required String authToken,
   }):
-    _entry = entry;
-  //
-  //
+    _authToken = authToken;
+  ///
+  ///
   @override
   Widget build(BuildContext context) {
-    final tabHeadesStyle = Theme.of(context).textTheme.headlineSmall;
-    return MaterialApp(
-      title: 'Customer',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Customer page ${_entry?.value('name')}'),
+    return TableWidget(
+      addAction: TableWidgetAction(
+        onPressed: (schema) {
+          return schema.insert().then((result) {
+            if (result case Err error) {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text('Insert error'),
+                  content: Text('error: ${error.error}'),
+                ),
+              );
+              return Err(error);
+            }
+            return const Ok(null);
+          });
+        }, 
+        icon: const Icon(Icons.add),
+      ),
+      delAction: TableWidgetAction(
+        onPressed: (schema) {
+          schema.delete(entry).then((result) {
+            if (result case Err error) {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text('Insert error'),
+                  content: Text('error: ${error.error}'),
+                ),
+              );
+              return Err(error);
+            }
+            return const Ok(null);
+          });
+        }, 
+        icon: const Icon(Icons.add),
+      ),
+      schema: TableSchema<EntryCustomer, void>(
+        read: SqlRead<EntryCustomer, void>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select * from customer order by id;');
+          },
+          entryFromFactories: entryFromFactories.cast(),
+          debug: true,
         ),
-        body: Column(
-          children: [
-            TextEditWidget(
-              value: _entry?.value('name').str,
-              onComplete: (value) {
-                _entry?.update('name', value);
-              },
-            ),
-          ],
+        write: SqlWrite<EntryCustomer>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          updateSqlBuilder: updateSqlBuilderCustomer,
+          insertSqlBuilder: insertSqlBuilderCustomer,
+          entryFromFactories: entryFromFactories.cast(), 
+          entryEmptyFactories: entryEmptyFactories.cast(),
+          debug: true,
         ),
+        fields: [
+          const Field(hidden: false, edit: false, key: 'id'),
+          const Field(hidden: false, edit: true, key: 'role'),
+          const Field(hidden: false, edit: true, key: 'email'),
+          const Field(hidden: false, edit: true, key: 'phone'),
+          const Field(hidden: false, edit: true, key: 'name'),
+          const Field(hidden: false, edit: true, key: 'location'),
+          const Field(hidden: false, edit: true, key: 'login'),
+          const Field(hidden: false, edit: true, key: 'pass'),
+          const Field(hidden: false, edit: true, key: 'account'),
+          const Field(hidden: false, edit: true, key: 'last_act'),
+          const Field(hidden: false, edit: true, key: 'blocked'),
+          const Field(hidden: true, edit: true, key: 'created'),
+          const Field(hidden: true, edit: true, key: 'updated'),
+          const Field(hidden: true, edit: true, key: 'deleted'),
+        ],
       ),
     );
-  }
-}
-
-
-///
-///
-class TextEditWidget extends StatefulWidget {
-  final String _value;
-  final Function(String)? _onComplete;
-  ///
-  ///
-  const TextEditWidget({
-    super.key,
-    String? value = '',
-    Function(String)? onComplete,
-  }):
-    _value = value ?? '',
-    _onComplete = onComplete;
-  //
-  //
-  @override
-  // ignore: no_logic_in_create_state
-  State<TextEditWidget> createState() => _TextEditWidgetState(
-    value: _value,
-    onComplete: _onComplete,
-  );
-}
-///
-///
-class _TextEditWidgetState extends State<TextEditWidget> {
-  final Function(String)? _onComplete;
-  final TextEditingController _controller;
-  ///
-  ///
-  _TextEditWidgetState({
-    required String value,
-    Function(String)? onComplete,
-  }):
-    _controller = TextEditingController.fromValue(TextEditingValue(text: value)),
-    _onComplete = onComplete;
-  //
-  //
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      // style: _style,
-      // textAlign: _textAlign,
-      decoration: InputDecoration(
-        // contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
-        border: const OutlineInputBorder(borderSide: BorderSide(width: 0.1)),
-        // border: const OutlineInputBorder(),
-        isDense: true,
-        // labelText: 'Password',
-      ),
-      // onChanged: (value) {
-      //   _entry?.update('key', value);
-      // },
-      onTapOutside: (_) {
-        _onEditingComplete(_controller.text);
-      },
-      onEditingComplete: () {
-        _onEditingComplete(_controller.text);
-      },
-    );
-  }
-  ///
-  ///
-  _onEditingComplete(String value) {
-    final onComplete = _onComplete;
-    if (onComplete != null) onComplete(value);
   }
 }

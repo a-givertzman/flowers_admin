@@ -1,5 +1,4 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/infrostructure/customer/customer_sqls.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_factory.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
@@ -9,7 +8,8 @@ import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_content.
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
-import 'package:flowers_admin/src/presentation/home_page/widgets/table_widget.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
+import 'package:flowers_admin/src/presentation/customer_page/customer_page.dart';
 import 'package:flutter/material.dart';
 
 ///
@@ -75,45 +75,8 @@ class _HomeBodyState extends State<HomeBody> {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
-              child: TableWidget(
-                schema: TableSchema<EntryCustomer, void>(
-                  read: SqlRead<EntryCustomer, void>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    sqlBuilder: (sql, params) {
-                      return Sql(sql: 'select * from customer order by id;');
-                    },
-                    entryFromFactories: entryFromFactories.cast(),
-                    debug: true,
-                  ),
-                  write: SqlWrite<EntryCustomer>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    updateSqlBuilder: updateSqlBuilderCustomer,
-                    insertSqlBuilder: insertSqlBuilderCustomer,
-                    entryFromFactories: entryFromFactories.cast(), 
-                    entryEmptyFactories: entryEmptyFactories.cast(),
-                    debug: true,
-                  ),
-                  fields: [
-                    const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'role'),
-                    const Field(hidden: false, edit: true, key: 'email'),
-                    const Field(hidden: false, edit: true, key: 'phone'),
-                    const Field(hidden: false, edit: true, key: 'name'),
-                    const Field(hidden: false, edit: true, key: 'location'),
-                    const Field(hidden: false, edit: true, key: 'login'),
-                    const Field(hidden: false, edit: true, key: 'pass'),
-                    const Field(hidden: false, edit: true, key: 'account'),
-                    const Field(hidden: false, edit: true, key: 'last_act'),
-                    const Field(hidden: false, edit: true, key: 'blocked'),
-                    const Field(hidden: true, edit: true, key: 'created'),
-                    const Field(hidden: true, edit: true, key: 'updated'),
-                    const Field(hidden: true, edit: true, key: 'deleted'),
-                  ],
-                ),
+              child: CustomerPage(
+                authToken: _authToken,
               ),
             ),
             Padding(

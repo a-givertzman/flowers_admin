@@ -1,25 +1,38 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell.dart';
-import 'package:flowers_admin/src/presentation/home_page/widgets/t_cell_list.dart';
-import 'package:flowers_admin/src/presentation/home_page/widgets/t_row.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/t_cell.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/t_row.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
 
+///
+///
 class TableWidget extends StatefulWidget {
   final TableSchemaAbstract _scheme;
+  final TableWidgetAction _addAction;
+  final TableWidgetAction _delAction;
+  ///
+  ///
   const TableWidget({
     super.key,
     required TableSchemaAbstract schema,
+    TableWidgetAction? addAction,
+    TableWidgetAction? delAction,
   }) :
-    _scheme = schema;
+    _scheme = schema,
+    _addAction = addAction ?? const TableWidgetAction.empty(),
+    _delAction = delAction ?? const TableWidgetAction.empty();
   ///
   ///
   @override
   // ignore: no_logic_in_create_state
   State<TableWidget> createState() => _TableWidgetState(
     scheme: _scheme,
+    addAction: _addAction,
+    delAction: _delAction,
   );
 }
 ///
@@ -27,13 +40,19 @@ class TableWidget extends StatefulWidget {
 class _TableWidgetState extends State<TableWidget> {
   final _log = Log("$_TableWidgetState");
   final TableSchemaAbstract _scheme;
+  final TableWidgetAction _addAction;
+  final TableWidgetAction _delAction;
   final String _selected = '';
   ///
   ///
   _TableWidgetState({
     required TableSchemaAbstract scheme,
+    required TableWidgetAction? addAction,
+    required TableWidgetAction? delAction,
   }) :
-    _scheme = scheme;
+    _scheme = scheme,
+    _addAction = addAction ?? const TableWidgetAction.empty(),
+    _delAction = delAction ?? const TableWidgetAction.empty();
   ///
   ///
   @override
@@ -51,41 +70,58 @@ class _TableWidgetState extends State<TableWidget> {
           const Expanded(child: SizedBox.shrink()),
           IconButton(
             onPressed: () {
-              _scheme.insert().then((result) {
-                if (result case Err error) {
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('Insert error'),
-                      content: Text('error: ${error.error}'),
-                    ),
-                  );
-                  return;
+              final onPressed = _addAction.onPressed;
+              if (onPressed != null) {
+                switch (onPressed(_scheme)) {
+                  case Ok(): setState(() {
+                    return;  
+                  });
+                  case Err():
                 }
-                setState(() {return;});
-              });
+              }
+              // _scheme.insert().then((result) {
+              //   if (result case Err error) {
+              //     showDialog(
+              //       context: context,
+              //       builder: (_) => AlertDialog(
+              //         title: const Text('Insert error'),
+              //         content: Text('error: ${error.error}'),
+              //       ),
+              //     );
+              //     return;
+              //   }
+              //   setState(() {return;});
+              // });
             }, 
             icon: const Icon(Icons.add),
           ),
           IconButton(
             onPressed: () {
-              _scheme.insert().then((result) {
-                if (result case Err error) {
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: const Text('Insert error'),
-                      content: Text('error: ${error.error}'),
-                    ),
-                  );
-                  return;
+              final onPressed = _delAction.onPressed;
+              if (onPressed != null) {
+                switch (onPressed(_scheme)) {
+                  case Ok(): setState(() {
+                    return;  
+                  });
+                  case Err():
                 }
-                setState(() {return;});
-              });
+              }
+              // _scheme.insert().then((result) {
+              //   if (result case Err error) {
+              //     showDialog(
+              //       context: context,
+              //       builder: (_) => AlertDialog(
+              //         title: const Text('Insert error'),
+              //         content: Text('error: ${error.error}'),
+              //       ),
+              //     );
+              //     return;
+              //   }
+              //   setState(() {return;});
+              // });
             }, 
             icon: const Icon(Icons.remove),
           ),
-
         ]),
         FutureBuilder<Result<List<SchemaEntry>, Failure>>(
           future: _scheme.fetch([]),

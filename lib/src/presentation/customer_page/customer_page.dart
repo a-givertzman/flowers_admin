@@ -3,10 +3,20 @@ import 'package:flowers_admin/src/presentation/customer_page/widgets/customer_bo
 import 'package:flutter/material.dart';
 
 class CustomerPage extends StatelessWidget {
-  const CustomerPage({super.key});
-
+  final String _authToken;
+  ///
+  ///
+  const CustomerPage({
+    super.key,
+    required String authToken,
+  }):
+    _authToken = authToken;
+  //
+  //
   @override
   Widget build(BuildContext context) {
-    return const CustomerBody();
+    return CustomerBody(
+      authToken: _authToken,
+    );
   }
 }
