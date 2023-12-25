@@ -77,10 +77,10 @@ packages:
     dependency: transitive
     description:
       name: built_value
-      sha256: "69acb7007eb2a31dc901512bfe0f7b767168be34cb734835d54c070bfa74c1b2"
+      sha256: c9aabae0718ec394e5bc3c7272e6bb0dc0b32201a08fe185ec1d8401d3e39309
       url: "https://pub.dev"
     source: hosted
-    version: "8.8.0"
+    version: "8.8.1"
   characters:
     dependency: transitive
     description:
@@ -101,10 +101,10 @@ packages:
     dependency: transitive
     description:
       name: code_builder
-      sha256: b2151ce26a06171005b379ecff6e08d34c470180ffe16b8e14b6d52be292b55f
+      sha256: feee43a5c05e7b3199bb375a86430b8ada1b04104f2923d0e03cc01ca87b6d84
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.0"
+    version: "4.9.0"
   collection:
     dependency: transitive
     description:
@@ -329,10 +329,10 @@ packages:
     dependency: "direct dev"
     description:
       name: mockito
-      sha256: "4b693867cee1853c9d1d7ecc1871f27f39b2ef2c13c0d8d8507dfe5bebd8aaf1"
+      sha256: "6841eed20a7befac0ce07df8116c8b8233ed1f4486a7647c7fc5a02ae6163917"
       url: "https://pub.dev"
     source: hosted
-    version: "5.4.3"
+    version: "5.4.4"
   package_config:
     dependency: transitive
     description:
@@ -494,10 +494,10 @@ packages:
     dependency: transitive
     description:
       name: source_gen
-      sha256: fc0da689e5302edb6177fdd964efcb7f58912f43c28c2047a808f5bfff643d16
+      sha256: "14658ba5f669685cd3d63701d01b31ea748310f7ab854e471962670abcf57832"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.0"
+    version: "1.5.0"
   source_span:
     dependency: transitive
     description:
@@ -598,10 +598,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "7c99c0e1e2fa190b48d25c81ca5e42036d5cac81430ef249027d97b0935c553f"
+      sha256: b0f37db61ba2f2e9b7a78a1caece0052564d1bc70668156cf3a29d676fe4e574
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.1"
   window_manager:
     dependency: "direct main"
     description:
@@ -622,10 +622,10 @@ packages:
     dependency: transitive
     description:
       name: xml
-      sha256: af5e77e9b83f2f4adc5d3f0a4ece1c7f45a2467b695c2540381bac793e34e556
+      sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
       url: "https://pub.dev"
     source: hosted
-    version: "6.4.2"
+    version: "6.5.0"
   yaml:
     dependency: transitive
     description:
