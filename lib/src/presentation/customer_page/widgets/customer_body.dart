@@ -26,7 +26,6 @@ class CustomerBody extends StatefulWidget {
 class _CustomerBodyState extends State<CustomerBody> {
   // final _log = Log("$_CustomerBodyState._");
   final EntryCustomer? _entry;
-  final TextEditingController _controller;
   final _apiAddress = ApiAddress.localhost(port: 8080);
   final _paddingH = 8.0;
   final _paddingV = 8.0;
@@ -35,8 +34,7 @@ class _CustomerBodyState extends State<CustomerBody> {
   _CustomerBodyState({
     required EntryCustomer? entry,
   }):
-    _entry = entry,
-    _controller = TextEditingController.fromValue(TextEditingValue(text: entry?.value('name').toString() ?? ''));
+    _entry = entry;
   //
   //
   @override
@@ -50,28 +48,86 @@ class _CustomerBodyState extends State<CustomerBody> {
         ),
         body: Column(
           children: [
-            TextField(
-              controller: _controller,
-              // style: _style,
-              // textAlign: _textAlign,
-              decoration: InputDecoration(
-                // contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
-                border: const OutlineInputBorder(borderSide: BorderSide(width: 0.1)),
-                // border: const OutlineInputBorder(),
-                isDense: true,
-                // labelText: 'Password',
-              ),
-              onChanged: (value) {
-                _entry?.update('key', value);
-              },
-              onTapOutside: (_) {
-              },
-              onEditingComplete: () {
+            TextEditWidget(
+              value: _entry?.value('name').str,
+              onComplete: (value) {
+                _entry?.update('name', value);
               },
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+
+///
+///
+class TextEditWidget extends StatefulWidget {
+  final String _value;
+  final Function(String)? _onComplete;
+  ///
+  ///
+  const TextEditWidget({
+    super.key,
+    String? value = '',
+    Function(String)? onComplete,
+  }):
+    _value = value ?? '',
+    _onComplete = onComplete;
+  //
+  //
+  @override
+  // ignore: no_logic_in_create_state
+  State<TextEditWidget> createState() => _TextEditWidgetState(
+    value: _value,
+    onComplete: _onComplete,
+  );
+}
+///
+///
+class _TextEditWidgetState extends State<TextEditWidget> {
+  final Function(String)? _onComplete;
+  final TextEditingController _controller;
+  ///
+  ///
+  _TextEditWidgetState({
+    required String value,
+    Function(String)? onComplete,
+  }):
+    _controller = TextEditingController.fromValue(TextEditingValue(text: value)),
+    _onComplete = onComplete;
+  //
+  //
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      // style: _style,
+      // textAlign: _textAlign,
+      decoration: InputDecoration(
+        // contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
+        border: const OutlineInputBorder(borderSide: BorderSide(width: 0.1)),
+        // border: const OutlineInputBorder(),
+        isDense: true,
+        // labelText: 'Password',
+      ),
+      // onChanged: (value) {
+      //   _entry?.update('key', value);
+      // },
+      onTapOutside: (_) {
+        _onEditingComplete(_controller.text);
+      },
+      onEditingComplete: () {
+        _onEditingComplete(_controller.text);
+      },
+    );
+  }
+  ///
+  ///
+  _onEditingComplete(String value) {
+    final onComplete = _onComplete;
+    if (onComplete != null) onComplete(value);
   }
 }
