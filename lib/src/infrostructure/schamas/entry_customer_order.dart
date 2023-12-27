@@ -72,4 +72,10 @@ class EntryCustomerOrder implements SchemaEntry {
   void select(bool selected) {
     if (_isSelected != selected) _isSelected = selected;
   }
+  //
+  //
+  @override
+  String toString() {
+    return '$runtimeType{ isChanged: $_changed, isSelected: $_isSelected, map: $_map}';
+  }
 }

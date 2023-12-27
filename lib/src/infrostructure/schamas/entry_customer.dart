@@ -80,7 +80,7 @@ class EntryCustomer implements SchemaEntry {
     }
     final field = _map[key];
     if (field != null) {
-      _changed = field.update(value);
+      _changed = _changed || field.update(value);
     }
   }
   //
@@ -88,5 +88,11 @@ class EntryCustomer implements SchemaEntry {
   @override
   void select(bool selected) {
     if (_isSelected != selected) _isSelected = selected;
+  }
+  //
+  //
+  @override
+  String toString() {
+    return '$runtimeType{ isChanged: $_changed, isSelected: $_isSelected, map: $_map}';
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
 
 ///
@@ -25,7 +26,7 @@ class EditCustomerForm extends StatefulWidget {
 ///
 ///
 class _EditCustomerFormState extends State<EditCustomerForm> {
-  // final _log = Log("$_CustomerBodyState._");
+  final _log = Log("$_EditCustomerFormState._");
   final EntryCustomer _entry;
   bool _isChanged = false;
   ///
@@ -56,9 +57,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('role').value}',
                       onComplete: (value) {
                         _entry.update('role', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -66,9 +65,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('email').value}',
                       onComplete: (value) {
                         _entry.update('email', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -76,9 +73,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('phone').value}',
                       onComplete: (value) {
                         _entry.update('phone', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -86,9 +81,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('name').value}',
                       onComplete: (value) {
                         _entry.update('name', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -96,9 +89,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('location').value}',
                       onComplete: (value) {
                         _entry.update('location', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -106,9 +97,8 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('login').value}',
                       onComplete: (value) {
                         _entry.update('login', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        _log.debug('.TextEditWidget.onComplete | enrty: $_entry');
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -116,9 +106,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('pass').value}',
                       onComplete: (value) {
                         _entry.update('pass', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -126,9 +114,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('account').value}',
                       onComplete: (value) {
                         _entry.update('account', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     Checkbox(
@@ -136,9 +122,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: _entry.value('blocked').value ?? false, 
                       onChanged: (value) {
                         _entry.update('blocked', value ?? false);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -146,9 +130,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('last_act').value}',
                       onComplete: (value) {
                         _entry.update('last_act', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -156,9 +138,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('created').value}',
                       onComplete: (value) {
                         _entry.update('created', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -166,9 +146,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('updated').value}',
                       onComplete: (value) {
                         _entry.update('updated', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                     TextEditWidget(
@@ -176,9 +154,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       value: '${_entry.value('deleted').value}',
                       onComplete: (value) {
                         _entry.update('deleted', value);
-                        setState(() {
-                          _isChanged = _entry.isChanged;
-                        });
+                        setState(() {return;});
                       },
                     ),
                   ],
@@ -194,9 +170,11 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     child: const Text("Cancel"),
                   ),
                   TextButton(
-                    onPressed: _isChanged 
+                    onPressed: _entry.isChanged 
                       ? () {
-                          Navigator.pop(context, Ok<EntryCustomer, void>(_entry));
+                        _log.debug('.TextButton.Yes | _isChanged: ${_entry.isChanged}');
+                        _log.debug('.TextButton.Yes | enrty: $_entry');
+                        Navigator.pop(context, Ok<EntryCustomer, void>(_entry));
                       } 
                       : null,
                     child: const Text("Yes"),
