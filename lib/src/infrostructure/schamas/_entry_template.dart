@@ -51,7 +51,7 @@ class EntryTemplate implements SchemaEntryAbstract {
   //
   //  
   @override
-  void update(String key, String value) => _entry.update(key, value);
+  void update(String key, dynamic value) => _entry.update(key, value);
   //
   //
   @override
