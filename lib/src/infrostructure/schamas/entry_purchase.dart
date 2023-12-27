@@ -27,14 +27,14 @@ class EntryPurchase implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryPurchase.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+  EntryPurchase.from(Map<String, dynamic> row): _entry = SchemaEntry(map: Map.from(_initial)) {
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
   }
   //
   //
-  EntryPurchase.empty(): _entry = SchemaEntry(map: _initial);
+  EntryPurchase.empty(): _entry = SchemaEntry(map: Map.from(_initial));
   //
   //
   @override

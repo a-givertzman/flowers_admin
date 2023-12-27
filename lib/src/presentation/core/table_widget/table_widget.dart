@@ -204,6 +204,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
     final rows = [TRow<T>(fields: scheme.fields)];
     rows.addAll(
       entries.map((entry) {
+        _log.debug("._buildRows | entry: $entry");
         return TRow<T>(
           entry: entry,
           fields: scheme.fields,

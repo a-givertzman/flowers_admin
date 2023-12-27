@@ -4,8 +4,8 @@ import 'package:ext_rw/ext_rw.dart';
 /// Single row of table "Product"
 class EntryProduct implements SchemaEntryAbstract {
   static final _initial = {
-	  'id': FieldValue(null),
-	  'product_category_id': FieldValue(null),
+	  'id': FieldValue(0),
+	  'product_category_id': FieldValue(0),
 	  'name': FieldValue(''),
 	  'details': FieldValue(''),
 	  'primary_price': FieldValue('0.00'),
@@ -29,14 +29,14 @@ class EntryProduct implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryProduct.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+  EntryProduct.from(Map<String, dynamic> row): _entry = SchemaEntry(map: Map.from(_initial)) {
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
   }
   //
   //
-  EntryProduct.empty(): _entry = SchemaEntry(map: _initial);
+  EntryProduct.empty(): _entry = SchemaEntry(map: Map.from(_initial));
   //
   //
   @override

@@ -25,14 +25,14 @@ class EntryTemplate implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryTemplate.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+  EntryTemplate.from(Map<String, dynamic> row): _entry = SchemaEntry(map: Map.from(_initial)) {
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
   }
   //
   //
-  EntryTemplate.empty(): _entry = SchemaEntry(map: _initial);
+  EntryTemplate.empty(): _entry = SchemaEntry(map: Map.from(_initial));
   //
   //
   @override

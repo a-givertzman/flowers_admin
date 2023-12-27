@@ -28,14 +28,14 @@ class EntryCustomerOrder implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryCustomerOrder.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+  EntryCustomerOrder.from(Map<String, dynamic> row): _entry = SchemaEntry(map: Map.from(_initial)) {
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
   }
   //
   //
-  EntryCustomerOrder.empty(): _entry = SchemaEntry(map: _initial);
+  EntryCustomerOrder.empty(): _entry = SchemaEntry(map: Map.from(_initial));
   //
   //
   @override

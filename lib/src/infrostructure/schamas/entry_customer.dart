@@ -6,7 +6,7 @@ import 'package:hmi_core/hmi_core_log.dart';
 class EntryCustomer implements SchemaEntryAbstract {
   final _log = Log("$EntryCustomer");
   static final _initial = {
-    'id': FieldValue(null),
+    'id': FieldValue(0),
     'role': FieldValue('customer'),
     'email': FieldValue('@'),
     'phone': FieldValue('+7'),
@@ -32,15 +32,14 @@ class EntryCustomer implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryCustomer.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+  EntryCustomer.from(Map<String, dynamic> row): _entry = SchemaEntry(map: Map.from(_initial)) {
     for (final MapEntry(:key, :value) in row.entries) {
-      _log.debug('.from | key: $key, \t value: $value, \t valuetype: ${value.runtimeType}');
       _entry.update(key, value);
     }
   }
   //
   //
-  EntryCustomer.empty(): _entry = SchemaEntry(map: _initial);
+  EntryCustomer.empty(): _entry = SchemaEntry(map: Map.from(_initial));
   //
   //
   @override
