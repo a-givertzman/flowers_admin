@@ -1,5 +1,4 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/t_cell.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_row.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flutter/material.dart';

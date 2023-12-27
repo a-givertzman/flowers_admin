@@ -266,11 +266,13 @@ class _TextEditWidgetState extends State<TextEditWidget> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         controller: _controller,
-        // style: _style,
+        style: _isChanged 
+          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
+          : null,
         // textAlign: _textAlign,
         decoration: InputDecoration(
           // contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
-          border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red : Colors.black)),
+          // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red : Colors.black)),
           // border: const OutlineInputBorder(),
           isDense: true,
           labelText: _labelText,
