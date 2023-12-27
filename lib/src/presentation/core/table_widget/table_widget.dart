@@ -1,6 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_cell.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_row.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flutter/material.dart';
@@ -10,48 +9,55 @@ import 'package:hmi_core/hmi_core_result_new.dart';
 
 ///
 ///
-class TableWidget extends StatefulWidget {
-  final TableSchemaAbstract _scheme;
-  final TableWidgetAction _addAction;
-  final TableWidgetAction _delAction;
+class TableWidget<T extends SchemaEntry, P> extends StatefulWidget {
+  final TableSchemaAbstract<T, P> _scheme;
+  final TableWidgetAction<T, P> _addAction;
+  final TableWidgetAction<T, P> _editAction;
+  final TableWidgetAction<T, P> _delAction;
   ///
   ///
   const TableWidget({
     super.key,
-    required TableSchemaAbstract schema,
-    TableWidgetAction? addAction,
-    TableWidgetAction? delAction,
+    required TableSchemaAbstract<T, P> schema,
+    TableWidgetAction<T, P>? addAction,
+    TableWidgetAction<T, P>? editAction,
+    TableWidgetAction<T, P>? delAction,
   }) :
     _scheme = schema,
     _addAction = addAction ?? const TableWidgetAction.empty(),
+    _editAction = editAction ?? const TableWidgetAction.empty(),
     _delAction = delAction ?? const TableWidgetAction.empty();
   ///
   ///
   @override
   // ignore: no_logic_in_create_state
-  State<TableWidget> createState() => _TableWidgetState(
+  State<TableWidget<T, P>> createState() => _TableWidgetState(
     scheme: _scheme,
     addAction: _addAction,
+    editAction: _editAction,
     delAction: _delAction,
   );
 }
 ///
 ///
-class _TableWidgetState extends State<TableWidget> {
+class _TableWidgetState<T extends SchemaEntry, P> extends State<TableWidget<T, P>> {
   final _log = Log("$_TableWidgetState");
-  final TableSchemaAbstract _scheme;
-  final TableWidgetAction _addAction;
-  final TableWidgetAction _delAction;
+  final TableSchemaAbstract<T, P> _scheme;
+  final TableWidgetAction<T, P> _addAction;
+  final TableWidgetAction<T, P> _editAction;
+  final TableWidgetAction<T, P> _delAction;
   final String _selected = '';
   ///
   ///
   _TableWidgetState({
-    required TableSchemaAbstract scheme,
-    required TableWidgetAction? addAction,
-    required TableWidgetAction? delAction,
+    required TableSchemaAbstract<T, P> scheme,
+    required TableWidgetAction<T, P>? addAction,
+    required TableWidgetAction<T, P>? editAction,
+    required TableWidgetAction<T, P>? delAction,
   }) :
     _scheme = scheme,
     _addAction = addAction ?? const TableWidgetAction.empty(),
+    _editAction = editAction ?? const TableWidgetAction.empty(),
     _delAction = delAction ?? const TableWidgetAction.empty();
   ///
   ///
@@ -69,63 +75,87 @@ class _TableWidgetState extends State<TableWidget> {
         Row(children: [
           const Expanded(child: SizedBox.shrink()),
           IconButton(
-            onPressed: () {
-              final onPressed = _addAction.onPressed;
+            onPressed: () async {
+              final onPressed = _editAction.onPressed;
               if (onPressed != null) {
-                switch (onPressed(_scheme)) {
-                  case Ok(): setState(() {
-                    return;  
+                switch (await onPressed(_scheme)) {
+                  case Ok(value: final entry): setState(() {
+                    _scheme.update(entry).then((result) {
+                      if (result case Err error) {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('Update error'),
+                            content: Text('error: ${error.error}'),
+                          ),
+                        );
+                        return;
+                      }
+                      setState(() {return;});
+                    });
                   });
                   case Err():
                 }
               }
-              // _scheme.insert().then((result) {
-              //   if (result case Err error) {
-              //     showDialog(
-              //       context: context,
-              //       builder: (_) => AlertDialog(
-              //         title: const Text('Insert error'),
-              //         content: Text('error: ${error.error}'),
-              //       ),
-              //     );
-              //     return;
-              //   }
-              //   setState(() {return;});
-              // });
+            }, 
+            icon: const Icon(Icons.edit),
+          ),
+          IconButton(
+            onPressed: () async {
+              final onPressed = _addAction.onPressed;
+              if (onPressed != null) {
+                switch (await onPressed(_scheme)) {
+                  case Ok(value: final entry): setState(() {
+                    _scheme.insert(entry: entry).then((result) {
+                      if (result case Err error) {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('Insert error'),
+                            content: Text('error: ${error.error}'),
+                          ),
+                        );
+                        return;
+                      }
+                      setState(() {return;});
+                    });
+                  });
+                  case Err():
+                }
+              }
             }, 
             icon: const Icon(Icons.add),
           ),
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               final onPressed = _delAction.onPressed;
               if (onPressed != null) {
-                switch (onPressed(_scheme)) {
-                  case Ok(): setState(() {
-                    return;  
+                switch (await onPressed(_scheme)) {
+                  case Ok(value: final entry): setState(() {
+                    _scheme.delete(entry).then((result) {
+                      if (result case Err error) {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text('Delete error'),
+                            content: Text('error: ${error.error}'),
+                          ),
+                        );
+                        return;
+                      }
+                      setState(() {return;});
+                    });
                   });
                   case Err():
                 }
               }
-              // _scheme.insert().then((result) {
-              //   if (result case Err error) {
-              //     showDialog(
-              //       context: context,
-              //       builder: (_) => AlertDialog(
-              //         title: const Text('Insert error'),
-              //         content: Text('error: ${error.error}'),
-              //       ),
-              //     );
-              //     return;
-              //   }
-              //   setState(() {return;});
-              // });
             }, 
             icon: const Icon(Icons.remove),
           ),
         ]),
-        FutureBuilder<Result<List<SchemaEntry>, Failure>>(
-          future: _scheme.fetch([]),
-          builder: (BuildContext context, AsyncSnapshot<Result<List<SchemaEntry>, Failure>> snapshot) {
+        FutureBuilder<Result<List<T>, Failure>>(
+          future: _scheme.fetch(null),
+          builder: (BuildContext context, AsyncSnapshot<Result<List<T>, Failure>> snapshot) {
             final textStile = Theme.of(context).textTheme.bodyMedium;
             if (snapshot.connectionState != ConnectionState.done) {
               return const Center(
@@ -169,14 +199,16 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<Widget> _buildRows(TableSchemaAbstract<SchemaEntry, void> scheme, List<SchemaEntry> entries) {
-    final textStile = Theme.of(context).textTheme.bodyMedium;
-    final rows = [TRow(children: _buildHead(scheme.fields, textStile))];
+  List<Widget> _buildRows(TableSchemaAbstract<T, void> scheme, List<T> entries) {
+    // final textStile = Theme.of(context).textTheme.bodyMedium;
+    final rows = [TRow<T>(fields: scheme.fields)];
     rows.addAll(
       entries.map((entry) {
-        return TRow(
-          selected: entry.isSelected,
-          children: _buildRow(scheme.fields, entry, textStile),
+        return TRow<T>(
+          entry: entry,
+          fields: scheme.fields,
+          onEditingComplete: _updateEntry,
+          // children: _buildRow(scheme.fields, entry, textStile),
         );
       }),
     );
@@ -198,40 +230,7 @@ class _TableWidgetState extends State<TableWidget> {
   }
   ///
   ///
-  List<Widget> _buildRow(List<Field> fields, SchemaEntry entry, textStyle) {
-    final cells = fields
-    .where((field) => !field.hidden)
-    .map((field) {
-      final value = entry.value(field.key);
-      if (field.relation.isEmpty) {
-        return TCell(
-          value: value.value.toString(),
-          editable: field.edit,
-          style: textStyle,
-          onComplete: (value) => _updateEntry(entry, field.key, value),
-        );
-      } else {
-        final List<SchemaEntry> relEntries = switch (_scheme.relation(field.relation.id)) {
-          Ok(:final value) => value.entries,
-          Err() => [],
-        };
-        final relation = TCellEntry(entries: relEntries, field: field.relation.field);
-        _log.debug("._buildRow | relation '${field.relation.id}': $relation");
-        return TCellList(
-          id: value.value,
-          relation: relation,
-          editable: field.edit,
-          style: textStyle,
-          onComplete: (value) => _updateEntry(entry, field.key, value),
-        );
-      }
-    }).toList();
-    return cells;
-  }
-  ///
-  ///
-  _updateEntry(SchemaEntry entry, String key, String value) {
-    entry.update(key, value);
+  _updateEntry(T entry) {
     if (entry.isChanged) {
       _scheme.update(entry).then((result) {
         if (result is Err) {

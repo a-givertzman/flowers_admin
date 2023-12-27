@@ -4,7 +4,9 @@ import 'package:flowers_admin/src/infrostructure/schamas/entry_factory.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
+import 'package:flowers_admin/src/presentation/customer_page/widgets/edit_customer_form.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
 
 ///
@@ -29,7 +31,7 @@ class CustomerBody extends StatefulWidget {
 ///
 ///
 class _CustomerBodyState extends State<CustomerBody> {
-  // final _log = Log("$_CustomerBodyState._");
+  final _log = Log("$_CustomerBodyState._");
   final String _authToken;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
@@ -43,41 +45,60 @@ class _CustomerBodyState extends State<CustomerBody> {
   ///
   @override
   Widget build(BuildContext context) {
-    return TableWidget(
+    return TableWidget<EntryCustomer, void>(
       addAction: TableWidgetAction(
         onPressed: (schema) {
-          return schema.insert().then((result) {
-            if (result case Err error) {
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: const Text('Insert error'),
-                  content: Text('error: ${error.error}'),
-                ),
-              );
-              return Err(error);
-            }
-            return const Ok(null);
+          return showDialog<Result<EntryCustomer, void>?>(
+            context: context, 
+            builder: (_) => const EditCustomerForm(),
+          ).then((result) {
+            _log.debug('new entry: $result');
+            return switch (result) {
+              Ok(:final value) => Ok(value),
+              Err(:final error) => Err(error),
+              _ => const Err(null),
+            };
           });
         }, 
         icon: const Icon(Icons.add),
       ),
-      delAction: TableWidgetAction(
+      editAction: TableWidgetAction(
         onPressed: (schema) {
-          schema.delete(entry).then((result) {
-            if (result case Err error) {
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  title: const Text('Insert error'),
-                  content: Text('error: ${error.error}'),
-                ),
-              );
-              return Err(error);
-            }
-            return const Ok(null);
+          final toBeUpdated = schema.entries.where(
+            (e) {
+              return e.isSelected;
+            },
+          ).toList();
+          return showDialog<Result<EntryCustomer, void>?>(
+            context: context, 
+            builder: (_) => EditCustomerForm(entry: toBeUpdated.firstOrNull),
+          ).then((result) {
+            _log.debug('edited entry: $result');
+            return switch (result) {
+              Ok(:final value) => Ok(value),
+              Err(:final error) => Err(error),
+              _ => const Err(null),
+            };
           });
         }, 
+        icon: const Icon(Icons.add),
+      ),      
+      delAction: TableWidgetAction(
+        onPressed: (schema) {
+          final toBeDeleted = schema.entries.firstWhere((e) {
+            return e.isSelected;
+          });
+          return showConfirmDialog(
+            context, 
+            const Text('Delete Customer'), 
+            Text('Are you sure want to delete following:\n$toBeDeleted'),
+          ).then((value) {
+            return switch (value) {
+              Ok() => Ok(toBeDeleted),
+              Err(:final error) => Err(error),
+            };
+          });
+        },
         icon: const Icon(Icons.add),
       ),
       schema: TableSchema<EntryCustomer, void>(
@@ -120,4 +141,29 @@ class _CustomerBodyState extends State<CustomerBody> {
       ),
     );
   }
+}
+
+
+Future<Result<void, void>> showConfirmDialog(BuildContext context, title, content) {
+  return showDialog<Result>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: title,
+      content: content,
+      actions: [
+        TextButton(
+          child: const Text("Cancel"),
+          onPressed:  () {
+            Navigator.pop(context, const Err(null));
+          },
+        ),
+        TextButton(
+          child: const Text("Yes"),
+          onPressed:  () {
+            Navigator.pop(context, const Ok(null));
+          },
+        ),
+      ],              
+    ),
+  ).then((value) => value ?? const Err(null));
 }

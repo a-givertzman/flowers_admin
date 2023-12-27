@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 class EntryTransaction implements SchemaEntry {
   final _id = const Uuid().v1();  // v1 time-based id
   bool _changed = false;
-  bool _selected = false;
+  bool _isSelected = false;
   late final Map<String, FieldValue> _map;
   ///
   /// Single row of table "Customer"
@@ -44,7 +44,7 @@ class EntryTransaction implements SchemaEntry {
   //
   //
   @override
-  bool get isSelected => _selected;
+  bool get isSelected => _isSelected;
   //
   //
   @override
@@ -79,5 +79,11 @@ class EntryTransaction implements SchemaEntry {
     if (field != null) {
       _changed = field.update(value);
     }
+  }
+  //
+  //
+  @override
+  void select(bool selected) {
+    if (_isSelected != selected) _isSelected = selected;
   }
 }

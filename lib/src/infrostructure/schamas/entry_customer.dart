@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 class EntryCustomer implements SchemaEntry {
   final _id = const Uuid().v1();  // v1 time-based id
   bool _changed = false;
-  bool _selected = false;
+  bool _isSelected = false;
   late final Map<String, FieldValue> _map;
   ///
   /// Single row of table "Customer"
@@ -47,7 +47,7 @@ class EntryCustomer implements SchemaEntry {
   //
   //
   @override
-  bool get isSelected => _selected;
+  bool get isSelected => _isSelected;
   //
   //
   @override
@@ -71,7 +71,7 @@ class EntryCustomer implements SchemaEntry {
   //
   //  
   @override
-  void update(String key, String value) {
+  void update(String key, dynamic value) {
     if (!_map.containsKey(key)) {
       throw Failure(
         message: "$runtimeType.update | key '$key' - not found", 
@@ -82,5 +82,11 @@ class EntryCustomer implements SchemaEntry {
     if (field != null) {
       _changed = field.update(value);
     }
+  }
+  //
+  //
+  @override
+  void select(bool selected) {
+    if (_isSelected != selected) _isSelected = selected;
   }
 }
