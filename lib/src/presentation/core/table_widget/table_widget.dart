@@ -79,21 +79,23 @@ class _TableWidgetState<T extends SchemaEntry, P> extends State<TableWidget<T, P
               final onPressed = _editAction.onPressed;
               if (onPressed != null) {
                 switch (await onPressed(_scheme)) {
-                  case Ok(value: final entry): setState(() {
-                    _scheme.update(entry).then((result) {
-                      if (result case Err error) {
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: const Text('Update error'),
-                            content: Text('error: ${error.error}'),
-                          ),
-                        );
-                        return;
-                      }
-                      setState(() {return;});
-                    });
-                  });
+                  case Ok(value: final entry): () {
+                    if (entry.isChanged) {
+                      _scheme.update(entry).then((result) {
+                        if (result case Err error) {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text('Update error'),
+                              content: Text('error: ${error.error}'),
+                            ),
+                          );
+                          return;
+                        }
+                        setState(() {return;});
+                      });
+                    }
+                  } ();
                   case Err():
                 }
               }
@@ -105,7 +107,7 @@ class _TableWidgetState<T extends SchemaEntry, P> extends State<TableWidget<T, P
               final onPressed = _addAction.onPressed;
               if (onPressed != null) {
                 switch (await onPressed(_scheme)) {
-                  case Ok(value: final entry): setState(() {
+                  case Ok(value: final entry): () {
                     _scheme.insert(entry: entry).then((result) {
                       if (result case Err error) {
                         showDialog(
@@ -119,7 +121,7 @@ class _TableWidgetState<T extends SchemaEntry, P> extends State<TableWidget<T, P
                       }
                       setState(() {return;});
                     });
-                  });
+                  } ();
                   case Err():
                 }
               }
@@ -131,7 +133,7 @@ class _TableWidgetState<T extends SchemaEntry, P> extends State<TableWidget<T, P
               final onPressed = _delAction.onPressed;
               if (onPressed != null) {
                 switch (await onPressed(_scheme)) {
-                  case Ok(value: final entry): setState(() {
+                  case Ok(value: final entry): () {
                     _scheme.delete(entry).then((result) {
                       if (result case Err error) {
                         showDialog(
@@ -145,7 +147,7 @@ class _TableWidgetState<T extends SchemaEntry, P> extends State<TableWidget<T, P
                       }
                       setState(() {return;});
                     });
-                  });
+                  } ();
                   case Err():
                 }
               }
@@ -208,25 +210,10 @@ class _TableWidgetState<T extends SchemaEntry, P> extends State<TableWidget<T, P
           entry: entry,
           fields: scheme.fields,
           onEditingComplete: _updateEntry,
-          // children: _buildRow(scheme.fields, entry, textStile),
         );
       }),
     );
     return rows;
-  }
-  ///
-  ///
-  List<Widget> _buildHead(List<Field> fields, textStyle) {
-    final cells = fields
-    .where((field) => !field.hidden)
-    .map((field) {
-      return TCell(
-        value: field.name,
-        style: textStyle,
-        editable: false,
-      );
-    }).toList();
-    return cells;
   }
   ///
   ///
@@ -248,3 +235,29 @@ class _TableWidgetState<T extends SchemaEntry, P> extends State<TableWidget<T, P
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+  // ///
+  // ///
+  // List<Widget> _buildHead(List<Field> fields, textStyle) {
+  //   final cells = fields
+  //     .where((field) => !field.hidden)
+  //     .map((field) {
+  //       return TCell(
+  //         value: field.name,
+  //         style: textStyle,
+  //         editable: false,
+  //       );
+  //     }).toList();
+  //   return cells;
+  // }

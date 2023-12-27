@@ -71,7 +71,7 @@ class _CustomerBodyState extends State<CustomerBody> {
           ).toList();
           return showDialog<Result<EntryCustomer, void>?>(
             context: context, 
-            builder: (_) => EditCustomerForm(entry: toBeUpdated.firstOrNull),
+            builder: (_) => EditCustomerForm(entry: toBeUpdated.lastOrNull),
           ).then((result) {
             _log.debug('edited entry: $result');
             return switch (result) {

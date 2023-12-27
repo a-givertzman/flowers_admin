@@ -36,15 +36,17 @@ class TCell extends StatefulWidget {
 ///
 class _TCellState extends State<TCell> {
   final _log = Log("$_TCellState._");
-  final String _value;
+  late final TextEditingController _controller = TextEditingController();
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
   final bool _editable;
   final _textPaddingV = 8.0;
   final _textPaddingH = 16.0;
   final _textAlign = TextAlign.left;
+  String _value;
   bool _isEditing = false;
-  late final TextEditingController _controller = TextEditingController();
+  bool _isChanged = false;
+  bool _onEnter = false;
   _TCellState({
     required String value,
     required TextStyle? style,
@@ -67,14 +69,7 @@ class _TCellState extends State<TCell> {
   ///
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (_editable) {
-          setState(() {
-            _isEditing = true;
-          });
-        }
-      },
+    return Expanded(
       child: _isEditing
         ? TextField(
           controller: _controller,
@@ -82,11 +77,16 @@ class _TCellState extends State<TCell> {
           textAlign: _textAlign,
            decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
-            border: const OutlineInputBorder(borderSide: BorderSide(width: 0.1)),
+            border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red : Colors.black)),
             // border: const OutlineInputBorder(),
             isDense: true,
             // labelText: 'Password',
           ),
+          onChanged: (value) {
+            setState(() {
+              _isChanged = value != _value;
+            });
+          },
           onTapOutside: (_) {
             _applyNewValue(_controller.text);
           },
@@ -96,10 +96,38 @@ class _TCellState extends State<TCell> {
         )
         : Padding(
           padding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH),
-          child: Text(
-            _controller.text,
-            style: _style,
-            textAlign: _textAlign,
+          child: MouseRegion(
+            onEnter: (_) {
+              setState(() {
+                _onEnter = true;
+              });
+            },
+            onExit: (_) {
+              setState(() {
+                _onEnter = false;
+              });
+            },
+            child: GestureDetector(
+              // behavior: HitTestBehavior.translucent,
+              onTap: () {
+                if (_editable) {
+                  setState(() {
+                    _isEditing = true;
+                  });
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  // border: _onEnter ? Border.all() : Border.all(color: Colors.transparent),
+                  boxShadow: _onEnter ? [BoxShadow(color: Colors.grey.withOpacity(0.2), spreadRadius: 1, blurRadius: 4)]  : null,
+                ),
+                child: Text(
+                  _controller.text,
+                  style: _style?.copyWith(color: _isChanged ? Colors.red : null),
+                  textAlign: _textAlign,
+                ),
+              ),
+            ),
           ),
         ),
     );
@@ -109,8 +137,11 @@ class _TCellState extends State<TCell> {
   _applyNewValue(String value) {
     setState(() {
       _isEditing = false;
+      _onEnter = false;
     });
-    final onComplete = _onComplete;
-    if (onComplete != null) onComplete(value);
+    if (value != _value) {
+      final onComplete = _onComplete;
+      if (onComplete != null) onComplete(value);
+    }
   }
 }
