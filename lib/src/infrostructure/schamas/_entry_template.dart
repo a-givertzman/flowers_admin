@@ -1,79 +1,67 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/core/error/failure.dart';
-import 'package:uuid/uuid.dart';
 
 ///
 /// Single row of table "Customer"
-class EntryTemplate implements SchemaEntry {
-  final _id = const Uuid().v1();  // v1 time-based id
-  bool _changed = false;
-  bool _isSelected = false;
-  late final Map<String, FieldValue> _map;
+class EntryTemplate implements SchemaEntryAbstract {
+  final SchemaEntry _entry;
   ///
-  /// Single row of table "Customer"
+  /// Single row of table "Template"
   /// - [keys] - list of field names
   EntryTemplate({
     required Map<String, FieldValue> map,
   }) :
-    _map = map;
+    _entry = SchemaEntry(map: map);
   //
   //
   @override
-  String get key => _id;
-  //
-  //
-  @override
-  bool get isChanged => _changed;
-  //
-  //
-  @override
-  bool get isSelected => _isSelected;
-  //
-  //
-  @override
-  FieldValue value(String key) {
-    final value = _map[key];
-    if (value != null) {
-      return value;
+  EntryTemplate.from(Map<String, dynamic> row): _entry = SchemaEntry.empty() {
+    for (final MapEntry(:key, :value) in row.entries) {
+      _entry.update(key, FieldValue(value));
     }
-    throw Failure(
-      message: "$runtimeType.value | key '$key' - not found", 
-      stackTrace: StackTrace.current,
-    );
   }
+  //
+  //
+  EntryTemplate.empty(): _entry = SchemaEntry.empty() {
+      _entry.update('id', FieldValue(null));
+      _entry.update('...', FieldValue(null));
+      _entry.update('name', FieldValue(''));
+      _entry.update('details', FieldValue(''));
+      _entry.update('description', FieldValue(''));
+      _entry.update('picture', FieldValue(''));
+      _entry.update('created', FieldValue(''));
+      _entry.update('updated', FieldValue(''));
+      _entry.update('deleted', FieldValue(''));
+    }
   //
   //
   @override
-  EntryTemplate.from(Map<String, dynamic> row) {
-    _map =row.map((key, value) {
-      return MapEntry(key, value);
-    });
-  }
+  String get key => _entry.key;
+  //
+  //
+  @override
+  bool get isChanged => _entry.isChanged;
+  //
+  //
+  @override
+  bool get isSelected => _entry.isSelected;
+  //
+  //
+  @override
+  FieldValue value(String key) => _entry.value(key);
   //
   //  
   @override
-  void update(String key, String value) {
-    if (!_map.containsKey(key)) {
-      throw Failure(
-        message: "$runtimeType.update | key '$key' - not found", 
-        stackTrace: StackTrace.current,
-      );
-    }
-    final field = _map[key];
-    if (field != null) {
-      _changed = field.update(value);
-    }
-  }
+  void update(String key, String value) => _entry.update(key, value);
   //
   //
   @override
-  void select(bool selected) {
-    if (_isSelected != selected) _isSelected = selected;
-  }
+  void select(bool selected) => _entry.select(selected);
   //
   //
   @override
-  String toString() {
-    return '$runtimeType{ isChanged: $_changed, isSelected: $_isSelected, map: $_map}';
-  }
+  void saved() => _entry.saved();
+  //
+  //
+  @override
+  String toString() => _entry.toString();
 }

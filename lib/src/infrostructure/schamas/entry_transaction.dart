@@ -1,95 +1,69 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/core/error/failure.dart';
-import 'package:uuid/uuid.dart';
 
 ///
-/// Single row of table "Customer"
-class EntryTransaction implements SchemaEntry {
-  final _id = const Uuid().v1();  // v1 time-based id
-  bool _changed = false;
-  bool _isSelected = false;
-  late final Map<String, FieldValue> _map;
+/// Single row of table "Transaction"
+class EntryTransaction implements SchemaEntryAbstract {
+  final SchemaEntry _entry;
   ///
-  /// Single row of table "Customer"
+  /// Single row of table "Transaction"
   /// - [keys] - list of field names
   EntryTransaction({
     required Map<String, FieldValue> map,
   }) :
-    _map = map;
-  //
-  //
-  EntryTransaction.empty() {
-    _map = {
-      'id': FieldValue(null),
-      'timestamp': FieldValue( DateTime.now().toIso8601String() ),
-      'account_owner': FieldValue(''),
-      'value': FieldValue('0'),
-      'description': FieldValue(''),
-      'order_id': FieldValue(null),
-      'customer_id': FieldValue('0'),
-      'customer_account': FieldValue('0'),
-      'created': FieldValue(null),
-      'updated': FieldValue(null),
-      'deleted': FieldValue(null),
-    };
-  }
+    _entry = SchemaEntry(map: map);
   //
   //
   @override
-  String get key => _id;
-  //
-  //
-  @override
-  bool get isChanged => _changed;
-  //
-  //
-  @override
-  bool get isSelected => _isSelected;
-  //
-  //
-  @override
-  FieldValue value(String key) {
-    final value = _map[key];
-    if (value != null) {
-      return value;
+  EntryTransaction.from(Map<String, dynamic> row): _entry = SchemaEntry.empty() {
+    for (final MapEntry(:key, :value) in row.entries) {
+      _entry.update(key, FieldValue(value));
     }
-    throw Failure(
-      message: "$runtimeType.value | key '$key' - not found", 
-      stackTrace: StackTrace.current,
-    );
-  }  //
+  }
+  //
+  //
+  EntryTransaction.empty(): _entry = SchemaEntry.empty() {
+	    _entry.update('id', FieldValue(''));
+	    _entry.update('timestamp', FieldValue(''));
+	    _entry.update('account_owner', FieldValue(''));
+	    _entry.update('value', FieldValue(''));
+	    _entry.update('description', FieldValue(''));
+	    _entry.update('order_id', FieldValue(''));
+	    _entry.update('customer_id', FieldValue(''));
+	    _entry.update('customer_account', FieldValue(''));
+	    _entry.update('created', FieldValue(''));
+	    _entry.update('updated', FieldValue(''));
+	    _entry.update('deleted', FieldValue(''));
+    }
+  //
   //
   @override
-  EntryTransaction.from(Map<String, dynamic> row) {
-    _map =row.map((key, value) {
-      return MapEntry(key, FieldValue(value));
-    });
-  }
+  String get key => _entry.key;
+  //
+  //
+  @override
+  bool get isChanged => _entry.isChanged;
+  //
+  //
+  @override
+  bool get isSelected => _entry.isSelected;
+  //
+  //
+  @override
+  FieldValue value(String key) => _entry.value(key);
   //
   //  
   @override
-  void update(String key, String value) {
-    if (!_map.containsKey(key)) {
-      throw Failure(
-        message: "$runtimeType.update | key '$key' - not found", 
-        stackTrace: StackTrace.current,
-      );
-    }
-    final field = _map[key];
-    if (field != null) {
-      _changed = field.update(value);
-    }
-  }
+  void update(String key, String value) => _entry.update(key, value);
   //
   //
   @override
-  void select(bool selected) {
-    if (_isSelected != selected) _isSelected = selected;
-  }
+  void select(bool selected) => _entry.select(selected);
   //
   //
   @override
-  String toString() {
-    return '$runtimeType{ isChanged: $_changed, isSelected: $_isSelected, map: $_map}';
-  }
+  void saved() => _entry.saved();
+  //
+  //
+  @override
+  String toString() => _entry.toString();
 }

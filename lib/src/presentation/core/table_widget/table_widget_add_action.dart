@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
 ///
 ///
-class TableWidgetAction<T extends SchemaEntry, TParams> {
+class TableWidgetAction<T extends SchemaEntryAbstract, TParams> {
   final Widget _icon;
   final Future<Result<T, void>> Function(TableSchemaAbstract<T, TParams>)? _onPressed;
   ///

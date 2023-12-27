@@ -7,7 +7,7 @@ import 'package:hmi_core/hmi_core_log.dart';
 
 ///
 ///
-class TRow<T extends SchemaEntry> extends StatefulWidget {
+class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
   final T? _entry;
   final Map<String, List<SchemaEntry>> _relations;
   final List<Field> _fields;
@@ -48,7 +48,7 @@ class TRow<T extends SchemaEntry> extends StatefulWidget {
 }
 ///
 ///
-class _TRowState<T extends SchemaEntry> extends State<TRow<T>> {
+class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   final _log = Log("$TRow");
   final T? _entry;
   final Map<String, List<SchemaEntry>> _relations;

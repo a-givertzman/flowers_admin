@@ -28,7 +28,6 @@ class EditCustomerForm extends StatefulWidget {
 class _EditCustomerFormState extends State<EditCustomerForm> {
   final _log = Log("$_EditCustomerFormState._");
   final EntryCustomer _entry;
-  bool _isChanged = false;
   ///
   ///
   _EditCustomerFormState({

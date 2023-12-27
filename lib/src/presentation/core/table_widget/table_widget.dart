@@ -8,7 +8,7 @@ import 'package:hmi_core/hmi_core_result_new.dart';
 
 ///
 ///
-class TableWidget<T extends SchemaEntry, P> extends StatefulWidget {
+class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
   final TableSchemaAbstract<T, P> _scheme;
   final TableWidgetAction<T, P> _addAction;
   final TableWidgetAction<T, P> _editAction;
@@ -39,13 +39,12 @@ class TableWidget<T extends SchemaEntry, P> extends StatefulWidget {
 }
 ///
 ///
-class _TableWidgetState<T extends SchemaEntry, P> extends State<TableWidget<T, P>> {
+class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWidget<T, P>> {
   final _log = Log("$_TableWidgetState");
   final TableSchemaAbstract<T, P> _scheme;
   final TableWidgetAction<T, P> _addAction;
   final TableWidgetAction<T, P> _editAction;
   final TableWidgetAction<T, P> _delAction;
-  final String _selected = '';
   ///
   ///
   _TableWidgetState({
