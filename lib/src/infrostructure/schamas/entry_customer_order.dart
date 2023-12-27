@@ -3,6 +3,20 @@ import 'package:ext_rw/ext_rw.dart';
 ///
 /// Single row of table "CustomerOredr"
 class EntryCustomerOrder implements SchemaEntryAbstract {
+  static final _initial = {
+      'id': FieldValue(null),
+      'customer_id': FieldValue(null),
+      'purchase_content_id': FieldValue(null),
+      'count': FieldValue('0'),
+      'paid': FieldValue('0.0'),
+      'distributed': FieldValue('0'),
+      'to_refound': FieldValue('0.0'),
+      'refounded': FieldValue('0.0'),
+      'description': FieldValue(''),
+      'created': FieldValue(''),
+      'updated': FieldValue(''),
+      'deleted': FieldValue(''),
+  };
   final SchemaEntry _entry;
   ///
   /// Single row of table "CustomerOrder"
@@ -14,27 +28,14 @@ class EntryCustomerOrder implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryCustomerOrder.from(Map<String, dynamic> row): _entry = SchemaEntry.empty() {
+  EntryCustomerOrder.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
     for (final MapEntry(:key, :value) in row.entries) {
-      _entry.update(key, FieldValue(value));
+      _entry.update(key, value);
     }
   }
   //
   //
-  EntryCustomerOrder.empty(): _entry = SchemaEntry.empty() {
-      _entry.update('id', FieldValue(null));
-      _entry.update('customer_id', FieldValue(null));
-      _entry.update('purchase_content_id', FieldValue(null));
-      _entry.update('count', FieldValue('0'));
-      _entry.update('paid', FieldValue('0.0'));
-      _entry.update('distributed', FieldValue('0'));
-      _entry.update('to_refound', FieldValue('0.0'));
-      _entry.update('refounded', FieldValue('0.0'));
-      _entry.update('description', FieldValue(''));
-      _entry.update('created', FieldValue(''));
-      _entry.update('updated', FieldValue(''));
-      _entry.update('deleted', FieldValue(''));
-    }
+  EntryCustomerOrder.empty(): _entry = SchemaEntry(map: _initial);
   //
   //
   @override

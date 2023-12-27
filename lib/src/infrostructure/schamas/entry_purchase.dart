@@ -3,6 +3,19 @@ import 'package:ext_rw/ext_rw.dart';
 ///
 /// Single row of table "Purchase"
 class EntryPurchase implements SchemaEntryAbstract {
+  static final _initial = {
+	    'id': FieldValue(null),
+	    'name': FieldValue(''),
+	    'details': FieldValue(''),
+	    'status': FieldValue(''),
+	    'date_of_start': FieldValue(''),
+	    'date_of_end': FieldValue(''),
+	    'description': FieldValue(''),
+	    'picture': FieldValue(''),
+	    'created': FieldValue(''),
+	    'updated': FieldValue(''),
+	    'deleted': FieldValue(''),
+  };
   final SchemaEntry _entry;
   ///
   /// Single row of table "Purchase"
@@ -14,26 +27,14 @@ class EntryPurchase implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryPurchase.from(Map<String, dynamic> row): _entry = SchemaEntry.empty() {
+  EntryPurchase.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
     for (final MapEntry(:key, :value) in row.entries) {
-      _entry.update(key, FieldValue(value));
+      _entry.update(key, value);
     }
   }
   //
   //
-  EntryPurchase.empty(): _entry = SchemaEntry.empty() {
-	    _entry.update('id', FieldValue(null));
-	    _entry.update('name', FieldValue(''));
-	    _entry.update('details', FieldValue(''));
-	    _entry.update('status', FieldValue(''));
-	    _entry.update('date_of_start', FieldValue(''));
-	    _entry.update('date_of_end', FieldValue(''));
-	    _entry.update('description', FieldValue(''));
-	    _entry.update('picture', FieldValue(''));
-	    _entry.update('created', FieldValue(''));
-	    _entry.update('updated', FieldValue(''));
-	    _entry.update('deleted', FieldValue(''));
-    }
+  EntryPurchase.empty(): _entry = SchemaEntry(map: _initial);
   //
   //
   @override

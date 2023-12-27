@@ -1,8 +1,26 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 
 ///
 /// Single row of table "Customer"
 class EntryCustomer implements SchemaEntryAbstract {
+  final _log = Log("$EntryCustomer");
+  static final _initial = {
+    'id': FieldValue(null),
+    'role': FieldValue('customer'),
+    'email': FieldValue('@'),
+    'phone': FieldValue('+7'),
+    'name': FieldValue(''),
+    'location': FieldValue(''),
+    'login': FieldValue(''),
+    'pass': FieldValue(''),
+    'account': FieldValue('0'),
+    'last_act': FieldValue(null),
+    'blocked': FieldValue(null),
+    'created': FieldValue(null),
+    'updated': FieldValue(null),
+    'deleted': FieldValue(null),
+    };
   final SchemaEntry _entry;
   ///
   /// Single row of table "Customer"
@@ -14,29 +32,15 @@ class EntryCustomer implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryCustomer.from(Map<String, dynamic> row): _entry = SchemaEntry.empty() {
+  EntryCustomer.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
     for (final MapEntry(:key, :value) in row.entries) {
-      _entry.update(key, FieldValue(value));
+      _log.debug('.from | key: $key, \t value: $value, \t valuetype: ${value.runtimeType}');
+      _entry.update(key, value);
     }
   }
   //
   //
-  EntryCustomer.empty(): _entry = SchemaEntry.empty() {
-    _entry.update('id', FieldValue(null));
-    _entry.update('role', FieldValue('customer'));
-    _entry.update('email', FieldValue('@'));
-    _entry.update('phone', FieldValue('+7'));
-    _entry.update('name', FieldValue(''));
-    _entry.update('location', FieldValue(''));
-    _entry.update('login', FieldValue(''));
-    _entry.update('pass', FieldValue(''));
-    _entry.update('account', FieldValue('0'));
-    _entry.update('last_act', FieldValue(null));
-    _entry.update('blocked', FieldValue(null));
-    _entry.update('created', FieldValue(null));
-    _entry.update('updated', FieldValue(null));
-    _entry.update('deleted', FieldValue(null));
-    }
+  EntryCustomer.empty(): _entry = SchemaEntry(map: _initial);
   //
   //
   @override

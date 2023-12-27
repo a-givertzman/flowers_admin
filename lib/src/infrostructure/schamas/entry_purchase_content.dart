@@ -3,6 +3,22 @@ import 'package:ext_rw/ext_rw.dart';
 ///
 /// Single row of table "PurchaseContent"
 class EntryPurchaseContent implements SchemaEntryAbstract {
+  static final _initial = {
+	    'id': FieldValue(null),
+	    'purchase_id': FieldValue(null),
+	    'product_id': FieldValue(null),
+	    'sale_price': FieldValue('0.00'),
+	    'sale_currency': FieldValue(''),
+	    'shipping': FieldValue('0.00'),
+	    'amount': FieldValue('0.00'),
+	    'name': FieldValue(''),
+	    'details': FieldValue(''),
+	    'description': FieldValue(''),
+	    'picture': FieldValue(''),
+	    'created': FieldValue(''),
+	    'updated': FieldValue(''),
+	    'deleted': FieldValue(''),
+  };
   final SchemaEntry _entry;
   ///
   /// Single row of table "PurchaseContent"
@@ -14,29 +30,14 @@ class EntryPurchaseContent implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryPurchaseContent.from(Map<String, dynamic> row): _entry = SchemaEntry.empty() {
+  EntryPurchaseContent.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
     for (final MapEntry(:key, :value) in row.entries) {
-      _entry.update(key, FieldValue(value));
+      _entry.update(key, value);
     }
   }
   //
   //
-  EntryPurchaseContent.empty(): _entry = SchemaEntry.empty() {
-	    _entry.update('id', FieldValue(null));
-	    _entry.update('purchase_id', FieldValue(null));
-	    _entry.update('product_id', FieldValue(null));
-	    _entry.update('sale_price', FieldValue('0.00'));
-	    _entry.update('sale_currency', FieldValue(''));
-	    _entry.update('shipping', FieldValue('0.00'));
-	    _entry.update('amount', FieldValue('0.00'));
-	    _entry.update('name', FieldValue(''));
-	    _entry.update('details', FieldValue(''));
-	    _entry.update('description', FieldValue(''));
-	    _entry.update('picture', FieldValue(''));
-	    _entry.update('created', FieldValue(''));
-	    _entry.update('updated', FieldValue(''));
-	    _entry.update('deleted', FieldValue(''));
-    }
+  EntryPurchaseContent.empty(): _entry = SchemaEntry(map: _initial);
   //
   //
   @override

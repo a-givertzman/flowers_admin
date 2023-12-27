@@ -3,6 +3,17 @@ import 'package:ext_rw/ext_rw.dart';
 ///
 /// Single row of table "Customer"
 class EntryTemplate implements SchemaEntryAbstract {
+  static final _initial = {
+    'id': FieldValue(null),
+    '...': FieldValue(null),
+    'name': FieldValue(''),
+    'details': FieldValue(''),
+    'description': FieldValue(''),
+    'picture': FieldValue(''),
+    'created': FieldValue(''),
+    'updated': FieldValue(''),
+    'deleted': FieldValue(''),
+  };
   final SchemaEntry _entry;
   ///
   /// Single row of table "Template"
@@ -14,24 +25,14 @@ class EntryTemplate implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryTemplate.from(Map<String, dynamic> row): _entry = SchemaEntry.empty() {
+  EntryTemplate.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
     for (final MapEntry(:key, :value) in row.entries) {
-      _entry.update(key, FieldValue(value));
+      _entry.update(key, value);
     }
   }
   //
   //
-  EntryTemplate.empty(): _entry = SchemaEntry.empty() {
-      _entry.update('id', FieldValue(null));
-      _entry.update('...', FieldValue(null));
-      _entry.update('name', FieldValue(''));
-      _entry.update('details', FieldValue(''));
-      _entry.update('description', FieldValue(''));
-      _entry.update('picture', FieldValue(''));
-      _entry.update('created', FieldValue(''));
-      _entry.update('updated', FieldValue(''));
-      _entry.update('deleted', FieldValue(''));
-    }
+  EntryTemplate.empty(): _entry = SchemaEntry(map: _initial);
   //
   //
   @override

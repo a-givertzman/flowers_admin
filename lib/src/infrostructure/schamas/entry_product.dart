@@ -3,6 +3,21 @@ import 'package:ext_rw/ext_rw.dart';
 ///
 /// Single row of table "Product"
 class EntryProduct implements SchemaEntryAbstract {
+  static final _initial = {
+	  'id': FieldValue(null),
+	  'product_category_id': FieldValue(null),
+	  'name': FieldValue(''),
+	  'details': FieldValue(''),
+	  'primary_price': FieldValue('0.00'),
+	  'primary_currency': FieldValue(''),
+	  'primary_order_quantity': FieldValue('0'),
+	  'order_quantity': FieldValue('0'),
+	  'description': FieldValue(''),
+	  'picture': FieldValue(''),
+	  'created': FieldValue(''),
+	  'updated': FieldValue(''),
+	  'deleted': FieldValue(''),
+  };
   final SchemaEntry _entry;
   ///
   /// Single row of table "Product"
@@ -14,28 +29,14 @@ class EntryProduct implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryProduct.from(Map<String, dynamic> row): _entry = SchemaEntry.empty() {
+  EntryProduct.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
     for (final MapEntry(:key, :value) in row.entries) {
-      _entry.update(key, FieldValue(value));
+      _entry.update(key, value);
     }
   }
   //
   //
-  EntryProduct.empty(): _entry = SchemaEntry.empty() {
-	  _entry.update('id', FieldValue(null));
-	  _entry.update('product_category_id', FieldValue(null));
-	  _entry.update('name', FieldValue(''));
-	  _entry.update('details', FieldValue(''));
-	  _entry.update('primary_price', FieldValue('0.00'));
-	  _entry.update('primary_currency', FieldValue(''));
-	  _entry.update('primary_order_quantity', FieldValue('0'));
-	  _entry.update('order_quantity', FieldValue('0'));
-	  _entry.update('description', FieldValue(''));
-	  _entry.update('picture', FieldValue(''));
-	  _entry.update('created', FieldValue(''));
-	  _entry.update('updated', FieldValue(''));
-	  _entry.update('deleted', FieldValue(''));
-    }
+  EntryProduct.empty(): _entry = SchemaEntry(map: _initial);
   //
   //
   @override
