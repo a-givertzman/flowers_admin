@@ -194,7 +194,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     child: const Text("Cancel"),
                   ),
                   TextButton(
-                    onPressed:  _isChanged 
+                    onPressed: _isChanged 
                       ? () {
                           Navigator.pop(context, Ok<EntryCustomer, void>(_entry));
                       } 
@@ -245,6 +245,8 @@ class _TextEditWidgetState extends State<TextEditWidget> {
   final Function(String)? _onComplete;
   final TextEditingController _controller;
   final String? _labelText;
+  final String _value;
+  bool _isChanged = false;
   ///
   ///
   _TextEditWidgetState({
@@ -252,6 +254,7 @@ class _TextEditWidgetState extends State<TextEditWidget> {
     Function(String)? onComplete,
     String? labelText,
   }):
+    _value = value,
     _controller = TextEditingController.fromValue(TextEditingValue(text: value)),
     _onComplete = onComplete,
     _labelText = labelText;
@@ -267,14 +270,16 @@ class _TextEditWidgetState extends State<TextEditWidget> {
         // textAlign: _textAlign,
         decoration: InputDecoration(
           // contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
-          border: const OutlineInputBorder(borderSide: BorderSide(width: 0.1)),
+          border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red : Colors.black)),
           // border: const OutlineInputBorder(),
           isDense: true,
           labelText: _labelText,
         ),
-        // onChanged: (value) {
-        //   _entry?.update('key', value);
-        // },
+        onChanged: (value) {
+          setState(() {
+            _isChanged = value != _value;
+          });
+        },
         onTapOutside: (_) {
           _onEditingComplete(_controller.text);
         },
@@ -287,7 +292,9 @@ class _TextEditWidgetState extends State<TextEditWidget> {
   ///
   ///
   _onEditingComplete(String value) {
-    final onComplete = _onComplete;
-    if (onComplete != null) onComplete(value);
+    if (value != _value) {
+      final onComplete = _onComplete;
+      if (onComplete != null) onComplete(value);
+    }
   }
 }

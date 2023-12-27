@@ -36,14 +36,14 @@ class TCell extends StatefulWidget {
 ///
 class _TCellState extends State<TCell> {
   final _log = Log("$_TCellState._");
-  late final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
   final bool _editable;
   final _textPaddingV = 8.0;
   final _textPaddingH = 16.0;
   final _textAlign = TextAlign.left;
-  String _value;
+  final String _value;
   bool _isEditing = false;
   bool _isChanged = false;
   bool _onEnter = false;
@@ -54,17 +54,10 @@ class _TCellState extends State<TCell> {
     required bool editable,
   }) :
     _value = value,
+    _controller = TextEditingController.fromValue(TextEditingValue(text: value)),
     _style = style,
     _onComplete = onComplete,
     _editable = editable;
-  ///
-  ///
-  @override
-  void initState() {
-    _controller.text = _value;
-    // _log.debug("initState | _controller.text: ${_controller.text}");
-    super.initState();
-  }
   ///
   ///
   @override
