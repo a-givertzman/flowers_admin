@@ -2,7 +2,7 @@ import 'package:ext_rw/ext_rw.dart';
 
 ///
 ///
-Sql updateSqlBuilderTransaction(Sql sql, SchemaEntry entry) {
+Sql updateSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
   return Sql(sql: """UPDATE transaction SET (
     id,
     timestamp,
@@ -33,7 +33,7 @@ Sql updateSqlBuilderTransaction(Sql sql, SchemaEntry entry) {
 }
 ///
 ///
-Sql insertSqlBuilderTransaction(Sql sql, SchemaEntry entry) {
+Sql insertSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
   return Sql(sql: """insert into transaction (
     timestamp,
     account_owner,

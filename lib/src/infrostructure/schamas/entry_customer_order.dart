@@ -1,69 +1,76 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/core/error/failure.dart';
-import 'package:uuid/uuid.dart';
 
 ///
-/// Single row of table "Customer"
-class EntryCustomerOrder implements SchemaEntry {
-  final _id = const Uuid().v1();  // v1 time-based id  // v1 time-based id
-  bool _changed = false;
-  bool _selected = false;
-  late final Map<String, FieldValue> _map;
+/// Single row of table "CustomerOredr"
+class EntryCustomerOrder implements SchemaEntryAbstract {
+  final SchemaEntry _entry;
   ///
-  /// Single row of table "Customer"
+  ///
+  static Map<String, FieldValue> get _initial {
+    final initial = <String, FieldValue>{
+      'id': FieldValue(null),
+      'customer_id': FieldValue(null),
+      'purchase_content_id': FieldValue(null),
+      'count': FieldValue('0'),
+      'paid': FieldValue('0.0'),
+      'distributed': FieldValue('0'),
+      'to_refound': FieldValue('0.0'),
+      'refounded': FieldValue('0.0'),
+      'description': FieldValue(''),
+      'created': FieldValue(''),
+      'updated': FieldValue(''),
+      'deleted': FieldValue(''),
+    };
+    return initial;
+  }
+  ///
+  /// Single row of table "CustomerOrder"
   /// - [keys] - list of field names
   EntryCustomerOrder({
     required Map<String, FieldValue> map,
   }) :
-    _map = map;
-  //
-  //
-  EntryCustomerOrder.empty();
+    _entry = SchemaEntry(map: map);
   //
   //
   @override
-  String get key => _id;
-  //
-  //
-  @override
-  bool get isChanged => _changed;
-  //
-  //
-  @override
-  bool get isSelected => _selected;
-  //
-  //
-  @override
-  FieldValue value(String key) {
-    final value = _map[key];
-    if (value != null) {
-      return value;
+  EntryCustomerOrder.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+    for (final MapEntry(:key, :value) in row.entries) {
+      _entry.update(key, value);
     }
-    throw Failure(
-      message: "$runtimeType.value | key '$key' - not found", 
-      stackTrace: StackTrace.current,
-    );
   }
   //
+  //
+  EntryCustomerOrder.empty(): _entry = SchemaEntry(map: _initial);
+  //
+  //
   @override
-  EntryCustomerOrder.from(Map<String, dynamic> row) {
-    _map =row.map((key, value) {
-      return MapEntry(key, FieldValue(value));
-    });
-  }
+  String get key => _entry.key;
+  //
+  //
+  @override
+  bool get isChanged => _entry.isChanged;
+  //
+  //
+  @override
+  bool get isSelected => _entry.isSelected;
+  //
+  //
+  @override
+  FieldValue value(String key) => _entry.value(key);
   //
   //  
   @override
-  void update(String key, String value) {
-    if (!_map.containsKey(key)) {
-      throw Failure(
-        message: "$runtimeType.update | key '$key' - not found", 
-        stackTrace: StackTrace.current,
-      );
-    }
-    final field = _map[key];
-    if (field != null) {
-      _changed = field.update(value);
-    }
-  }
+  void update(String key, dynamic value) => _entry.update(key, value);
+  //
+  //
+  @override
+  void select(bool selected) => _entry.select(selected);
+  //
+  //
+  @override
+  void saved() => _entry.saved();
+  //
+  //
+  @override
+  String toString() => _entry.toString();
 }

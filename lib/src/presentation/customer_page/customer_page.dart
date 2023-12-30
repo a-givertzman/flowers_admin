@@ -1,23 +1,21 @@
 
-import 'package:flowers_admin/src/presentation/home_page/widgets/home_body.dart';
+import 'package:flowers_admin/src/presentation/customer_page/widgets/customer_body.dart';
 import 'package:flutter/material.dart';
 
-///
-///
-class HomePage extends StatelessWidget {
+class CustomerPage extends StatelessWidget {
   final String _authToken;
   ///
   ///
-  const HomePage({
+  const CustomerPage({
     super.key,
     required String authToken,
-  }): 
+  }):
     _authToken = authToken;
-  ///
-  ///
+  //
+  //
   @override
   Widget build(BuildContext context) {
-    return HomeBody(
+    return CustomerBody(
       authToken: _authToken,
     );
   }

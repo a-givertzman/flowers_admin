@@ -1,26 +1,16 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/core/error/failure.dart';
-import 'package:uuid/uuid.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 
 ///
 /// Single row of table "Customer"
-class EntryCustomer implements SchemaEntry {
-  final _id = const Uuid().v1();  // v1 time-based id
-  bool _changed = false;
-  bool _selected = false;
-  late final Map<String, FieldValue> _map;
+class EntryCustomer implements SchemaEntryAbstract {
+  final _log = Log("$EntryCustomer");
+  late final SchemaEntry _entry;
   ///
-  /// Single row of table "Customer"
-  /// - [keys] - list of field names
-  EntryCustomer({
-    required Map<String, FieldValue> map,
-  }) :
-    _map = map;
-  //
-  //
-  EntryCustomer.empty() {
-    _map = {
-      'id': FieldValue(null),
+  ///
+  static Map<String, FieldValue> get _initial {
+    final initial = <String, FieldValue>{
+      'id': FieldValue(0),
       'role': FieldValue('customer'),
       'email': FieldValue('@'),
       'phone': FieldValue('+7'),
@@ -35,52 +25,57 @@ class EntryCustomer implements SchemaEntry {
       'updated': FieldValue(null),
       'deleted': FieldValue(null),
     };
+    return initial;
   }
+  ///
+  /// Single row of table "Customer"
+  /// - [keys] - list of field names
+  EntryCustomer({
+    required Map<String, FieldValue> map,
+  }) :
+    _entry = SchemaEntry(map: map);
   //
   //
-  @override
-  String get key => _id;
-  //
-  //
-  @override
-  bool get isChanged => _changed;
-  //
-  //
-  @override
-  bool get isSelected => _selected;
-  //
-  //
-  @override
-  FieldValue value(String key) {
-    final value = _map[key];
-    if (value != null) {
-      return value;
+  EntryCustomer.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+    _log.debug('.from | row: $row');
+    for (final MapEntry(:key, :value) in row.entries) {
+      _entry.update(key, value);
     }
-    throw Failure(
-      message: "$runtimeType.value | key '$key' - not found", 
-      stackTrace: StackTrace.current,
-    );
+    _log.debug('.from | _entry: $_entry');
   }
   //
+  //
+  EntryCustomer.empty(): _entry = SchemaEntry(map: _initial);
+  //
+  //
   @override
-  EntryCustomer.from(Map<String, dynamic> row) {
-    _map =row.map((key, value) {
-      return MapEntry(key, FieldValue(value));
-    });
-  }
+  String get key => _entry.key;
+  //
+  //
+  @override
+  bool get isChanged => _entry.isChanged;
+  //
+  //
+  @override
+  bool get isSelected => _entry.isSelected;
+  //
+  //
+  @override
+  FieldValue value(String key) => _entry.value(key);
   //
   //  
   @override
-  void update(String key, String value) {
-    if (!_map.containsKey(key)) {
-      throw Failure(
-        message: "$runtimeType.update | key '$key' - not found", 
-        stackTrace: StackTrace.current,
-      );
-    }
-    final field = _map[key];
-    if (field != null) {
-      _changed = field.update(value);
-    }
-  }
+  void update(String key, dynamic value) => _entry.update(key, value);
+  //
+  //
+  @override
+  void select(bool selected) => _entry.select(selected);
+  //
+  //
+  @override
+  void saved() => _entry.saved();
+  //
+  //
+  @override
+  String toString() => _entry.toString();  
 }
