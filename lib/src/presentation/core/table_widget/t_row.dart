@@ -49,7 +49,7 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
 ///
 ///
 class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
-  final _log = Log("$TRow");
+  late final Log _log;
   final T? _entry;
   final Map<String, List<SchemaEntry>> _relations;
   final List<Field> _fields;
@@ -74,7 +74,9 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     _isSelected = entry?.isSelected ?? false,
     _onTap = onTap,
     _onSelectionChange = onSelectionChange,
-    _onEditingComplete = onEditingComplete;
+    _onEditingComplete = onEditingComplete {
+    _log = Log('$runtimeType');
+    }
   //
   //
   @override
@@ -122,10 +124,12 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   ///
   ///
   List<Widget> _buildRow(List<Field> fields, T? entry, textStyle) {
+    _log.debug("._buildRow | entry: $entry");
     final cells = fields
       .where((field) => !field.hidden)
       .map((field) {
         final value = entry?.value(field.key);
+        _log.debug("._buildRow | \t value: $value");
         if (field.relation.isEmpty) {
           return TCell(
             value: value?.value.toString() ?? field.key,

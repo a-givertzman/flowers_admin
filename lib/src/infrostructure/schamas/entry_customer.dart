@@ -41,6 +41,7 @@ class EntryCustomer implements SchemaEntryAbstract {
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
+    _log.debug('.from | _entry: $_entry');
   }
   //
   //
