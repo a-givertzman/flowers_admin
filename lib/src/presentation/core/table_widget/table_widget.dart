@@ -60,12 +60,6 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
   ///
   ///
   @override
-  void initState() {
-    super.initState();
-  }
-  ///
-  ///
-  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -161,13 +155,12 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
               return const Center(
                 child: CircularProgressIndicator(backgroundColor: Colors.blue),
               );
-            } else {        
-              _log.debug(".build | snapshot: $snapshot");
+            } else {
               final result = snapshot.data;
               if (result != null) {
                 return switch(result) {
-                  Ok(:final value) => () {
-                    final entries = value;
+                  Ok(value: final entries) => () {
+                    _log.debug(".build | snapshot entries: $entries");
                     if (entries.isNotEmpty) {
                       final rows = entries;
                       return ListView(
@@ -186,6 +179,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                     }
                   }(),
                   Err(:final error) => () {
+                    _log.debug(".build | snapshot has error: $error");
                     return Center(child: Text("Error: $error", style: textStile,));
                   }(),
                 };
@@ -203,7 +197,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
     // final textStile = Theme.of(context).textTheme.bodyMedium;
     final rows = [TRow<T>(fields: scheme.fields)];
     rows.addAll(
-      entries.map((entry) {
+      scheme.entries.map((entry) {
         _log.debug("._buildRows | entry: $entry");
         return TRow<T>(
           entry: entry,

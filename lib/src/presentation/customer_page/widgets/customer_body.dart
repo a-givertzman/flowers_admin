@@ -1,6 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/infrostructure/customer/customer_sqls.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_factory.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
@@ -31,7 +30,7 @@ class CustomerBody extends StatefulWidget {
 ///
 ///
 class _CustomerBodyState extends State<CustomerBody> {
-  final _log = Log("$_CustomerBodyState._");
+  late final Log _log;
   final String _authToken;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
@@ -40,7 +39,9 @@ class _CustomerBodyState extends State<CustomerBody> {
   _CustomerBodyState({
     required String authToken,
   }):
-    _authToken = authToken;
+    _authToken = authToken {
+      _log = Log("$runtimeType");
+    }
   ///
   ///
   @override
@@ -52,7 +53,7 @@ class _CustomerBodyState extends State<CustomerBody> {
             context: context, 
             builder: (_) => const EditCustomerForm(),
           ).then((result) {
-            _log.debug('new entry: $result');
+            _log.debug('.build | new entry: $result');
             return switch (result) {
               Ok(:final value) => Ok(value),
               Err(:final error) => Err(error),
@@ -73,7 +74,7 @@ class _CustomerBodyState extends State<CustomerBody> {
             context: context, 
             builder: (_) => EditCustomerForm(entry: toBeUpdated.lastOrNull),
           ).then((result) {
-            _log.debug('edited entry: $result');
+            _log.debug('.build | edited entry: $result');
             return switch (result) {
               Ok(:final value) => Ok(value),
               Err(:final error) => Err(error),
@@ -109,7 +110,10 @@ class _CustomerBodyState extends State<CustomerBody> {
           sqlBuilder: (sql, params) {
             return Sql(sql: 'select * from customer order by id;');
           },
-          entryFromFactories: entryFromFactories.cast(),
+          entryBuilder: (row) {
+            _log.debug('.build.entryBuilder | row: $row');
+            return EntryCustomer.from(row.cast());
+          },
           debug: true,
         ),
         write: SqlWrite<EntryCustomer>(
@@ -118,8 +122,7 @@ class _CustomerBodyState extends State<CustomerBody> {
           database: _database, 
           updateSqlBuilder: updateSqlBuilderCustomer,
           insertSqlBuilder: insertSqlBuilderCustomer,
-          entryFromFactories: entryFromFactories.cast(), 
-          entryEmptyFactories: entryEmptyFactories.cast(),
+          emptyEntryBuilder: EntryCustomer.empty,
           debug: true,
         ),
         fields: [
@@ -142,8 +145,8 @@ class _CustomerBodyState extends State<CustomerBody> {
     );
   }
 }
-
-
+///
+///
 Future<Result<void, void>> showConfirmDialog(BuildContext context, title, content) {
   return showDialog<Result>(
     context: context,

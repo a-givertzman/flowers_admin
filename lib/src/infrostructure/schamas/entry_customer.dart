@@ -1,11 +1,7 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 
-///
-/// Single row of table "Customer"
-class EntryCustomer implements SchemaEntryAbstract {
-  final _log = Log("$EntryCustomer");
-  static final _initial = {
+  final _initial = <String, FieldValue>{
     'id': FieldValue(0),
     'role': FieldValue('customer'),
     'email': FieldValue('@'),
@@ -20,8 +16,12 @@ class EntryCustomer implements SchemaEntryAbstract {
     'created': FieldValue(null),
     'updated': FieldValue(null),
     'deleted': FieldValue(null),
-    };
-  final SchemaEntry _entry;
+  };
+///
+/// Single row of table "Customer"
+class EntryCustomer implements SchemaEntryAbstract {
+  final _log = Log("$EntryCustomer");
+  late final SchemaEntry _entry;
   ///
   /// Single row of table "Customer"
   /// - [keys] - list of field names
@@ -31,8 +31,11 @@ class EntryCustomer implements SchemaEntryAbstract {
     _entry = SchemaEntry(map: map);
   //
   //
-  @override
-  EntryCustomer.from(Map<String, dynamic> row): _entry = SchemaEntry(map: Map.from(_initial)) {
+  EntryCustomer.from(Map<String, FieldValue> row) {
+    _log.debug('.from | row: $row');
+    final initial = <String, FieldValue>{};
+    initial.addAll(_initial);
+    _entry = SchemaEntry(map: initial);
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
