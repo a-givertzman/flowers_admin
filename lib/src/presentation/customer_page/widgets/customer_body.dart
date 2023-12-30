@@ -112,7 +112,9 @@ class _CustomerBodyState extends State<CustomerBody> {
           },
           entryBuilder: (row) {
             _log.debug('.build.entryBuilder | row: $row');
-            return EntryCustomer.from(row.cast());
+            final entry = EntryCustomer.from(row);
+            _log.debug('.build.entryBuilder | entry: $entry');
+            return entry;
           },
           debug: true,
         ),

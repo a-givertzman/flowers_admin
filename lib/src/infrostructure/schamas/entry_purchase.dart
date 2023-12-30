@@ -3,7 +3,11 @@ import 'package:ext_rw/ext_rw.dart';
 ///
 /// Single row of table "Purchase"
 class EntryPurchase implements SchemaEntryAbstract {
-  static final _initial = {
+  final SchemaEntry _entry;
+  ///
+  ///
+  static Map<String, FieldValue> get _initial {
+    final initial = <String, FieldValue>{
 	    'id': FieldValue(null),
 	    'name': FieldValue(''),
 	    'details': FieldValue(''),
@@ -15,8 +19,9 @@ class EntryPurchase implements SchemaEntryAbstract {
 	    'created': FieldValue(''),
 	    'updated': FieldValue(''),
 	    'deleted': FieldValue(''),
-  };
-  final SchemaEntry _entry;
+    };
+    return initial;
+  }
   ///
   /// Single row of table "Purchase"
   /// - [keys] - list of field names
@@ -27,14 +32,14 @@ class EntryPurchase implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryPurchase.from(Map<String, dynamic> row): _entry = SchemaEntry(map: Map.from(_initial)) {
+  EntryPurchase.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
   }
   //
   //
-  EntryPurchase.empty(): _entry = SchemaEntry(map: Map.from(_initial));
+  EntryPurchase.empty(): _entry = SchemaEntry(map: _initial);
   //
   //
   @override

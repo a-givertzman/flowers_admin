@@ -1,27 +1,32 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 
-  final _initial = <String, FieldValue>{
-    'id': FieldValue(0),
-    'role': FieldValue('customer'),
-    'email': FieldValue('@'),
-    'phone': FieldValue('+7'),
-    'name': FieldValue(''),
-    'location': FieldValue(''),
-    'login': FieldValue(''),
-    'pass': FieldValue(''),
-    'account': FieldValue('0'),
-    'last_act': FieldValue(null),
-    'blocked': FieldValue(null),
-    'created': FieldValue(null),
-    'updated': FieldValue(null),
-    'deleted': FieldValue(null),
-  };
 ///
 /// Single row of table "Customer"
 class EntryCustomer implements SchemaEntryAbstract {
   final _log = Log("$EntryCustomer");
   late final SchemaEntry _entry;
+  ///
+  ///
+  static Map<String, FieldValue> get _initial {
+    final initial = <String, FieldValue>{
+      'id': FieldValue(0),
+      'role': FieldValue('customer'),
+      'email': FieldValue('@'),
+      'phone': FieldValue('+7'),
+      'name': FieldValue(''),
+      'location': FieldValue(''),
+      'login': FieldValue(''),
+      'pass': FieldValue(''),
+      'account': FieldValue('0'),
+      'last_act': FieldValue(null),
+      'blocked': FieldValue(null),
+      'created': FieldValue(null),
+      'updated': FieldValue(null),
+      'deleted': FieldValue(null),
+    };
+    return initial;
+  }
   ///
   /// Single row of table "Customer"
   /// - [keys] - list of field names
@@ -31,18 +36,15 @@ class EntryCustomer implements SchemaEntryAbstract {
     _entry = SchemaEntry(map: map);
   //
   //
-  EntryCustomer.from(Map<String, FieldValue> row) {
+  EntryCustomer.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
     _log.debug('.from | row: $row');
-    final initial = <String, FieldValue>{};
-    initial.addAll(_initial);
-    _entry = SchemaEntry(map: initial);
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
   }
   //
   //
-  EntryCustomer.empty(): _entry = SchemaEntry(map: Map.from(_initial));
+  EntryCustomer.empty(): _entry = SchemaEntry(map: _initial);
   //
   //
   @override

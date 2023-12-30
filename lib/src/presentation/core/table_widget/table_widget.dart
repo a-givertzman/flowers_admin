@@ -172,7 +172,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                         //   0: IntrinsicColumnWidth(),
                         //   1: FlexColumnWidth(),
                         // },
-                        children: _buildRows(_scheme, rows),
+                        children: _buildRows(_scheme, _scheme.entries),
                       );
                     } else {
                       return Center(child: Text("No orders received", style: textStile,));
@@ -193,15 +193,16 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
   }
   ///
   ///
-  List<Widget> _buildRows(TableSchemaAbstract<T, void> scheme, List<T> entries) {
+  List<Widget> _buildRows(TableSchemaAbstract<T, void> schema, List<T> entries) {
     // final textStile = Theme.of(context).textTheme.bodyMedium;
-    final rows = [TRow<T>(fields: scheme.fields)];
+    final rows = [TRow<T>(fields: schema.fields)];
     rows.addAll(
-      scheme.entries.map((entry) {
+      schema.entries.map((entry) {
         _log.debug("._buildRows | entry: $entry");
+        _log.debug("._buildRows | schema.fields: ${schema.fields}");
         return TRow<T>(
           entry: entry,
-          fields: scheme.fields,
+          fields: schema.fields,
           onEditingComplete: _updateEntry,
         );
       }),
