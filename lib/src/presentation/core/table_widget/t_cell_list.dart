@@ -1,6 +1,5 @@
 
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/core/log/log.dart';
 import 'package:flutter/material.dart';
 
 ///
@@ -35,7 +34,7 @@ class TCellList extends StatefulWidget {
   final TCellEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
-  final void Function(String value)? _onSelectionChange;
+  // final void Function(String value)? _onSelectionChange;
   final bool _editable;
   ///
   ///
@@ -45,14 +44,14 @@ class TCellList extends StatefulWidget {
     TCellEntry? relation,
     TextStyle? style,
     void Function(String value)? onComplete,
-    void Function(String value)? onSelectionChange,
+    // void Function(String value)? onSelectionChange,
     bool editable = true,
   }) :
     _id = id,
     _relation = relation ?? TCellEntry.empty(),
     _style = style,
     _onComplete = onComplete,
-    _onSelectionChange = onSelectionChange,
+    // _onSelectionChange = onSelectionChange,
     _editable = editable;
 
   @override
@@ -68,7 +67,7 @@ class TCellList extends StatefulWidget {
 ///
 ///
 class _TCellListState extends State<TCellList> {
-  final _log = Log("$_TCellListState._");
+  // final _log = Log("$_TCellListState._");
   dynamic _id;
   final TCellEntry _relation;
   final TextStyle? _style;

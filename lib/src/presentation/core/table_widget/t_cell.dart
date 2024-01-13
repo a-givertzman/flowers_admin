@@ -1,5 +1,4 @@
 
-import 'package:flowers_admin/src/core/log/log.dart';
 import 'package:flutter/material.dart';
 
 ///
@@ -35,7 +34,7 @@ class TCell extends StatefulWidget {
 ///
 ///
 class _TCellState extends State<TCell> {
-  final _log = Log("$_TCellState._");
+  // final _log = Log("$_TCellState._");
   final TextEditingController _controller;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;

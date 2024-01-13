@@ -162,7 +162,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                   Ok(value: final entries) => () {
                     _log.debug(".build | snapshot entries: $entries");
                     if (entries.isNotEmpty) {
-                      final rows = entries;
+                      // final rows = entries;
                       return ListView(
                         shrinkWrap: true,
                         // defaultVerticalAlignment: TableCellVerticalAlignment.middle,
