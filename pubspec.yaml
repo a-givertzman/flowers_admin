@@ -20,10 +20,10 @@ dependencies:
       url: https://github.com/a-givertzman/hmi_core.git
       ref: master
   ext_rw:
-    path: ../ext_rw
-    # git:
-    #   url: https://github.com/a-givertzman/dart_ext_rw
-    #   ref: master
+    # path: ../ext_rw
+    git:
+      url: https://github.com/a-givertzman/dart_ext_rw
+      ref: master
   web_socket_channel: ^2.4.0
   uuid: ^3.0.7
 
