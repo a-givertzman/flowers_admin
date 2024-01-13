@@ -83,6 +83,7 @@ class _AppWidgetState extends State<AppWidget> {
       home: HomePage(
         authToken: _authToken,
       ), 
+      theme: ThemeData(useMaterial3: true),
           // themeSwitch: _themeSwitch,
       initialRoute: 'homePage',
       routes: {
