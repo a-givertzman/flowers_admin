@@ -1,7 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/infrostructure/customer/customer_sqls.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_factory.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase.dart';
@@ -9,25 +7,45 @@ import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_content.
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
-import 'package:flowers_admin/src/presentation/home_page/widgets/table_widget.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
+import 'package:flowers_admin/src/presentation/customer_page/customer_page.dart';
 import 'package:flutter/material.dart';
-// import 'package:hmi_core/hmi_core_log.dart';
 
-
+///
+///
 class HomeBody extends StatefulWidget {
-  const HomeBody({super.key});
-
+  final String _authToken;
+  ///
+  ///
+  const HomeBody({
+    super.key,
+    required String authToken,
+  }):
+    _authToken = authToken;
+  ///
+  ///
   @override
-  State<HomeBody> createState() => _HomeBodyState();
+  // ignore: no_logic_in_create_state
+  State<HomeBody> createState() => _HomeBodyState(
+    authToken: _authToken,
+  );
 }
-
+///
+///
 class _HomeBodyState extends State<HomeBody> {
   // final _log = Log("$_HomeBodyState._");
-  final _authToken = 'some auth token';
+  final String _authToken;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   final _paddingH = 8.0;
   final _paddingV = 8.0;
+  ///
+  ///
+  _HomeBodyState({
+    required String authToken,
+  }):
+    _authToken = authToken;
+  ///
   ///
   @override
   Widget build(BuildContext context) {
@@ -56,45 +74,8 @@ class _HomeBodyState extends State<HomeBody> {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
-              child: TableWidget(
-                schema: TableSchema<EntryCustomer, void>(
-                  read: SqlRead<EntryCustomer, void>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    sqlBuilder: (sql, params) {
-                      return Sql(sql: 'select * from customer order by id;');
-                    },
-                    entryFromFactories: entryFromFactories.cast(),
-                    debug: true,
-                  ),
-                  write: SqlWrite<EntryCustomer>(
-                    address: _apiAddress, 
-                    authToken: _authToken, 
-                    database: _database, 
-                    updateSqlBuilder: updateSqlBuilderCustomer,
-                    insertSqlBuilder: insertSqlBuilderCustomer,
-                    entryFromFactories: entryFromFactories.cast(), 
-                    entryEmptyFactories: entryEmptyFactories.cast(),
-                    debug: true,
-                  ),
-                  fields: [
-                    const Field(hidden: false, edit: false, key: 'id'),
-                    const Field(hidden: false, edit: true, key: 'role'),
-                    const Field(hidden: false, edit: true, key: 'email'),
-                    const Field(hidden: false, edit: true, key: 'phone'),
-                    const Field(hidden: false, edit: true, key: 'name'),
-                    const Field(hidden: false, edit: true, key: 'location'),
-                    const Field(hidden: false, edit: true, key: 'login'),
-                    const Field(hidden: false, edit: true, key: 'pass'),
-                    const Field(hidden: false, edit: true, key: 'account'),
-                    const Field(hidden: false, edit: true, key: 'last_act'),
-                    const Field(hidden: false, edit: true, key: 'blocked'),
-                    const Field(hidden: true, edit: true, key: 'created'),
-                    const Field(hidden: true, edit: true, key: 'updated'),
-                    const Field(hidden: true, edit: true, key: 'deleted'),
-                  ],
-                ),
+              child: CustomerPage(
+                authToken: _authToken,
               ),
             ),
             Padding(
@@ -109,15 +90,14 @@ class _HomeBodyState extends State<HomeBody> {
                       sqlBuilder: (sql, params) {
                         return Sql(sql: 'select * from transaction order by id;');
                       },
-                      entryFromFactories: entryFromFactories.cast(),
+                      entryBuilder: (row) => EntryTransaction.from(row.cast()),
                       debug: true,
                     ),
                     write: SqlWrite<EntryTransaction>(
                       address: _apiAddress, 
                       authToken: _authToken, 
                       database: _database, 
-                      entryFromFactories: entryFromFactories.cast(), 
-                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      emptyEntryBuilder: EntryTransaction.empty,
                       debug: true,
                       updateSqlBuilder: updateSqlBuilderTransaction,
                       insertSqlBuilder: insertSqlBuilderTransaction,
@@ -145,7 +125,7 @@ class _HomeBodyState extends State<HomeBody> {
                         sqlBuilder: (sql, params) {
                           return Sql(sql: 'select id, name from customer order by id;');
                         },
-                        entryFromFactories: entryFromFactories.cast(),
+                        entryBuilder: (row) => EntryCustomer.from(row.cast()),
                         debug: true,
                       ),
                       fields: [
@@ -169,7 +149,7 @@ class _HomeBodyState extends State<HomeBody> {
                       sqlBuilder: (sql, params) {
                         return Sql(sql: 'select * from product_category order by id;');
                       },
-                      entryFromFactories: entryFromFactories.cast(),
+                      entryBuilder: (row) => EntryProductCategory.from(row.cast()),
                       debug: true,
                     ),
                     write: SqlWrite<EntryProductCategory>(
@@ -178,8 +158,7 @@ class _HomeBodyState extends State<HomeBody> {
                       database: _database, 
                       updateSqlBuilder: updateSqlBuilderProductCategory,
                       // insertSqlBuilder: insertSqlBuilderProductCategory,
-                      entryFromFactories: entryFromFactories.cast(), 
-                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      emptyEntryBuilder: EntryProductCategory.empty, 
                       debug: true,
                     ),
                     fields: [
@@ -203,7 +182,7 @@ class _HomeBodyState extends State<HomeBody> {
                         sqlBuilder: (sql, params) {
                           return Sql(sql: 'select id, name from product_category order by id;');
                         },
-                        entryFromFactories: entryFromFactories.cast(),
+                        entryBuilder: (row) => EntryProductCategory.from(row),
                         debug: true,
                       ),
                       fields: [
@@ -227,7 +206,7 @@ class _HomeBodyState extends State<HomeBody> {
                       sqlBuilder: (sql, params) {
                         return Sql(sql: 'select * from product_view order by id;');
                       },
-                      entryFromFactories: entryFromFactories.cast(),
+                      entryBuilder: (row) => EntryProduct.from(row),
                       debug: true,
                     ),
                     write: SqlWrite<EntryProduct>(
@@ -236,8 +215,7 @@ class _HomeBodyState extends State<HomeBody> {
                       database: _database, 
                       updateSqlBuilder: updateSqlBuilderProduct,
                       // insertSqlBuilder: insertSqlBuilderProduct,
-                      entryFromFactories: entryFromFactories.cast(), 
-                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      emptyEntryBuilder: EntryProduct.empty, 
                       debug: true,
                     ),
                     fields: [
@@ -266,7 +244,7 @@ class _HomeBodyState extends State<HomeBody> {
                         sqlBuilder: (sql, params) {
                           return Sql(sql: 'select id, name from product_category order by id;');
                         },
-                        entryFromFactories: entryFromFactories.cast(),
+                        entryBuilder: (row) => EntryProductCategory.from(row),
                         debug: true,
                       ),
                       fields: [
@@ -289,7 +267,7 @@ class _HomeBodyState extends State<HomeBody> {
                     sqlBuilder: (sql, params) {
                       return Sql(sql: 'select * from purchase order by id;');
                     },
-                    entryFromFactories: entryFromFactories.cast(),
+                    entryBuilder: (row) => EntryPurchase.from(row),
                     debug: true,
                   ),
                   write: SqlWrite<EntryPurchase>(
@@ -298,8 +276,7 @@ class _HomeBodyState extends State<HomeBody> {
                     database: _database, 
                     updateSqlBuilder: updateSqlBuilderPurchase,
                     // insertSqlBuilder: insertSqlBuilderPurchase,
-                    entryFromFactories: entryFromFactories.cast(), 
-                    entryEmptyFactories: entryEmptyFactories.cast(),
+                    emptyEntryBuilder: EntryPurchase.empty, 
                     debug: true,
                   ),                  
                   fields: [
@@ -330,7 +307,7 @@ class _HomeBodyState extends State<HomeBody> {
                       sqlBuilder: (sql, params) {
                         return Sql(sql: 'select * from purchase_content_view order by id;');
                       },
-                      entryFromFactories: entryFromFactories.cast(),
+                      entryBuilder: (row) => EntryPurchaseContent.from(row),
                       debug: true,
                     ),
                     write: SqlWrite<EntryPurchaseContent>(
@@ -339,8 +316,7 @@ class _HomeBodyState extends State<HomeBody> {
                       database: _database, 
                       updateSqlBuilder: updateSqlBuilderPurchaseContent,
                       // insertSqlBuilder: insertSqlBuilderPurchaseContent,
-                      entryFromFactories: entryFromFactories.cast(), 
-                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      emptyEntryBuilder: EntryPurchaseContent.empty,
                       debug: true,
                     ),                  
                     fields: [
@@ -369,7 +345,7 @@ class _HomeBodyState extends State<HomeBody> {
                         sqlBuilder: (sql, params) {
                           return Sql(sql: 'select id, name from purchase order by id;');
                         },
-                        entryFromFactories: entryFromFactories.cast(),
+                        entryBuilder: (row) => EntryPurchase.from(row),
                         debug: true,
                       ),
                       fields: [
@@ -385,7 +361,7 @@ class _HomeBodyState extends State<HomeBody> {
                         sqlBuilder: (sql, params) {
                           return Sql(sql: 'select id, name from product order by id;');
                         },
-                        entryFromFactories: entryFromFactories.cast(),
+                        entryBuilder: (row) => EntryProduct.from(row),
                         debug: true,
                       ),
                       fields: [
@@ -409,7 +385,7 @@ class _HomeBodyState extends State<HomeBody> {
                       sqlBuilder: (sql, params) {
                         return Sql(sql: 'select * from customer_order_view order by id;');
                       },
-                      entryFromFactories: entryFromFactories.cast(),
+                      entryBuilder: (row) => EntryCustomerOrder.from(row),
                       debug: true,
                     ),
                     write: SqlWrite<EntryCustomerOrder>(
@@ -418,8 +394,7 @@ class _HomeBodyState extends State<HomeBody> {
                       database: _database, 
                       updateSqlBuilder: updateSqlBuilderCustomerOrder,
                       // insertSqlBuilder: insertSqlBuilderCustomerOrder,
-                      entryFromFactories: entryFromFactories.cast(), 
-                      entryEmptyFactories: entryEmptyFactories.cast(),
+                      emptyEntryBuilder: EntryCustomerOrder.empty,
                       debug: true,
                     ),                  
                     fields: [
@@ -450,7 +425,7 @@ class _HomeBodyState extends State<HomeBody> {
                         sqlBuilder: (sql, params) {
                           return Sql(sql: 'select id, name from customer order by id;');
                         },
-                        entryFromFactories: entryFromFactories.cast(),
+                        entryBuilder: (row) => EntryCustomer.from(row.cast()),
                         debug: true,
                       ),
                       fields: [
@@ -466,7 +441,7 @@ class _HomeBodyState extends State<HomeBody> {
                         sqlBuilder: (sql, params) {
                           return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_content_view order by id;');
                         },
-                        entryFromFactories: entryFromFactories.cast(),
+                        entryBuilder: (row) => EntryPurchaseContent.from(row),
                         debug: true,
                       ),
                       fields: [
