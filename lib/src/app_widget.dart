@@ -11,13 +11,12 @@ class AppWidget extends StatefulWidget {
   ///
   ///
   const AppWidget({
-    Key? key,
+    super.key,
     // required AppThemeSwitch themeSwitch,
     required String authToken,
   }) : 
     // _themeSwitch = themeSwitch,
-    _authToken = authToken,
-    super(key: key);
+    _authToken = authToken;
   //
   //
   @override
