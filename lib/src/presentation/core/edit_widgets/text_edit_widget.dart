@@ -44,9 +44,9 @@ class _TextEditWidgetState extends State<TextEditWidget> {
   ///
   _TextEditWidgetState({
     required String value,
-    Function(String)? onComplete,
-    String? labelText,
-    String? errorText,
+    required Function(String)? onComplete,
+    required String? labelText,
+    required String? errorText,
   }):
     _value = value,
     _controller = TextEditingController.fromValue(TextEditingValue(text: value)),

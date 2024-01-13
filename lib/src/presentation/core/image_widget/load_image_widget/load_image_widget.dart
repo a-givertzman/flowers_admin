@@ -8,29 +8,54 @@ import 'package:hmi_core/hmi_core_result_new.dart';
 ///
 class LoadImageWidget extends StatefulWidget {
   final String _src;
+  final Function(String)? _onComplete;
+  final String? _labelText;
+  final String? _errorText;
+  ///
+  ///
   const LoadImageWidget({
     super.key,
     String src = '',
+    Function(String)? onComplete,
+    String? labelText,
+    String? errorText,
   }):
-    _src = src;
-
+    _src = src,
+    _onComplete = onComplete,
+    _labelText = labelText,
+    _errorText = errorText;
+  //
+  //
   @override
   // ignore: no_logic_in_create_state
   State<LoadImageWidget> createState() => _LoadImageWidgetState(
     src: _src,
+    onComplete: _onComplete,
+    labelText: _labelText,
+    errorText: _errorText,
   );
 }
 ///
 ///
 class _LoadImageWidgetState extends State<LoadImageWidget> {
   String _src;
+  final Function(String)? _onComplete;
+  final String? _labelText;
   String? _errorText;
   ///
   ///
   _LoadImageWidgetState({
     required String src,
+    required Function(String)? onComplete,
+    required String? labelText,
+    required String? errorText,
   }):
-    _src = src;
+    _src = src,
+    _onComplete = onComplete,
+    _labelText = labelText,
+    _errorText = errorText;
+  //
+  //
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -39,7 +64,7 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
           children: [
             Flexible(
               child: TextEditWidget(
-                labelText: 'image url'.inRu(),
+                labelText: _labelText,
                 value: _src,
                 errorText: _errorText,
                 onComplete: (value) {
@@ -53,6 +78,10 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
                         _src = value;
                         _errorText = error.message;
                       });
+                  }
+                  final onComplete = _onComplete;
+                  if (onComplete != null) {
+                    onComplete(_src);
                   }
                 },
               ),
