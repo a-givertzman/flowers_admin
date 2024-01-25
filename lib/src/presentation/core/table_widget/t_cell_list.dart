@@ -8,7 +8,7 @@ class TCellEntry {
   late final Map<dynamic, String> _values;
   TCellEntry({
     required String field,
-    required List<SchemaEntry> entries,
+    required List<SchemaEntryAbstract> entries,
   }) {
     _values = entries.asMap().map((_, entry) {
       return MapEntry(entry.value('id').value, '${entry.value(field).value}');
@@ -93,42 +93,44 @@ class _TCellListState extends State<TCellList> {
   ///
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (_editable) {
-          setState(() {
-            _isEditing = true;
-          });
-        }
-      },
-      child: _isEditing
-        ? DropdownButton(
-            value: _id,
-            items: _relation.values.entries.map((entry) {
-              return DropdownMenuItem(
-                value: entry.key,
-                child: Text(
-                  entry.value,
-                  style: _style,
-                ),
-              );
-            }).toList(),
-            onChanged: (value) {
-              _applyNewValue(value);
-            },
-            style: _style,
-            iconSize: 0.0,
-            isDense: true,
-            padding: EdgeInsets.symmetric(vertical: _textPaddingV - 8.0, horizontal: _textPaddingH),
-          )
-        : Padding(
-          padding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH),
-          child: Text(
-            _relation.value(_id),
-            style: _style,
-            textAlign: _textAlign,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          if (_editable) {
+            setState(() {
+              _isEditing = true;
+            });
+          }
+        },
+        child: _isEditing
+          ? DropdownButton(
+              value: _id,
+              items: _relation.values.entries.map((entry) {
+                return DropdownMenuItem(
+                  value: entry.key,
+                  child: Text(
+                    entry.value,
+                    style: _style,
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                _applyNewValue(value);
+              },
+              style: _style,
+              iconSize: 0.0,
+              isDense: true,
+              padding: EdgeInsets.symmetric(vertical: _textPaddingV - 8.0, horizontal: _textPaddingH),
+            )
+          : Padding(
+            padding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH),
+            child: Text(
+              _relation.value(_id),
+              style: _style,
+              textAlign: _textAlign,
+            ),
           ),
-        ),
+      ),
     );
   }
   ///

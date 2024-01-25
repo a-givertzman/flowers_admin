@@ -121,9 +121,8 @@ class _ProductBodyState extends State<ProductBody> {
           ),
           fields: [
             const Field(hidden: false, edit: false, key: 'id'),
-            const Field(hidden: false, edit: true, key: 'product_category_id', relation: Relation(id: 'category_id', field: 'name')),
-            // const Field(hidden: false, edit: true, key: 'category'),
-            const Field(hidden: false, edit: true, key: 'name'),
+            const Field(hidden: false, edit: true, name: 'Category', key: 'product_category_id', relation: Relation(id: 'product_category_id', field: 'name')),
+            const Field(hidden: false, edit: true, name: 'Name', key: 'name'),
             const Field(hidden: false, edit: true, key: 'details'),
             const Field(hidden: false, edit: true, key: 'primary_price'),
             const Field(hidden: false, edit: true, key: 'primary_currency'),
@@ -137,7 +136,7 @@ class _ProductBodyState extends State<ProductBody> {
           ],
         ),
         relations: {
-          'category_id': TableSchema<EntryProductCategory, void>(
+          'product_category_id': TableSchema<EntryProductCategory, void>(
             read: SqlRead<EntryProductCategory, void>(
               address: _apiAddress, 
               authToken: _authToken, 

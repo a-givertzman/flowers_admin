@@ -9,7 +9,7 @@ import 'package:hmi_core/hmi_core_log.dart';
 ///
 class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
   final T? _entry;
-  final Map<String, List<SchemaEntry>> _relations;
+  final Map<String, List<SchemaEntryAbstract>> _relations;
   final List<Field> _fields;
   final void Function()? _onTap;
   final void Function(T? entry)? _onSelectionChange;
@@ -19,7 +19,7 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
   const TRow({
     super.key,
     T? entry,
-    Map<String, List<SchemaEntry>> relations = const {},
+    Map<String, List<SchemaEntryAbstract>> relations = const {},
     required List<Field> fields,
     void Function()? onTap,
     void Function(T? entry)? onSelectionChange,
@@ -51,7 +51,7 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
 class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   late final Log _log;
   final T? _entry;
-  final Map<String, List<SchemaEntry>> _relations;
+  final Map<String, List<SchemaEntryAbstract>> _relations;
   final List<Field> _fields;
   final void Function()? _onTap;
   final void Function(T? entry)? _onSelectionChange;
@@ -62,7 +62,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   ///
   _TRowState({
     required T? entry,
-    required Map<String, List<SchemaEntry>> relations,
+    required Map<String, List<SchemaEntryAbstract>> relations,
     required List<Field> fields,
     required void Function()? onTap,
     required void Function(T? entry)? onSelectionChange,
@@ -132,7 +132,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
         _log.debug("._buildRow | \t value: $value");
         if (field.relation.isEmpty) {
           return TCell(
-            value: value?.value.toString() ?? field.key,
+            value: value?.value.toString() ?? (field.name.isNotEmpty ? field.name : field.key),
             editable: field.edit,
             style: textStyle,
             onComplete: (value) {
@@ -145,22 +145,29 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             },
           );
         } else {
-          final List<SchemaEntry> relEntries = _relations[field.relation.id] ?? [];
-          final relation = TCellEntry(entries: relEntries, field: field.relation.field);
-          _log.debug("._buildRow | relation '${field.relation.id}': $relation");
-          return TCellList(
-            id: value?.value,
-            relation: relation,
-            editable: field.edit,
+          final List<SchemaEntryAbstract>? relEntries = _relations[field.relation.id];
+          if (relEntries != null) {
+            final relation = TCellEntry(entries: relEntries, field: field.relation.field);
+            _log.debug("._buildRow | \t relation '${field.relation.id}': $relation");
+            return TCellList(
+              id: value?.value,
+              relation: relation,
+              editable: field.edit,
+              style: textStyle,
+              onComplete: (value) {
+                final entry = _entry;
+                final onEditingComplete = _onEditingComplete;
+                if (onEditingComplete != null && entry != null) {
+                  entry.update(field.key, value);
+                  onEditingComplete(entry);
+                }
+              },
+            );
+          }
+          return TCell(
+            value: field.name.isNotEmpty ? field.name : field.key,
+            editable: false,
             style: textStyle,
-            onComplete: (value) {
-              final entry = _entry;
-              final onEditingComplete = _onEditingComplete;
-              if (onEditingComplete != null && entry != null) {
-                entry.update(field.key, value);
-                onEditingComplete(entry);
-              }
-            },
           );
         }
       }).toList();

@@ -172,7 +172,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                         //   0: IntrinsicColumnWidth(),
                         //   1: FlexColumnWidth(),
                         // },
-                        children: _buildRows(_scheme, _scheme.entries),
+                        children: _buildRows(_scheme),
                       );
                     } else {
                       return Center(child: Text("No orders received", style: textStile,));
@@ -193,7 +193,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
   }
   ///
   ///
-  List<Widget> _buildRows(TableSchemaAbstract<T, void> schema, List<T> entries) {
+  List<Widget> _buildRows(TableSchemaAbstract<T, void> schema) {
     // final textStile = Theme.of(context).textTheme.bodyMedium;
     final rows = [TRow<T>(fields: schema.fields)];
     rows.addAll(
@@ -202,6 +202,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
         return TRow<T>(
           entry: entry,
           fields: schema.fields,
+          relations: schema.relations,
           onEditingComplete: _updateEntry,
         );
       }),
