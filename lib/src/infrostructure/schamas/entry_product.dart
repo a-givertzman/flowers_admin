@@ -10,6 +10,7 @@ class EntryProduct implements SchemaEntryAbstract {
     final initial = <String, FieldValue>{
 	  'id': FieldValue(0),
 	  'product_category_id': FieldValue(0),
+	  'category': FieldValue(''),
 	  'name': FieldValue(''),
 	  'details': FieldValue(''),
 	  'primary_price': FieldValue('0.00'),

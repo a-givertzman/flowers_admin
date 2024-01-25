@@ -9,6 +9,7 @@ import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/customer_page/customer_page.dart';
+import 'package:flowers_admin/src/presentation/product_page/product_page.dart';
 import 'package:flutter/material.dart';
 
 ///
@@ -109,7 +110,7 @@ class _HomeBodyState extends State<HomeBody> {
                       const Field(hidden: false, edit: true, key: 'value'),
                       const Field(hidden: false, edit: true, key: 'description'),
                       const Field(hidden: false, edit: true, key: 'order_id'),
-                      const Field(hidden: false, edit: true, name: 'Customer', key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+                      const Field(hidden: false, edit: true, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
                       const Field(hidden: false, edit: true, key: 'customer_account'),
                       const Field(hidden: true, edit: true, key: 'created'),
                       const Field(hidden: true, edit: true, key: 'updated'),
@@ -196,64 +197,8 @@ class _HomeBodyState extends State<HomeBody> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
-              child: TableWidget(
-                schema: RelationSchema<EntryProduct, void>(
-                  schema: TableSchema<EntryProduct, void>(
-                    read: SqlRead<EntryProduct, void>(
-                      address: _apiAddress, 
-                      authToken: _authToken, 
-                      database: _database, 
-                      sqlBuilder: (sql, params) {
-                        return Sql(sql: 'select * from product_view order by id;');
-                      },
-                      entryBuilder: (row) => EntryProduct.from(row),
-                      debug: true,
-                    ),
-                    write: SqlWrite<EntryProduct>(
-                      address: _apiAddress, 
-                      authToken: _authToken, 
-                      database: _database, 
-                      updateSqlBuilder: updateSqlBuilderProduct,
-                      // insertSqlBuilder: insertSqlBuilderProduct,
-                      emptyEntryBuilder: EntryProduct.empty, 
-                      debug: true,
-                    ),
-                    fields: [
-                      const Field(hidden: false, edit: false, key: 'id'),
-                      const Field(hidden: false, edit: true, key: 'product_category_id', relation: Relation(id: 'category_id', field: 'name')),
-                      // const Field(hidden: false, edit: true, key: 'category'),
-                      const Field(hidden: false, edit: true, key: 'name'),
-                      const Field(hidden: false, edit: true, key: 'details'),
-                      const Field(hidden: false, edit: true, key: 'primary_price'),
-                      const Field(hidden: false, edit: true, key: 'primary_currency'),
-                      const Field(hidden: false, edit: true, key: 'primary_order_quantity'),
-                      const Field(hidden: false, edit: true, key: 'order_quantity'),
-                      const Field(hidden: false, edit: true, key: 'description'),
-                      const Field(hidden: false, edit: true, key: 'picture'),
-                      const Field(hidden: true, edit: true, key: 'created'),
-                      const Field(hidden: true, edit: true, key: 'updated'),
-                      const Field(hidden: true, edit: true, key: 'deleted'),
-                    ],
-                  ),
-                  relations: {
-                    'category_id': TableSchema<EntryProductCategory, void>(
-                      read: SqlRead<EntryProductCategory, void>(
-                        address: _apiAddress, 
-                        authToken: _authToken, 
-                        database: _database, 
-                        sqlBuilder: (sql, params) {
-                          return Sql(sql: 'select id, name from product_category order by id;');
-                        },
-                        entryBuilder: (row) => EntryProductCategory.from(row),
-                        debug: true,
-                      ),
-                      fields: [
-                        const Field(key: 'id'),
-                        const Field(key: 'name'),
-                      ],
-                    ),
-                  },
-                ),
+              child: ProductPage(
+                authToken: _authToken,
               ),
             ),
             Padding(
@@ -305,7 +250,7 @@ class _HomeBodyState extends State<HomeBody> {
                       authToken: _authToken, 
                       database: _database, 
                       sqlBuilder: (sql, params) {
-                        return Sql(sql: 'select * from purchase_content_view order by id;');
+                        return Sql(sql: 'select * from purchase_content order by id;');
                       },
                       entryBuilder: (row) => EntryPurchaseContent.from(row),
                       debug: true,
@@ -383,7 +328,7 @@ class _HomeBodyState extends State<HomeBody> {
                       authToken: _authToken, 
                       database: _database, 
                       sqlBuilder: (sql, params) {
-                        return Sql(sql: 'select * from customer_order_view order by id;');
+                        return Sql(sql: 'select * from customer_order order by id;');
                       },
                       entryBuilder: (row) => EntryCustomerOrder.from(row),
                       debug: true,
@@ -400,11 +345,12 @@ class _HomeBodyState extends State<HomeBody> {
                     fields: [
                       const Field(hidden: false, edit: false, key: 'id'),
                       const Field(hidden: false, edit: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
-                      const Field(hidden: false, edit: false, key: 'customer'),
-                      const Field(hidden: false, edit: true, name: 'purchase_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'purchase')),
-                      const Field(hidden: false, edit: true, name: 'product_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'product')),
-                      const Field(hidden: false, edit: true, key: 'purchase'),
-                      const Field(hidden: false, edit: true, key: 'product'),
+                      // const Field(hidden: false, edit: false, key: 'customer'),
+                      const Field(hidden: false, edit: true, key: 'purchase_content_id'),
+                      const Field(hidden: false, edit: true, name: 'Purchase id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'purchase')),
+                      const Field(hidden: false, edit: true, name: 'Product id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'product')),
+                      // const Field(hidden: false, edit: true, key: 'purchase'),
+                      // const Field(hidden: false, edit: true, key: 'product'),
                       const Field(hidden: false, edit: true, key: 'count'),
                       const Field(hidden: false, edit: true, key: 'paid'),
                       const Field(hidden: false, edit: true, key: 'distributed'),
@@ -480,41 +426,6 @@ Sql updateSqlBuilderProductCategory(Sql sql, EntryProductCategory entry) {
     ${entry.value('category_id').str},
     ${entry.value('name').str},
     ${entry.value('details').str},
-    ${entry.value('description').str},
-    ${entry.value('picture').str},
-    ${entry.value('created').str},
-    ${entry.value('updated').str},
-    ${entry.value('deleted').str}
-  )
-  WHERE id = ${entry.value('id').str};
-""");
-}
-///
-///
-Sql updateSqlBuilderProduct(Sql sql, EntryProduct entry) {
-  return Sql(sql: """UPDATE product SET (
-    id,
-    product_category_id,
-    name,
-    details,
-    primary_price,
-    primary_currency,
-    primary_order_quantity,
-    order_quantity,
-    description,
-    picture,
-    created,
-    updated,
-    deleted
-  ) = (
-    ${entry.value('id').str},
-    ${entry.value('product_category_id').str},
-    ${entry.value('name').str},
-    ${entry.value('details').str},
-    ${entry.value('primary_price').str},
-    ${entry.value('primary_currency').str},
-    ${entry.value('primary_order_quantity').str},
-    ${entry.value('order_quantity').str},
     ${entry.value('description').str},
     ${entry.value('picture').str},
     ${entry.value('created').str},
