@@ -11,6 +11,8 @@ class EntryPurchaseContent implements SchemaEntryAbstract {
 	    'id': FieldValue(null),
 	    'purchase_id': FieldValue(null),
 	    'product_id': FieldValue(null),
+	    'purchase': FieldValue(''),
+	    'product': FieldValue(''),
 	    'sale_price': FieldValue('0.00'),
 	    'sale_currency': FieldValue(''),
 	    'shipping': FieldValue('0.00'),
