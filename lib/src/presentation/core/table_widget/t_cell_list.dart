@@ -5,20 +5,19 @@ import 'package:flutter/material.dart';
 ///
 ///
 class TCellEntry {
-  late final Map<dynamic, String> _values;
+  late final Map<String, String> _values;
   TCellEntry({
     required String field,
     required List<SchemaEntryAbstract> entries,
   }) {
     _values = entries.asMap().map((_, entry) {
-      return MapEntry(entry.value('id').value, '${entry.value(field).value}');
+      return MapEntry('${entry.value('id').value}', '${entry.value(field).value}');
     });
-
   }
   TCellEntry.empty() :
     _values = const {};
-  Map<dynamic, String> get values => _values;
-  String value(id) => _values[id] ?? '';
+  Map<String, String> get values => _values;
+  String value(id) => _values['$id'] ?? '';
   ///
   ///
   @override
@@ -30,7 +29,7 @@ class TCellEntry {
 ///
 ///
 class TCellList extends StatefulWidget {
-  final dynamic _id;
+  final String _id;
   final TCellEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
@@ -40,7 +39,7 @@ class TCellList extends StatefulWidget {
   ///
   TCellList({
     super.key,
-    required dynamic id,
+    required String id,
     TCellEntry? relation,
     TextStyle? style,
     void Function(String value)? onComplete,
@@ -68,7 +67,7 @@ class TCellList extends StatefulWidget {
 ///
 class _TCellListState extends State<TCellList> {
   // final _log = Log("$_TCellListState._");
-  dynamic _id;
+  String _id;
   final TCellEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
@@ -78,7 +77,7 @@ class _TCellListState extends State<TCellList> {
   final _textAlign = TextAlign.left;
   bool _isEditing = false;
   _TCellListState({
-    required dynamic id,
+    required String id,
     required TCellEntry relation,
     required TextStyle? style,
     required void Function(String value)? onComplete,

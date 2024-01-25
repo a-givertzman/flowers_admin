@@ -128,11 +128,11 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     final cells = fields
       .where((field) => !field.hidden)
       .map((field) {
-        final value = entry?.value(field.key);
-        _log.debug("._buildRow | \t value: $value");
+        final fieldValue = entry?.value(field.key);
+        _log.debug("._buildRow | \t value: $fieldValue");
         if (field.relation.isEmpty) {
           return TCell(
-            value: value?.value.toString() ?? (field.name.isNotEmpty ? field.name : field.key),
+            value: fieldValue?.value.toString() ?? (field.name.isNotEmpty ? field.name : field.key),
             editable: field.edit,
             style: textStyle,
             onComplete: (value) {
@@ -148,9 +148,11 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
           final List<SchemaEntryAbstract>? relEntries = _relations[field.relation.id];
           if (relEntries != null) {
             final relation = TCellEntry(entries: relEntries, field: field.relation.field);
+            _log.debug("._buildRow | \t fieldValue '$fieldValue");
             _log.debug("._buildRow | \t relation '${field.relation.id}': $relation");
+            // _log.debug("._buildRow | \t relEntries '$relEntries");
             return TCellList(
-              id: value?.value,
+              id: '${fieldValue?.value}',
               relation: relation,
               editable: field.edit,
               style: textStyle,
