@@ -250,7 +250,7 @@ class _HomeBodyState extends State<HomeBody> {
                       authToken: _authToken, 
                       database: _database, 
                       sqlBuilder: (sql, params) {
-                        return Sql(sql: 'select * from purchase_content_view order by id;');
+                        return Sql(sql: 'select * from purchase_content order by id;');
                       },
                       entryBuilder: (row) => EntryPurchaseContent.from(row),
                       debug: true,
@@ -328,7 +328,7 @@ class _HomeBodyState extends State<HomeBody> {
                       authToken: _authToken, 
                       database: _database, 
                       sqlBuilder: (sql, params) {
-                        return Sql(sql: 'select * from customer_order_view order by id;');
+                        return Sql(sql: 'select * from customer_order order by id;');
                       },
                       entryBuilder: (row) => EntryCustomerOrder.from(row),
                       debug: true,
@@ -346,8 +346,8 @@ class _HomeBodyState extends State<HomeBody> {
                       const Field(hidden: false, edit: false, key: 'id'),
                       const Field(hidden: false, edit: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
                       const Field(hidden: false, edit: false, key: 'customer'),
-                      const Field(hidden: false, edit: true, name: 'purchase_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'purchase')),
-                      const Field(hidden: false, edit: true, name: 'product_id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'product')),
+                      const Field(hidden: false, edit: true, name: 'Purchase id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'purchase')),
+                      const Field(hidden: false, edit: true, name: 'Product id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'product')),
                       const Field(hidden: false, edit: true, key: 'purchase'),
                       const Field(hidden: false, edit: true, key: 'product'),
                       const Field(hidden: false, edit: true, key: 'count'),
