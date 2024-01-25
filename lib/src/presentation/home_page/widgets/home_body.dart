@@ -199,66 +199,7 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: ProductPage(
                 authToken: _authToken,
-              )
-              // TableWidget(
-              //   schema: RelationSchema<EntryProduct, void>(
-              //     schema: TableSchema<EntryProduct, void>(
-              //       read: SqlRead<EntryProduct, void>(
-              //         address: _apiAddress, 
-              //         authToken: _authToken, 
-              //         database: _database, 
-              //         sqlBuilder: (sql, params) {
-              //           return Sql(sql: 'select * from product_view order by id;');
-              //         },
-              //         entryBuilder: (row) => EntryProduct.from(row),
-              //         debug: true,
-              //       ),
-              //       write: SqlWrite<EntryProduct>(
-              //         address: _apiAddress, 
-              //         authToken: _authToken, 
-              //         database: _database, 
-              //         updateSqlBuilder: updateSqlBuilderProduct,
-              //         // insertSqlBuilder: insertSqlBuilderProduct,
-              //         emptyEntryBuilder: EntryProduct.empty, 
-              //         debug: true,
-              //       ),
-              //       fields: [
-              //         const Field(hidden: false, edit: false, key: 'id'),
-              //         const Field(hidden: false, edit: true, key: 'product_category_id', relation: Relation(id: 'category_id', field: 'name')),
-              //         // const Field(hidden: false, edit: true, key: 'category'),
-              //         const Field(hidden: false, edit: true, key: 'name'),
-              //         const Field(hidden: false, edit: true, key: 'details'),
-              //         const Field(hidden: false, edit: true, key: 'primary_price'),
-              //         const Field(hidden: false, edit: true, key: 'primary_currency'),
-              //         const Field(hidden: false, edit: true, key: 'primary_order_quantity'),
-              //         const Field(hidden: false, edit: true, key: 'order_quantity'),
-              //         const Field(hidden: false, edit: true, key: 'description'),
-              //         const Field(hidden: false, edit: true, key: 'picture'),
-              //         const Field(hidden: true, edit: true, key: 'created'),
-              //         const Field(hidden: true, edit: true, key: 'updated'),
-              //         const Field(hidden: true, edit: true, key: 'deleted'),
-              //       ],
-              //     ),
-              //     relations: {
-              //       'category_id': TableSchema<EntryProductCategory, void>(
-              //         read: SqlRead<EntryProductCategory, void>(
-              //           address: _apiAddress, 
-              //           authToken: _authToken, 
-              //           database: _database, 
-              //           sqlBuilder: (sql, params) {
-              //             return Sql(sql: 'select id, name from product_category order by id;');
-              //           },
-              //           entryBuilder: (row) => EntryProductCategory.from(row),
-              //           debug: true,
-              //         ),
-              //         fields: [
-              //           const Field(key: 'id'),
-              //           const Field(key: 'name'),
-              //         ],
-              //       ),
-              //     },
-              //   ),
-              // ),
+              ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
