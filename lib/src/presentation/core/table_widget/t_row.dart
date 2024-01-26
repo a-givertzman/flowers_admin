@@ -126,14 +126,14 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   List<Widget> _buildRow(List<Field> fields, T? entry, textStyle) {
     _log.debug("._buildRow | entry: $entry");
     final cells = fields
-      .where((field) => !field.hidden)
+      .where((field) => !field.isHidden)
       .map((field) {
         final fieldValue = entry?.value(field.key);
         _log.debug("._buildRow | \t value: $fieldValue");
         if (field.relation.isEmpty) {
           return TCell(
-            value: fieldValue?.value.toString() ?? (field.name.isNotEmpty ? field.name : field.key),
-            editable: field.edit,
+            value: fieldValue?.value.toString() ?? (field.title.isNotEmpty ? field.title : field.key),
+            editable: field.isEditable,
             style: textStyle,
             onComplete: (value) {
               final entry = _entry;
@@ -154,7 +154,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             return TCellList(
               id: '${fieldValue?.value}',
               relation: relation,
-              editable: field.edit,
+              editable: field.isEditable,
               style: textStyle,
               onComplete: (value) {
                 final entry = _entry;
@@ -167,7 +167,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             );
           }
           return TCell(
-            value: field.name.isNotEmpty ? field.name : field.key,
+            value: field.title.isNotEmpty ? field.title : field.key,
             editable: false,
             style: textStyle,
           );
