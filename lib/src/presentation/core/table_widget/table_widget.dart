@@ -9,7 +9,7 @@ import 'package:hmi_core/hmi_core_result_new.dart';
 ///
 ///
 class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
-  final TableSchemaAbstract<T, P> _scheme;
+  final TableSchemaAbstract<T, P> _schema;
   final TableWidgetAction<T, P> _addAction;
   final TableWidgetAction<T, P> _editAction;
   final TableWidgetAction<T, P> _delAction;
@@ -22,7 +22,7 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
     TableWidgetAction<T, P>? editAction,
     TableWidgetAction<T, P>? delAction,
   }) :
-    _scheme = schema,
+    _schema = schema,
     _addAction = addAction ?? const TableWidgetAction.empty(),
     _editAction = editAction ?? const TableWidgetAction.empty(),
     _delAction = delAction ?? const TableWidgetAction.empty();
@@ -31,7 +31,7 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<TableWidget<T, P>> createState() => _TableWidgetState(
-    scheme: _scheme,
+    schema: _schema,
     addAction: _addAction,
     editAction: _editAction,
     delAction: _delAction,
@@ -41,19 +41,19 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
 ///
 class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWidget<T, P>> {
   final _log = Log("$_TableWidgetState");
-  final TableSchemaAbstract<T, P> _scheme;
+  final TableSchemaAbstract<T, P> _schema;
   final TableWidgetAction<T, P> _addAction;
   final TableWidgetAction<T, P> _editAction;
   final TableWidgetAction<T, P> _delAction;
   ///
   ///
   _TableWidgetState({
-    required TableSchemaAbstract<T, P> scheme,
+    required TableSchemaAbstract<T, P> schema,
     required TableWidgetAction<T, P>? addAction,
     required TableWidgetAction<T, P>? editAction,
     required TableWidgetAction<T, P>? delAction,
   }) :
-    _scheme = scheme,
+    _schema = schema,
     _addAction = addAction ?? const TableWidgetAction.empty(),
     _editAction = editAction ?? const TableWidgetAction.empty(),
     _delAction = delAction ?? const TableWidgetAction.empty();
@@ -70,10 +70,10 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
             onPressed: () async {
               final onPressed = _editAction.onPressed;
               if (onPressed != null) {
-                switch (await onPressed(_scheme)) {
+                switch (await onPressed(_schema)) {
                   case Ok(value: final entry): () {
                     if (entry.isChanged) {
-                      _scheme.update(entry).then((result) {
+                      _schema.update(entry).then((result) {
                         if (result case Err error) {
                           showDialog(
                             context: context,
@@ -98,9 +98,9 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
             onPressed: () async {
               final onPressed = _addAction.onPressed;
               if (onPressed != null) {
-                switch (await onPressed(_scheme)) {
+                switch (await onPressed(_schema)) {
                   case Ok(value: final entry): () {
-                    _scheme.insert(entry: entry).then((result) {
+                    _schema.insert(entry: entry).then((result) {
                       if (result case Err error) {
                         showDialog(
                           context: context,
@@ -124,9 +124,9 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
             onPressed: () async {
               final onPressed = _delAction.onPressed;
               if (onPressed != null) {
-                switch (await onPressed(_scheme)) {
+                switch (await onPressed(_schema)) {
                   case Ok(value: final entry): () {
-                    _scheme.delete(entry).then((result) {
+                    _schema.delete(entry).then((result) {
                       if (result case Err error) {
                         showDialog(
                           context: context,
@@ -148,7 +148,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
           ),
         ]),
         FutureBuilder<Result<List<T>, Failure>>(
-          future: _scheme.fetch(null),
+          future: _schema.fetch(null),
           builder: (BuildContext context, AsyncSnapshot<Result<List<T>, Failure>> snapshot) {
             final textStile = Theme.of(context).textTheme.bodyMedium;
             if (snapshot.connectionState != ConnectionState.done) {
@@ -172,7 +172,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                         //   0: IntrinsicColumnWidth(),
                         //   1: FlexColumnWidth(),
                         // },
-                        children: _buildRows(_scheme),
+                        children: _buildRows(_schema),
                       );
                     } else {
                       return Center(child: Text("No orders received", style: textStile,));
@@ -204,6 +204,31 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
           fields: schema.fields,
           relations: schema.relations,
           onEditingComplete: _updateEntry,
+          onDoubleTap: () async {
+              final onPressed = _editAction.onPressed;
+              if (onPressed != null) {
+                switch (await onPressed(_schema)) {
+                  case Ok(value: final entry): () {
+                    if (entry.isChanged) {
+                      _schema.update(entry).then((result) {
+                        if (result case Err error) {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text('Update error'),
+                              content: Text('error: ${error.error}'),
+                            ),
+                          );
+                          return;
+                        }
+                        setState(() {return;});
+                      });
+                    }
+                  } ();
+                  case Err():
+                }
+              }
+          },
         );
       }),
     );
@@ -213,7 +238,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
   ///
   _updateEntry(T entry) {
     if (entry.isChanged) {
-      _scheme.update(entry).then((result) {
+      _schema.update(entry).then((result) {
         if (result is Err) {
           showDialog(
             context: context,

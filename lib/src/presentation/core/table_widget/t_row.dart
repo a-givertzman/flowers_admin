@@ -1,5 +1,6 @@
 
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_cell.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
   final Map<String, List<SchemaEntryAbstract>> _relations;
   final List<Field> _fields;
   final void Function()? _onTap;
+  final void Function()? _onDoubleTap;
   final void Function(T? entry)? _onSelectionChange;
   final void Function(T entry)? _onEditingComplete;
   ///
@@ -22,6 +24,7 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
     Map<String, List<SchemaEntryAbstract>> relations = const {},
     required List<Field> fields,
     void Function()? onTap,
+    void Function()? onDoubleTap,
     void Function(T? entry)? onSelectionChange,
     void Function(T entry)? onEditingComplete,
   }) :
@@ -29,6 +32,7 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
     _relations = relations,
     _fields = fields,
     _onTap = onTap,
+    _onDoubleTap = onDoubleTap,
     _onSelectionChange = onSelectionChange,
     _onEditingComplete = onEditingComplete;
   //
@@ -40,6 +44,7 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
     relations: _relations,
     fields: _fields,
     onTap: _onTap,
+    onDoubleTap: _onDoubleTap,
     onSelectionChange: _onSelectionChange,
     onEditingComplete: _onEditingComplete,
   );
@@ -54,6 +59,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   final Map<String, List<SchemaEntryAbstract>> _relations;
   final List<Field> _fields;
   final void Function()? _onTap;
+  final void Function()? _onDoubleTap;
   final void Function(T? entry)? _onSelectionChange;
   final void Function(T entry)? _onEditingComplete;
   bool _isSelected;
@@ -65,6 +71,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     required Map<String, List<SchemaEntryAbstract>> relations,
     required List<Field> fields,
     required void Function()? onTap,
+    void Function()? onDoubleTap,
     required void Function(T? entry)? onSelectionChange,
     required void Function(T entry)? onEditingComplete,
   }):
@@ -73,6 +80,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     _fields = fields,
     _isSelected = entry?.isSelected ?? false,
     _onTap = onTap,
+    _onDoubleTap = onDoubleTap,
     _onSelectionChange = onSelectionChange,
     _onEditingComplete = onEditingComplete {
     _log = Log('$runtimeType');
@@ -91,10 +99,19 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
         _isSelected = ! _isSelected;
         _entry?.select(_isSelected);
         final onSelectionChange = _onSelectionChange;
-        if (onSelectionChange != null) _onSelectionChange!(_entry);
+        if (onSelectionChange != null) onSelectionChange(_entry);
+        setState(() {return;});
         final onTap = _onTap;
         if (onTap != null) onTap();
+      },
+      onDoubleTap: () {
+        _isSelected = true;
+        _entry?.select(_isSelected);
+        final onSelectionChange = _onSelectionChange;
+        if (onSelectionChange != null) onSelectionChange(_entry);
         setState(() {return;});
+        final onDoubleTap = _onDoubleTap;
+        if (onDoubleTap != null) onDoubleTap();
       },
       child: MouseRegion(
         onEnter: (_) {
@@ -147,7 +164,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
         } else {
           final List<SchemaEntryAbstract>? relEntries = _relations[field.relation.id];
           if (relEntries != null) {
-            final relation = TCellEntry(entries: relEntries, field: field.relation.field);
+            final relation = EditListEntry(entries: relEntries, field: field.relation.field);
             _log.debug("._buildRow | \t fieldValue '$fieldValue");
             _log.debug("._buildRow | \t relation '${field.relation.id}': $relation");
             // _log.debug("._buildRow | \t relEntries '$relEntries");

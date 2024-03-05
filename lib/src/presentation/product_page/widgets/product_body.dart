@@ -51,7 +51,7 @@ class _ProductBodyState extends State<ProductBody> {
         onPressed: (schema) {
           return showDialog<Result<EntryProduct, void>?>(
             context: context, 
-            builder: (_) => const EditProductForm(),
+            builder: (_) => EditProductForm(fields: schema.fields,),
           ).then((result) {
             _log.debug('.build | new entry: $result');
             return switch (result) {
@@ -68,7 +68,7 @@ class _ProductBodyState extends State<ProductBody> {
           final toBeUpdated = schema.entries.where((e) => e.isSelected).toList();
           return showDialog<Result<EntryProduct, void>?>(
             context: context, 
-            builder: (_) => EditProductForm(entry: toBeUpdated.lastOrNull),
+            builder: (_) => EditProductForm(fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
           ).then((result) {
             _log.debug('.build | edited entry: $result');
             return switch (result) {
