@@ -23,7 +23,7 @@ class EntryTransaction implements SchemaEntryAbstract {
   static Map<String, FieldValue> get _initial {
     final initial = <String, FieldValue>{
 	    'id': FieldValue(0),
-	    'author_id': FieldValue(''),
+	    'author_id': FieldValue(0),
 	    'author': FieldValue(''),
 	    'value': FieldValue(''),
 	    'details': FieldValue(''),

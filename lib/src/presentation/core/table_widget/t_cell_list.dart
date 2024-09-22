@@ -2,11 +2,10 @@
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flutter/material.dart';
-
 ///
 ///
 class TCellList extends StatelessWidget {
-  final String _id;
+  final String? _id;
   final EditListEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
@@ -17,7 +16,7 @@ class TCellList extends StatelessWidget {
   ///
   TCellList({
     super.key,
-    required String id,
+    required String? id,
     EditListEntry? relation,
     TextStyle? style,
     void Function(String value)? onComplete,

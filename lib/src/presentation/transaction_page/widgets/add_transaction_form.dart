@@ -119,7 +119,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                         ),
                         TCellList(
                           labelText: '${InRu('Customer')}',
-                          id: '${_entry.value('customer_id').value}',
+                          id: (_entry.value('customer_id').value != null && '${_entry.value('customer_id').value}'.isNotEmpty) ? '${_entry.value('customer_id').value}' : null,
                           relation: customerRelation,
                           editable: true,
                           onComplete: (value) {

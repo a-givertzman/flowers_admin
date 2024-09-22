@@ -34,6 +34,7 @@ const tr = {
   'Description': {Lang.en: 'Description', Lang.ru: 'Описание'},
   'TransactionDetails': {Lang.en: 'Details', Lang.ru: 'Назначение'},
   'CustomerAccountBefore': {Lang.en: 'Customer account before', Lang.ru: 'Счет клиента до'},
+  'NotSampled': {Lang.en: 'Not sampled', Lang.ru: 'Не выбрано'},
 };
 
 

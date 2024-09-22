@@ -1,10 +1,11 @@
 
+import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flutter/material.dart';
 ///
 ///
 class EditList extends StatefulWidget {
-  final String _id;
+  final String? _id;
   final EditListEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
@@ -15,7 +16,7 @@ class EditList extends StatefulWidget {
   ///
   EditList({
     super.key,
-    required String id,
+    required String? id,
     EditListEntry? relation,
     TextStyle? style,
     void Function(String value)? onComplete,
@@ -46,7 +47,7 @@ class EditList extends StatefulWidget {
 ///
 class _EditListState extends State<EditList> {
   // final _log = Log("$_EditListState._");
-  String _id;
+  String? _id;
   final EditListEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
@@ -60,7 +61,7 @@ class _EditListState extends State<EditList> {
   //
   //
   _EditListState({
-    required String id,
+    required String? id,
     required EditListEntry relation,
     required TextStyle? style,
     required void Function(String value)? onComplete,
@@ -118,7 +119,7 @@ class _EditListState extends State<EditList> {
                   style: Theme.of(context).inputDecorationTheme.labelStyle ?? Theme.of(context).textTheme.bodySmall,
                 ),
               Text(
-                _relation.value(_id),
+                _id != null ? _relation.value(_id) : '${InRu('NotSampled')}',
                 style: _isChanged 
                   ? style?.copyWith(color: Theme.of(context).colorScheme.error)
                   : style,

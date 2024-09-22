@@ -38,16 +38,14 @@ Sql insertSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
     details,
     order_id,
     customer_id,
-    customer_account
-    description,
+    description
   ) values (
     ${entry.value('author_id').str},
     ${entry.value('value').str},
     ${entry.value('details').str},
     ${entry.value('order_id').str},
     ${entry.value('customer_id').str},
-    ${entry.value('customer_account').str}
-    ${entry.value('description').str},
+    ${entry.value('description').str}
   );
 """);
 }
