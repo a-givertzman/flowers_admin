@@ -23,20 +23,20 @@ class TransactionBody extends StatefulWidget {
   ///
   @override
   // ignore: no_logic_in_create_state
-  State<TransactionBody> createState() => _ProductBodyState(
+  State<TransactionBody> createState() => _TransactionBodyState(
     authToken: _authToken,
   );
 }
 ///
 ///
-class _ProductBodyState extends State<TransactionBody> {
+class _TransactionBodyState extends State<TransactionBody> {
   late final Log _log;
   final String _authToken;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   ///
   ///
-  _ProductBodyState({
+  _TransactionBodyState({
     required String authToken,
   }):
     _authToken = authToken {
@@ -121,13 +121,13 @@ class _ProductBodyState extends State<TransactionBody> {
             ),
             fields: [
               const Field(hidden: false, editable: false, key: 'id'),
-              const Field(hidden: false, editable: true, key: 'timestamp'),
-              const Field(hidden: false, editable: true, key: 'account_owner'),
+              const Field(hidden: false, editable: true, title: 'Author', key: 'author_id', relation: Relation(id: 'author_id', field: 'name')),
               const Field(hidden: false, editable: true, key: 'value'),
-              const Field(hidden: false, editable: true, key: 'description'),
+              const Field(hidden: false, editable: true, key: 'details'),
               const Field(hidden: false, editable: true, key: 'order_id'),
               const Field(hidden: false, editable: true, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
               const Field(hidden: false, editable: true, key: 'customer_account'),
+              const Field(hidden: false, editable: true, key: 'description'),
               const Field(hidden: true, editable: true, key: 'created'),
               const Field(hidden: true, editable: true, key: 'updated'),
               const Field(hidden: true, editable: true, key: 'deleted'),
@@ -135,6 +135,22 @@ class _ProductBodyState extends State<TransactionBody> {
           ),
           relations: {
             'customer_id': TableSchema<EntryCustomer, void>(
+              read: SqlRead<EntryCustomer, void>(
+                address: _apiAddress, 
+                authToken: _authToken, 
+                database: _database, 
+                sqlBuilder: (sql, params) {
+                  return Sql(sql: 'select id, name from customer order by id;');
+                },
+                entryBuilder: (row) => EntryCustomer.from(row.cast()),
+                debug: true,
+              ),
+              fields: [
+                const Field(key: 'id'),
+                const Field(key: 'name'),
+              ],
+            ),
+            'author_id': TableSchema<EntryCustomer, void>(
               read: SqlRead<EntryCustomer, void>(
                 address: _apiAddress, 
                 authToken: _authToken, 

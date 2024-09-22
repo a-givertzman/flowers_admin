@@ -93,6 +93,27 @@ INSERT INTO public.notice (customer_id, purchase_id, purchase_content_id, title,
 
 
 
+-- public."transaction" definition
+DROP TABLE public."transaction";
+CREATE TABLE public."transaction" (
+	id bigserial not null,
+	author_id int8 NOT NULL,
+	details varchar(2048) NOT NULL,
+	value numeric(20, 2) NOT NULL,
+	order_id int8 NULL,
+	customer_id int8 NOT NULL,
+	customer_account numeric(20, 2) NOT NULL,
+	description varchar(2048) NOT NULL,
+	created timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	deleted timestamp NULL,
+	CONSTRAINT transaction_pkey PRIMARY KEY (id)
+);
+INSERT INTO public."transaction" (id, author_id, value, details, order_id, customer_id, customer_account, description, created, updated, deleted) VALUES(1, 15, 1.00, 'Пополнение баланса пользователя', NULL, 3, 0.00, 'Description to the transaction', '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', NULL);
+INSERT INTO public."transaction" (id, author_id, value, details, order_id, customer_id, customer_account, description, created, updated, deleted) VALUES(2, 15, 2.00, 'Пополнение баланса пользователя', NULL, 2, 0.00, 'Description to the transaction', '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', NULL);
+
+
+
 
 
 

@@ -5,26 +5,24 @@ import 'package:ext_rw/ext_rw.dart';
 Sql updateSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
   return Sql(sql: """UPDATE transaction SET (
     id,
-    timestamp,
-    account_owner,
+    author_id,
     value,
-    description,
+    details,
     order_id,
     customer_id,
     customer_account,
-    created,
+    description,
     updated,
     deleted
   ) = (
     ${entry.value('id').str},
-    ${entry.value('timestamp').str},
-    ${entry.value('account_owner').str},
+    ${entry.value('author_id').str},
     ${entry.value('value').str},
-    ${entry.value('description').str},
+    ${entry.value('details').str},
     ${entry.value('order_id').str},
     ${entry.value('customer_id').str},
     ${entry.value('customer_account').str},
-    ${entry.value('created').str},
+    ${entry.value('description').str},
     ${entry.value('updated').str},
     ${entry.value('deleted').str}
   )
@@ -35,21 +33,21 @@ Sql updateSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
 ///
 Sql insertSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
   return Sql(sql: """insert into transaction (
-    timestamp,
-    account_owner,
+    author_id,
     value,
-    description,
+    details,
     order_id,
     customer_id,
     customer_account
+    description,
   ) values (
-    ${entry.value('timestamp').str},
-    ${entry.value('account_owner').str},
+    ${entry.value('author_id').str},
     ${entry.value('value').str},
-    ${entry.value('description').str},
+    ${entry.value('details').str},
     ${entry.value('order_id').str},
     ${entry.value('customer_id').str},
     ${entry.value('customer_account').str}
+    ${entry.value('description').str},
   );
 """);
 }
