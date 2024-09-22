@@ -29,7 +29,7 @@ class EntryTransaction implements SchemaEntryAbstract {
 	    'details': FieldValue(''),
 	    'order_id': FieldValue(0),
 	    'order': FieldValue(''),
-	    'customer_id': FieldValue(0),
+	    'customer_id': FieldValue(null, type: FieldType.int),
 	    'customer': FieldValue(''),
 	    'customer_account': FieldValue(''),
 	    'description': FieldValue(''),
