@@ -78,7 +78,9 @@ class _EditListState extends State<EditList> {
   @override
   Widget build(BuildContext context) {
     final defaultStyle = Theme.of(context).textTheme.bodyLarge;
-    final style = _style ?? defaultStyle;
+    final style = _editable
+      ? _style ?? defaultStyle
+      : (_style ?? defaultStyle)?.copyWith(color: (_style ?? defaultStyle)?.color?.withOpacity(0.5));
     if (_isEditing) {
       return DropdownButtonFormField(
             value: _id,

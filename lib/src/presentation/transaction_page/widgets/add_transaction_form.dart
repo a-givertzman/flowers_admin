@@ -87,7 +87,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${InRu('Edit transaction')} [${_entry.value('id').str}] ${InRu('from')} ${_entry.value('created').str}', style: Theme.of(context).textTheme.titleLarge,),
+              Text('${InRu('New transaction')}', style: Theme.of(context).textTheme.titleLarge,),
               Row(
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -95,66 +95,79 @@ class _AddProductFormState extends State<AddTransactionForm> {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                                TCellList(
-                                  labelText: '${InRu('Author')}',
-                                  id: '${_entry.value('author_id').value}',
-                                  relation: authorRelation,
-                                  editable: authorField.isEditable,
-                                  onComplete: (value) {
-                                    _entry.update('author_id', value);
-                                    setState(() {return;});
-                                  },
-                                ),
-                                TextEditWidget(
-                                  labelText: field('value').title.inRu(),
-                                  value: '${_entry.value('value').value}',
-                                  onComplete: (value) {
-                                    _entry.update('value', value);
-                                    setState(() {return;});
-                                  },
-                                ),
-                                TextEditWidget(
-                                  labelText: field('details').title.inRu(),
-                                  value: '${_entry.value('details').value}',
-                                  onComplete: (value) {
-                                    _entry.update('details', value);
-                                    setState(() {return;});
-                                  },
-                                ),
-                                TCellList(
-                                  labelText: '${InRu('Customer')}',
-                                  id: '${_entry.value('customer_id').value}',
-                                  relation: customerRelation,
-                                  editable: customerField.isEditable,
-                                  onComplete: (value) {
-                                    _entry.update('customer_id', value);
-                                    setState(() {return;});
-                                  },
-                                ),
-                                // TextEditWidget(
-                                //   labelText: field('name').title.inRu(),
-                                //   value: '${_entry.value('name').value}',
-                                //   onComplete: (value) {
-                                //     _entry.update('name', value);
-                                //     setState(() {return;});
-                                //   },
-                                // ),
-                                // TextEditWidget(
-                                //   labelText: field('primary_currency').title.inRu(),
-                                //   value: '${_entry.value('primary_currency').value}',
-                                //   onComplete: (value) {
-                                //     _entry.update('primary_currency', value);
-                                //     setState(() {return;});
-                                //   },
-                                // ),
-                                TextEditWidget(
-                                  labelText: field('description').title.inRu(),
-                                  value: '${_entry.value('description').value}',
-                                  onComplete: (value) {
-                                    _entry.update('description', value);
-                                    setState(() {return;});
-                                  },
-                                ),                      
+                        TCellList(
+                          labelText: '${InRu('Author')}',
+                          id: '${_entry.value('author_id').value}',
+                          relation: authorRelation,
+                          editable: authorField.isEditable,
+                          onComplete: (value) {
+                            _entry.update('author_id', value);
+                            setState(() {return;});
+                          },
+                        ),
+                        TextEditWidget(
+                          labelText: field('value').title.inRu(),
+                          value: '${_entry.value('value').value}',
+                          onComplete: (value) {
+                            _entry.update('value', value);
+                            setState(() {return;});
+                          },
+                        ),
+                        TextEditWidget(
+                          labelText: field('details').title.inRu(),
+                          value: '${_entry.value('details').value}',
+                          onComplete: (value) {
+                            _entry.update('details', value);
+                            setState(() {return;});
+                          },
+                        ),
+                        TCellList(
+                          labelText: '${InRu('Customer')}',
+                          id: '${_entry.value('customer_id').value}',
+                          relation: customerRelation,
+                          editable: customerField.isEditable,
+                          onComplete: (value) {
+                            _entry.update('customer_id', value);
+                            setState(() {return;});
+                          },
+                        ),
+                        TextEditWidget(
+                          labelText: field('customer_account').title.inRu(),
+                          value: '${_entry.value('customer_account').value}',
+                          editable: field('customer_account').isEditable,
+                        ),
+                        // TextEditWidget(
+                        //   labelText: field('primary_currency').title.inRu(),
+                        //   value: '${_entry.value('primary_currency').value}',
+                        //   onComplete: (value) {
+                        //     _entry.update('primary_currency', value);
+                        //     setState(() {return;});
+                        //   },
+                        // ),
+                        TextEditWidget(
+                          labelText: field('description').title.inRu(),
+                          value: '${_entry.value('description').value}',
+                          onComplete: (value) {
+                            _entry.update('description', value);
+                            setState(() {return;});
+                          },
+                        ),
+                        TextEditWidget(
+                          labelText: field('created').title.inRu(),
+                          value: '${_entry.value('created').value}',
+                          editable: field('created').isEditable,
+                        ),
+                        TextEditWidget(
+                          labelText: field('updated').title.inRu(),
+                          value: '${_entry.value('updated').value}',
+                          editable: field('updated').isEditable,
+                        ),
+                        if (_entry.value('deleted').value != null)
+                          TextEditWidget(
+                            labelText: field('deleted').title.inRu(),
+                            value: '${_entry.value('deleted').value}',
+                            editable: field('deleted').isEditable,
+                          ),           
                       ],
                     ),
                   ),

@@ -10,6 +10,7 @@ import 'package:flowers_admin/src/presentation/transaction_page/widgets/edit_tra
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 ///
 ///
@@ -128,16 +129,16 @@ class _TransactionBodyState extends State<TransactionBody> {
             ),
             fields: [
               const Field(hidden: false, editable: false, key: 'id'),
-              Field(hidden: false, editable: true, title: '${InRu('Author')}', key: 'author_id', relation: const Relation(id: 'author_id', field: 'name')),
+              Field(hidden: false, editable: false, title: '${InRu('Author')}', key: 'author_id', relation: const Relation(id: 'author_id', field: 'name')),
               Field(hidden: false, editable: true, title: '${InRu('Value')}', key: 'value'),
               Field(hidden: false, editable: true, title: '${InRu('TransactionDetails')}', key: 'details'),
               const Field(hidden: true, editable: true, key: 'order_id'),
-              Field(hidden: false, editable: true, title: '${InRu('Customer')}', key: 'customer_id', relation: const Relation(id: 'customer_id', field: 'name')),
-              const Field(hidden: false, editable: true, key: 'customer_account'),
+              Field(hidden: false, editable: false, title: '${InRu('Customer')}', key: 'customer_id', relation: const Relation(id: 'customer_id', field: 'name')),
+              Field(hidden: false, editable: false, title: '${InRu('CustomerAccountBefore')}', key: 'customer_account'),
               Field(hidden: false, editable: true, title: '${InRu('Description')}', key: 'description'),
-              Field(hidden: false, editable: true, title: '${InRu('Created')}', key: 'created'),
-              const Field(hidden: true, editable: true, key: 'updated'),
-              const Field(hidden: true, editable: true, key: 'deleted'),
+              Field(hidden: false, editable: false, title: '${InRu('Created')}', key: 'created'),
+              const Field(hidden: true, editable: false, key: 'updated'),
+              const Field(hidden: true, editable: false, key: 'deleted'),
             ],
           ),
           relations: {
