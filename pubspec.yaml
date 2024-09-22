@@ -1,6 +1,6 @@
 name: flowers_admin
 version: 0.0.5
-homepage: https://github.com/a-givertzman/hmi_core
+homepage: https://github.com/a-givertzman/flowers_admin
 description: A new Flutter project.
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
@@ -18,19 +18,20 @@ dependencies:
   hmi_core:
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: master
+      ref: 2.0.0
   ext_rw:
-    # path: ../ext_rw
-    git:
-      url: https://github.com/a-givertzman/dart_ext_rw
-      ref: master
-  web_socket_channel: ^2.4.0
+    path: ../ext_rw
+    # git:
+    #   url: https://github.com/a-givertzman/dart_ext_rw
+    #   ref: master
+  web_socket_channel: ^3.0.1
   uuid: ^3.0.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.3.0
+  lint: ^2.3.0
+  mockito: ^5.4.4
   flutter_lints: ^3.0.1
   dart_code_metrics: ^5.6.0
 
