@@ -1,4 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.dart';
@@ -14,19 +15,23 @@ import 'package:flutter/material.dart';
 ///
 class HomeBody extends StatefulWidget {
   final String _authToken;
+  final AppUser _user;
   ///
   ///
   const HomeBody({
     super.key,
     required String authToken,
+    required AppUser user,
   }):
-    _authToken = authToken;
+    _authToken = authToken,
+    _user = user;
   ///
   ///
   @override
   // ignore: no_logic_in_create_state
   State<HomeBody> createState() => _HomeBodyState(
     authToken: _authToken,
+    user: _user,
   );
 }
 ///
@@ -34,6 +39,7 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody> {
   // final _log = Log("$_HomeBodyState._");
   final String _authToken;
+  final AppUser _user;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   final _paddingH = 8.0;
@@ -42,8 +48,10 @@ class _HomeBodyState extends State<HomeBody> {
   ///
   _HomeBodyState({
     required String authToken,
+    required AppUser user,
   }):
-    _authToken = authToken;
+    _authToken = authToken,
+    _user = user;
   ///
   ///
   @override
@@ -85,6 +93,7 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TransactionPage(
                 authToken: _authToken,
+                user: _user,
               ),
             ),
             //

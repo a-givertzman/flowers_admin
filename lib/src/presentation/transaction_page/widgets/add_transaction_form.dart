@@ -1,5 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
@@ -13,6 +14,7 @@ class AddTransactionForm extends StatefulWidget {
   final List<Field> _fields;
   final EntryTransaction? _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
+  final AppUser _user;
   ///
   ///
   const AddTransactionForm({
@@ -20,10 +22,12 @@ class AddTransactionForm extends StatefulWidget {
     required List<Field> fields,
     EntryTransaction? entry,
     Map<String, List<SchemaEntryAbstract>> relations = const {},
+    required AppUser user,
   }):
     _fields = fields,
     _entry = entry,
-    _relations = relations;
+    _relations = relations,
+    _user = user;
   //
   //
   @override
@@ -32,6 +36,7 @@ class AddTransactionForm extends StatefulWidget {
     fields: _fields,
     entry: _entry ?? EntryTransaction.empty(),
     relations: _relations,
+    user: _user,
   );
 }
 ///
@@ -41,16 +46,19 @@ class _AddProductFormState extends State<AddTransactionForm> {
   final List<Field> _fields;
   final EntryTransaction _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
+  final AppUser _user;
   ///
   ///
   _AddProductFormState({
     required List<Field> fields,
     required EntryTransaction entry,
     required Map<String, List<SchemaEntryAbstract>> relations,
+    required AppUser user,
   }):
     _fields = fields,
     _entry = entry,
-    _relations = relations;
+    _relations = relations,
+    _user = user;
   ///
   ///
   Field field(String key) {
@@ -62,17 +70,10 @@ class _AddProductFormState extends State<AddTransactionForm> {
   //
   @override
   Widget build(BuildContext context) {
-    final authorField = field('author_id');
+    _entry.update('author_id', _user.id);
     final customerField = field('customer_id');
-    _log.debug('.build | authorField: $authorField');
     _log.debug('.build | customerField: $customerField');
     _log.debug('.build | _relations: $_relations');
-    EditListEntry authorRelation = EditListEntry(entries: [], field: authorField.relation.field);
-    final List<SchemaEntryAbstract>? authorRelEntries = _relations[authorField.relation.id];
-    if (authorRelEntries != null) {
-      authorRelation = EditListEntry(entries: authorRelEntries, field: authorField.relation.field);
-    }
-    _log.debug('.build | authorRelation: $authorRelation');
     EditListEntry customerRelation = EditListEntry(entries: [], field: customerField.relation.field);
     final List<SchemaEntryAbstract>? customerRelEntries = _relations[customerField.relation.id];
     if (customerRelEntries != null) {
@@ -95,15 +96,10 @@ class _AddProductFormState extends State<AddTransactionForm> {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                        TCellList(
+                        TextEditWidget(
                           labelText: '${InRu('Author')}',
-                          id: '${_entry.value('author_id').value}',
-                          relation: authorRelation,
-                          editable: authorField.isEditable,
-                          onComplete: (value) {
-                            _entry.update('author_id', value);
-                            setState(() {return;});
-                          },
+                          value: '${_user.name} [${_user.id}]',
+                          editable: false,
                         ),
                         TextEditWidget(
                           labelText: field('value').title.inRu(),
@@ -125,7 +121,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           labelText: '${InRu('Customer')}',
                           id: '${_entry.value('customer_id').value}',
                           relation: customerRelation,
-                          editable: customerField.isEditable,
+                          editable: true,
                           onComplete: (value) {
                             _entry.update('customer_id', value);
                             setState(() {return;});
@@ -152,22 +148,22 @@ class _AddProductFormState extends State<AddTransactionForm> {
                             setState(() {return;});
                           },
                         ),
-                        TextEditWidget(
-                          labelText: field('created').title.inRu(),
-                          value: '${_entry.value('created').value}',
-                          editable: field('created').isEditable,
-                        ),
-                        TextEditWidget(
-                          labelText: field('updated').title.inRu(),
-                          value: '${_entry.value('updated').value}',
-                          editable: field('updated').isEditable,
-                        ),
-                        if (_entry.value('deleted').value != null)
-                          TextEditWidget(
-                            labelText: field('deleted').title.inRu(),
-                            value: '${_entry.value('deleted').value}',
-                            editable: field('deleted').isEditable,
-                          ),           
+                        // TextEditWidget(
+                        //   labelText: field('created').title.inRu(),
+                        //   value: '${_entry.value('created').value}',
+                        //   editable: field('created').isEditable,
+                        // ),
+                        // TextEditWidget(
+                        //   labelText: field('updated').title.inRu(),
+                        //   value: '${_entry.value('updated').value}',
+                        //   editable: field('updated').isEditable,
+                        // ),
+                        // if (_entry.value('deleted').value != null)
+                        //   TextEditWidget(
+                        //     labelText: field('deleted').title.inRu(),
+                        //     value: '${_entry.value('deleted').value}',
+                        //     editable: field('deleted').isEditable,
+                        //   ),           
                       ],
                     ),
                   ),

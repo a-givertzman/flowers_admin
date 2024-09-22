@@ -1,5 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
@@ -16,19 +17,23 @@ import 'package:collection/collection.dart';
 ///
 class TransactionBody extends StatefulWidget {
   final String _authToken;
+  final AppUser _user;
   ///
   ///
   const TransactionBody({
     super.key,
     required String authToken,
+    required AppUser user,
   }):
-    _authToken = authToken;
+    _authToken = authToken,
+    _user = user;
   ///
   ///
   @override
   // ignore: no_logic_in_create_state
   State<TransactionBody> createState() => _TransactionBodyState(
     authToken: _authToken,
+    user: _user,
   );
 }
 ///
@@ -36,14 +41,17 @@ class TransactionBody extends StatefulWidget {
 class _TransactionBodyState extends State<TransactionBody> {
   late final Log _log;
   final String _authToken;
+  final AppUser _user;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   ///
   ///
   _TransactionBodyState({
     required String authToken,
+    required AppUser user,
   }):
-    _authToken = authToken {
+    _authToken = authToken,
+    _user = user {
       _log = Log("$runtimeType");
     }
   ///
@@ -55,7 +63,7 @@ class _TransactionBodyState extends State<TransactionBody> {
         onPressed: (schema) {
           return showDialog<Result<EntryTransaction, void>?>(
             context: context, 
-            builder: (_) => AddTransactionForm(fields: schema.fields,),
+            builder: (_) => AddTransactionForm(fields: schema.fields, user: _user, relations: schema.relations,),
           ).then((result) {
             _log.debug('.build | new entry: $result');
             return switch (result) {
