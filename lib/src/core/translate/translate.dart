@@ -27,6 +27,11 @@ const tr = {
   'Edit transaction': {Lang.en: 'Edit customer', Lang.ru: 'Редактировать транзакцию'},
   'from': {Lang.en: 'from', Lang.ru: 'от'},
   'Author': {Lang.en: 'Author', Lang.ru: 'Автор'},
+  'Customer': {Lang.en: 'Customer', Lang.ru: 'Пользователь'},
+  'Value': {Lang.en: 'Value', Lang.ru: 'Сумма'},
+  'Created': {Lang.en: 'Created', Lang.ru: 'Создано'},
+  'Description': {Lang.en: 'Description', Lang.ru: 'Описание'},
+  'TransactionDetails': {Lang.en: 'Details', Lang.ru: 'Назначение'},
 };
 
 

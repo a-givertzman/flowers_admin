@@ -9,13 +9,13 @@ import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
 ///
 ///
-class EditTransactionForm extends StatefulWidget {
+class AddTransactionForm extends StatefulWidget {
   final List<Field> _fields;
   final EntryTransaction? _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
   ///
   ///
-  const EditTransactionForm({
+  const AddTransactionForm({
     super.key,
     required List<Field> fields,
     EntryTransaction? entry,
@@ -28,7 +28,7 @@ class EditTransactionForm extends StatefulWidget {
   //
   @override
   // ignore: no_logic_in_create_state
-  State<EditTransactionForm> createState() => _EditProductFormState(
+  State<AddTransactionForm> createState() => _AddProductFormState(
     fields: _fields,
     entry: _entry ?? EntryTransaction.empty(),
     relations: _relations,
@@ -36,14 +36,14 @@ class EditTransactionForm extends StatefulWidget {
 }
 ///
 ///
-class _EditProductFormState extends State<EditTransactionForm> {
-  final _log = Log("$_EditProductFormState._");
+class _AddProductFormState extends State<AddTransactionForm> {
+  final _log = Log("$_AddProductFormState._");
   final List<Field> _fields;
   final EntryTransaction _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
   ///
   ///
-  _EditProductFormState({
+  _AddProductFormState({
     required List<Field> fields,
     required EntryTransaction entry,
     required Map<String, List<SchemaEntryAbstract>> relations,

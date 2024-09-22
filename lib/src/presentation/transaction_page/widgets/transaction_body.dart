@@ -1,13 +1,16 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
+import 'package:flowers_admin/src/presentation/transaction_page/widgets/add_transaction_form.dart';
 import 'package:flowers_admin/src/presentation/transaction_page/widgets/edit_transaction_form.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:collection/collection.dart';
 ///
 ///
 class TransactionBody extends StatefulWidget {
@@ -51,7 +54,7 @@ class _TransactionBodyState extends State<TransactionBody> {
         onPressed: (schema) {
           return showDialog<Result<EntryTransaction, void>?>(
             context: context, 
-            builder: (_) => EditTransactionForm(fields: schema.fields,),
+            builder: (_) => AddTransactionForm(fields: schema.fields,),
           ).then((result) {
             _log.debug('.build | new entry: $result');
             return switch (result) {
@@ -82,19 +85,22 @@ class _TransactionBodyState extends State<TransactionBody> {
       ),      
       delAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeDeleted = schema.entries.firstWhere((e) {
+          final toBeDeleted = schema.entries.firstWhereOrNull((e) {
             return e.isSelected;
           });
-          return showConfirmDialog(
-            context, 
-            const Text('Delete Product'), 
-            Text('Are you sure want to delete following:\n$toBeDeleted'),
-          ).then((value) {
-            return switch (value) {
-              Ok() => Ok(toBeDeleted),
-              Err(:final error) => Err(error),
-            };
-          });
+          if (toBeDeleted != null) {
+            return showConfirmDialog(
+              context, 
+              const Text('Delete Product'), 
+              Text('Are you sure want to delete following:\n$toBeDeleted'),
+            ).then((value) {
+              return switch (value) {
+                Ok() => Ok(toBeDeleted),
+                Err(:final error) => Err(error),
+              };
+            });
+          }
+          return Future.value(const Err(null));
         },
         icon: const Icon(Icons.add),
       ),
@@ -118,17 +124,18 @@ class _TransactionBodyState extends State<TransactionBody> {
               debug: true,
               updateSqlBuilder: updateSqlBuilderTransaction,
               insertSqlBuilder: insertSqlBuilderTransaction,
+              // deleteSqlBuilder: 
             ),
             fields: [
               const Field(hidden: false, editable: false, key: 'id'),
-              const Field(hidden: false, editable: true, title: 'Author', key: 'author_id', relation: Relation(id: 'author_id', field: 'name')),
-              const Field(hidden: false, editable: true, key: 'value'),
-              const Field(hidden: false, editable: true, key: 'details'),
-              const Field(hidden: false, editable: true, key: 'order_id'),
-              const Field(hidden: false, editable: true, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+              Field(hidden: false, editable: true, title: '${InRu('Author')}', key: 'author_id', relation: const Relation(id: 'author_id', field: 'name')),
+              Field(hidden: false, editable: true, title: '${InRu('Value')}', key: 'value'),
+              Field(hidden: false, editable: true, title: '${InRu('TransactionDetails')}', key: 'details'),
+              const Field(hidden: true, editable: true, key: 'order_id'),
+              Field(hidden: false, editable: true, title: '${InRu('Customer')}', key: 'customer_id', relation: const Relation(id: 'customer_id', field: 'name')),
               const Field(hidden: false, editable: true, key: 'customer_account'),
-              const Field(hidden: false, editable: true, key: 'description'),
-              const Field(hidden: true, editable: true, key: 'created'),
+              Field(hidden: false, editable: true, title: '${InRu('Description')}', key: 'description'),
+              Field(hidden: false, editable: true, title: '${InRu('Created')}', key: 'created'),
               const Field(hidden: true, editable: true, key: 'updated'),
               const Field(hidden: true, editable: true, key: 'deleted'),
             ],
