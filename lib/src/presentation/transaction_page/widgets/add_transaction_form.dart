@@ -47,6 +47,8 @@ class _AddProductFormState extends State<AddTransactionForm> {
   final EntryTransaction _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
   final AppUser _user;
+  String? _customerId;
+  String? _customerAccount;
   ///
   ///
   _AddProductFormState({
@@ -74,12 +76,10 @@ class _AddProductFormState extends State<AddTransactionForm> {
     final customerField = field('customer_id');
     _log.debug('.build | customerField: $customerField');
     _log.debug('.build | _relations: $_relations');
-    EditListEntry customerRelation = EditListEntry(entries: [], field: customerField.relation.field);
-    final List<SchemaEntryAbstract>? customerRelEntries = _relations[customerField.relation.id];
-    if (customerRelEntries != null) {
-      customerRelation = EditListEntry(entries: customerRelEntries, field: customerField.relation.field);
-    }
+    EditListEntry customerRelation = EditListEntry(entries: _relations[customerField.relation.id] ?? [], field: customerField.relation.field);
     _log.debug('.build | customerRelation: $customerRelation');
+    _log.debug('.build | _customerId: \'$_customerId\'');
+    // _log.debug('.build | _customerAccount: \'$_customerAccount\'');
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Scaffold(
@@ -123,14 +123,18 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           relation: customerRelation,
                           editable: true,
                           onComplete: (value) {
-                            _entry.update('customer_id', value);
-                            setState(() {return;});
+                            setState(() {
+                              _customerId = value;
+                              _customerAccount = EditListEntry(entries: _relations[customerField.relation.id] ?? [], field: 'account').value(_customerId);
+                              _entry.update('customer_id', value);
+                            });
                           },
                         ),
-                        TextEditWidget(
+                        textWithLabel(
+                          context: context,
                           labelText: field('customer_account').title.inRu(),
-                          value: '${_entry.value('customer_account').value}',
-                          editable: field('customer_account').isEditable,
+                          value:_customerAccount ?? '',
+                          enable: false,
                         ),
                         // TextEditWidget(
                         //   labelText: field('primary_currency').title.inRu(),
@@ -193,6 +197,36 @@ class _AddProductFormState extends State<AddTransactionForm> {
             ],
           ),
         ),
+      ),
+    );
+  }
+  ///
+  /// Returns Text with label looks like TextEditWidget
+  Widget textWithLabel({required context, String? labelText, String? value = '', bool enable = true}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if ((value != null && value.isNotEmpty) && labelText != null && labelText.isNotEmpty)
+            Text(
+              labelText,
+              style: enable
+                ? Theme.of(context).inputDecorationTheme.labelStyle ?? Theme.of(context).textTheme.bodySmall
+                : (Theme.of(context).inputDecorationTheme.labelStyle ?? Theme.of(context).textTheme.bodySmall)?.copyWith(color: Theme.of(context).disabledColor),
+            ),
+          Text(
+            value != null && value.isNotEmpty ? value : labelText ?? '',
+            style: enable
+              ? Theme.of(context).textTheme.bodyLarge
+              : Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).disabledColor),
+          ),
+          Divider(
+            color: enable
+              ? Theme.of(context).textTheme.bodyLarge?.color
+              : Theme.of(context).disabledColor,
+          ),
+        ],
       ),
     );
   }

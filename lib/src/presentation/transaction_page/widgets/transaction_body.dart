@@ -156,7 +156,7 @@ class _TransactionBodyState extends State<TransactionBody> {
                 authToken: _authToken, 
                 database: _database, 
                 sqlBuilder: (sql, params) {
-                  return Sql(sql: 'select id, name from customer order by id;');
+                  return Sql(sql: 'select id, name, account from customer order by id;');
                 },
                 entryBuilder: (row) => EntryCustomer.from(row.cast()),
                 debug: true,
@@ -164,6 +164,7 @@ class _TransactionBodyState extends State<TransactionBody> {
               fields: [
                 const Field(key: 'id'),
                 const Field(key: 'name'),
+                const Field(key: 'account'),
               ],
             ),
             'author_id': TableSchema<EntryCustomer, void>(

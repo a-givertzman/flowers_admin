@@ -85,7 +85,7 @@ class _EditListState extends State<EditList> {
     if (_isEditing) {
       return DropdownButtonFormField(
             value: _id,
-            items: _relation.values.entries.map((entry) {
+            items: _relation.entry.entries.map((entry) {
               return DropdownMenuItem(
                 value: entry.key,
                 child: Text(

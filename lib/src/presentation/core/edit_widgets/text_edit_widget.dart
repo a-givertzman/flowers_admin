@@ -72,8 +72,7 @@ class _TextEditWidgetState extends State<TextEditWidget> {
         : null,
       // textAlign: _textAlign,
       decoration: InputDecoration(
-        // contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
-        // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red : Colors.black)),
+        // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withOpacity(0.5) : Colors.black.withOpacity(0.5))),
         // border: const OutlineInputBorder(),
         isDense: true,
         labelText: _labelText,
