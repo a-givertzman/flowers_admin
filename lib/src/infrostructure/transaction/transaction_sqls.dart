@@ -18,19 +18,6 @@ import 'package:ext_rw/ext_rw.dart';
 /// select set_transaction(15, 2, 100.33, 'Testing transaction +100.33', null, 'Empty description', false);
 /// select set_transaction(15, 2, 100.33, 'Testing transaction +100.33',    1, 'Empty description', false);
 /// ```
-Sql _setTransactionSql(Sql sql, SchemaEntryAbstract entry) {
-  return Sql(sql: """select
-    set_transaction(
-      ${entry.value('author_id').str},
-      ${entry.value('customer_id').str},
-      ${entry.value('value').str},
-      ${entry.value('details').str},
-      ${entry.value('order_id').str},
-      ${entry.value('description').str},
-      false
-    );
-""");
-}
 ///
 /// Returns SQL to update the transaction
 /// - [author_id]           - int8, Person who created the transaction
@@ -42,7 +29,17 @@ Sql _setTransactionSql(Sql sql, SchemaEntryAbstract entry) {
 ///	- [allow_indebted]      - bool, allow the transfer to be done with insufficient funds, transfer will be completed if account is positive but insufficient
 ///
 Sql updateSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
-  return _setTransactionSql(sql, entry);
+  return Sql(sql: """select
+    edit_transaction(
+      ${entry.value('author_id').str},
+      ${entry.value('customer_id').str},
+      ${entry.value('value').str},
+      ${entry.value('details').str},
+      ${entry.value('order_id').str},
+      ${entry.value('description').str},
+      false
+    );
+""");
 //   return Sql(sql: """UPDATE transaction SET (
 //     id,
 //     author_id,
@@ -80,21 +77,15 @@ Sql updateSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
 ///	- [allow_indebted]      - bool, allow the transfer to be done with insufficient funds, transfer will be completed if account is positive but insufficient
 ///
 Sql insertSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
-  return _setTransactionSql(sql, entry);
-  // return Sql(sql: """insert into transaction (
-  //   author_id,
-  //   value,
-  //   details,
-  //   order_id,
-  //   customer_id,
-  //   description
-  // ) values (
-  //   ${entry.value('author_id').str},
-  //   ${entry.value('value').str},
-  //   ${entry.value('details').str},
-  //   ${entry.value('order_id').str},
-  //   ${entry.value('customer_id').str},
-  //   ${entry.value('description').str}
-  // );
-  // """);
+  return Sql(sql: """select
+    add_transaction(
+      ${entry.value('author_id').str},
+      ${entry.value('customer_id').str},
+      ${entry.value('value').str},
+      ${entry.value('details').str},
+      ${entry.value('order_id').str},
+      ${entry.value('description').str},
+      false
+    );
+""");
 }
