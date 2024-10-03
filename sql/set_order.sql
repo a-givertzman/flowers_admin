@@ -5,8 +5,9 @@
 	- Returns count int8 - new count of the items in the `purchase_content`
 */ 
 -- call set_order(15, 3, 2);
-drop function set_order;
-create or replace function set_order(customer_id_ int8, purchase_content_id_ int8, count_ int8) RETURNS int8 
+drop function if exists set_order;
+create or replace function set_order(customer_id_ int8, purchase_content_id_ int8, count_ int8)
+RETURNS int8 
 language plpgsql
 as $$
 declare
@@ -15,8 +16,8 @@ declare
 	to_refound numeric(20, 2) = 0.0;
 	refounded numeric(20, 2) = 0.0;
 	description text = '''''';
-	delta int;
-	remains int;
+	delta int8;
+	remains int8;
 begin
 	call raise_notice(format('start with new_count: ' || count_));	
 	delta = (select count_ - co.count from public.customer_order co

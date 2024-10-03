@@ -2,7 +2,7 @@
 -- public."transaction" definition
 DROP TABLE public."transaction";
 CREATE TABLE public."transaction" (
-	id bigserial not null,
+	id bigserial,
 	author_id int8 NOT NULL,                      -- Person who created the transaction
 	customer_id int8 NOT NULL,                    -- Cuctomer which account proccesed
 	customer_account numeric(20, 2) NOT NULL,     -- Customer's account before transaction

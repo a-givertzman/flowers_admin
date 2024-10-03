@@ -1,66 +1,69 @@
 /* Procedure SET_TRANSACTION
-    - `author_id`             - Person who created the transaction
-	- `details_` varchar(2048) - Transfer/Payment details
-	- `value_` numeric(20, 2) - the amount to be transferred to/from Customers' account
+    - `author_id_`             - Person who created the transaction
 	- `customer_id_` int	  - Cuctomer which account will be proccesed
+	- `value_` numeric(20, 2) - the amount to be transferred to/from Customers' account
+	- `details_` varchar(2048) - Transfer/Payment details
     - `order_id_` int8 -       - If not NULL, trunsactions refers to the Customer's order
+    - `description_` varchar(2048) - Additional info about transfer
 	- `allow_indebted` bool   - allow the transfer to be done with insufficient funds, transfer will be completed if account is positive but insufficient
 	- Returns `value` numeric(20, 2) - new amount of Customer's account
 */ 
-call set_transaction(15, 3, 2);
-drop procedure set_transaction;
-create or replace function set_transaction(author_id in8, details_ varchar(2048), value_ int, customer_id_ int8, order_id_ int8, allow_indebted bool) RETURNS int as 
-$$ 
+select set_transaction(15, 2, -33.33, 'Testing transaction - 33.33', null, 'Empty description', false);
+select set_transaction(15, 2, 100.33, 'Testing transaction +100.33', null, 'Empty description', false);
+select set_transaction(15, 2, 100.33, 'Testing transaction +100.33',    1, 'Empty description', false);
+drop function if exists set_transaction;
+create or replace function set_transaction(
+	author_id_ int8, customer_id_ int8, value_ numeric(20, 2), details_ varchar(2048), order_id_ int8, description_ varchar(2048), allow_indebted bool,
+	out result_account numeric(20, 2), out result_error text)
+language plpgsql
+as $$ 
 declare
-	paid numeric(20, 2) = 0.0;
-	distributed int = 0;
-	description text = '''''';
-	delta int;
-	remains int;
+    name_ text;
+    account_ numeric(20, 2);
 begin
-	call raise_notice(format('start with new_count: ' || count_));	
-	delta = (select count_ - co.count from public.customer_order co
-	 	where co.customer_id = customer_id_
-	 	and co.purchase_content_id = purchase_content_id_);
-	if delta is null then
-		call raise_notice('order not found, creating new one...');
-		delta = count_;
-	end if;
-	remains = (select pc.remains from public.purchase_content pc
-	 	where pc.id = purchase_content_id_);
-	if delta != 0  and delta <= remains then
-		call raise_notice('delta ' || delta);
-		execute 'update public.purchase_content SET remains = remains - ' || delta
-			|| ' where id = ' || purchase_content_id_;
-		execute 'insert into public.customer_order as co (customer_id, purchase_content_id, count, paid, distributed, to_refound, refounded, description)' 
-	        || ' values ('
-			|| customer_id_ || ', '
-			|| purchase_content_id_ || ', '
-			|| count_ || ', '
-			|| paid || ', '
-			|| distributed || ', '
-			|| to_refound || ', '
-			|| refounded || ', '
-			|| description
-			|| ')'
-	        || ' on conflict (customer_id, purchase_content_id) do update' 
-	        	|| ' SET count = ' || count_ || ', '
-				|| ' 	 deleted = NULL'
-	         	|| ' where co.customer_id = ' || customer_id_
-	         	|| ' and co.purchase_content_id = ' || purchase_content_id_;
-		if count_ = 0 then
-			call raise_notice('Deleting order...');
-			execute 'update public.customer_order as co' 
-		        	|| ' SET deleted = ''' || CURRENT_TIMESTAMP || ''''
-		         	|| ' where co.customer_id = ' || customer_id_
-		         	|| ' and co.purchase_content_id = ' || purchase_content_id_;
-			call raise_notice('Deleting order - Ok');
+	call raise_notice(format('set_transaction | start with:'));	
+	call raise_notice(format('set_transaction | value  : ' || value_));	
+	select c.account, c.name into account_, name_ from public.customer c
+	 	where c.id = customer_id_;
+	call raise_notice(format('set_transaction | name_   : ' || name_));	
+	call raise_notice(format('set_transaction | account_: ' || account_));	
+    if (not allow_indebted and account_ + value_ > 0.0) or (allow_indebted and account_ > 0.0) then
+		execute 'update public.customer SET account = ' || account_ + value_
+			|| ' where id = ' || customer_id_;
+--		select COALESCE(order_id_, '''''') into order_id_; 
+		if order_id_ is null then
+			execute 'insert into public.transaction (author_id, customer_id, customer_account, value, details, description) values ('
+				|| author_id_ || ', '
+				|| customer_id_ || ', '
+				|| account_ || ', '
+				|| value_ || ', '
+				|| '''details_''' || ', '
+				|| '''description_'''
+				|| ');';
+		else
+			execute 'insert into public.transaction (author_id, customer_id, customer_account, value, details, order_id, description) values ('
+				|| author_id_ || ', '
+				|| customer_id_ || ', '
+				|| account_ || ', '
+				|| value_ || ', '
+				|| '''details_''' || ', '
+				|| order_id_ || ', '
+				|| '''description_'''
+				|| ');';
 		end if;
-	end if;
-	value_ = (select c.account from public.customer co
-	 	where co.customer_id = customer_id_;
-	call raise_notice('new customer account: ' || account_);
-	return account_;
+		select c.account into result_account from public.customer c
+		 	where c.id = customer_id_;
+		select null into result_error;
+	else
+		select c.account into result_account from public.customer c
+		 	where c.id = customer_id_;
+		select 'Error: Insufficient funds' into result_error;
+    end if;
+	call raise_notice('set_transaction | result_account: ' || result_account);
+	call raise_notice('set_transaction | result_error  : ' || result_error);
+	return;
 end
-language plpgsql;
 $$;
+
+select *, t.customer_account + t.value as after_ from public."transaction" t 
+
