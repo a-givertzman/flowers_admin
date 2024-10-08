@@ -61,7 +61,7 @@ class _CustomerBodyState extends State<CustomerBody> {
     final editablePass = [AppUserRole.admin].contains(_user.role);
     final editableAccount = [AppUserRole.admin].contains(_user.role);
     return TableWidget<EntryCustomer, void>(
-      showDeleted: [AppUserRole.admin].contains(_user.role),
+      showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
       fetchAction: TableWidgetAction(
         onPressed: (schema) {
           return Future.value(Ok(EntryCustomer.empty()));

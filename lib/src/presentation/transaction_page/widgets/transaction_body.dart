@@ -63,7 +63,7 @@ class _TransactionBodyState extends State<TransactionBody> {
     final editableValue = [AppUserRole.admin].contains(_user.role);
     final editableDetails = [AppUserRole.admin].contains(_user.role);
     return TableWidget<EntryTransaction, void>(
-      showDeleted: [AppUserRole.admin].contains(_user.role),
+      showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
       fetchAction: TableWidgetAction(
         onPressed: (schema) {
           return Future.value(Ok(EntryTransaction.empty()));

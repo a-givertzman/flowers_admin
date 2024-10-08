@@ -79,16 +79,17 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
     final addOnPressed = _addAction.onPressed;
     final delOnPressed = _delAction.onPressed;
     final fetchOnPressed = _fetchAction.onPressed;
+    final showDeleted = _showDeleted;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(children: [
           const Expanded(child: SizedBox.shrink()),
-          if (_showDeleted != null)
+          if (showDeleted != null)
             Tooltip(
               message: 'Show deleted'.inRu(),
               child: Checkbox(
-                value: _showDeleted,
+                value: showDeleted,
                 onChanged: (value) {
                   setState(() {
                     _showDeleted = value;
