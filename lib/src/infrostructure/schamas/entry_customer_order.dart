@@ -11,7 +11,7 @@ class EntryCustomerOrder implements SchemaEntryAbstract {
     final initial = <String, FieldValue>{
       'id': FieldValue(null),
       'customer_id': FieldValue(null),
-      'purchase_content_id': FieldValue(null),
+      'purchase_item_id': FieldValue(null),
       'count': FieldValue('0'),
       'paid': FieldValue('0.0'),
       'distributed': FieldValue('0'),
