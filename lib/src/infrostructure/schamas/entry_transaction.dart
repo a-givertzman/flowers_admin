@@ -37,6 +37,7 @@ class EntryTransaction implements SchemaEntryAbstract {
 	    'created': FieldValue(''),
 	    'updated': FieldValue(''),
 	    'deleted': FieldValue(''),
+	    'allow_indebted': FieldValue(false),
     };
     return initial;
   }

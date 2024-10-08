@@ -42,7 +42,7 @@ Sql updateSqlBuilderTransaction(Sql sql, EntryTransaction entry) {
         ${entry.value('details').str},
         ${entry.value('order_id').str},
         ${entry.value('description').str},
-        false
+        ${entry.value('allow_indebted').str},
       );
       """,
     );
@@ -96,7 +96,7 @@ Sql insertSqlBuilderTransaction(Sql sql, EntryTransaction entry) {
         ${entry.value('details').str},
         ${entry.value('order_id').str},
         ${entry.value('description').str},
-        false
+        ${entry.value('allow_indebted').str},
       );
       """,
     );
@@ -114,7 +114,7 @@ Sql deleteSqlBuilderTransaction(Sql sql, EntryTransaction entry) {
         ${entry.value('author_id').str},
         ${entry.value('customer_id').str},
         ${entry.value('description').str},
-        false
+        ${entry.value('allow_indebted').str},
       );
       """,
     );
