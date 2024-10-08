@@ -1,34 +1,37 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_content.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
-import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/customer_page/customer_page.dart';
 import 'package:flowers_admin/src/presentation/product_page/product_page.dart';
+import 'package:flowers_admin/src/presentation/transaction_page/transaction_page.dart';
 import 'package:flutter/material.dart';
-
 ///
 ///
 class HomeBody extends StatefulWidget {
   final String _authToken;
+  final AppUser _user;
   ///
   ///
   const HomeBody({
     super.key,
     required String authToken,
+    required AppUser user,
   }):
-    _authToken = authToken;
+    _authToken = authToken,
+    _user = user;
   ///
   ///
   @override
   // ignore: no_logic_in_create_state
   State<HomeBody> createState() => _HomeBodyState(
     authToken: _authToken,
+    user: _user,
   );
 }
 ///
@@ -36,6 +39,7 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody> {
   // final _log = Log("$_HomeBodyState._");
   final String _authToken;
+  final AppUser _user;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   final _paddingH = 8.0;
@@ -44,8 +48,10 @@ class _HomeBodyState extends State<HomeBody> {
   ///
   _HomeBodyState({
     required String authToken,
+    required AppUser user,
   }):
-    _authToken = authToken;
+    _authToken = authToken,
+    _user = user;
   ///
   ///
   @override
@@ -73,71 +79,26 @@ class _HomeBodyState extends State<HomeBody> {
         ),
         body: TabBarView(
           children: [
+            //
+            // Customer Page
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: CustomerPage(
                 authToken: _authToken,
+                user: _user,
               ),
             ),
+            //
+            // Transaction Page
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
-              child: TableWidget(
-                schema: RelationSchema<EntryTransaction, void>(
-                  schema: TableSchema<EntryTransaction, void>(
-                    read: SqlRead<EntryTransaction, void>(
-                      address: _apiAddress, 
-                      authToken: _authToken, 
-                      database: _database, 
-                      sqlBuilder: (sql, params) {
-                        return Sql(sql: 'select * from transaction order by id;');
-                      },
-                      entryBuilder: (row) => EntryTransaction.from(row.cast()),
-                      debug: true,
-                    ),
-                    write: SqlWrite<EntryTransaction>(
-                      address: _apiAddress, 
-                      authToken: _authToken, 
-                      database: _database, 
-                      emptyEntryBuilder: EntryTransaction.empty,
-                      debug: true,
-                      updateSqlBuilder: updateSqlBuilderTransaction,
-                      insertSqlBuilder: insertSqlBuilderTransaction,
-                    ),
-                    fields: [
-                      const Field(hidden: false, editable: false, key: 'id'),
-                      const Field(hidden: false, editable: true, key: 'timestamp'),
-                      const Field(hidden: false, editable: true, key: 'account_owner'),
-                      const Field(hidden: false, editable: true, key: 'value'),
-                      const Field(hidden: false, editable: true, key: 'description'),
-                      const Field(hidden: false, editable: true, key: 'order_id'),
-                      const Field(hidden: false, editable: true, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
-                      const Field(hidden: false, editable: true, key: 'customer_account'),
-                      const Field(hidden: true, editable: true, key: 'created'),
-                      const Field(hidden: true, editable: true, key: 'updated'),
-                      const Field(hidden: true, editable: true, key: 'deleted'),
-                    ],
-                  ),
-                  relations: {
-                    'customer_id': TableSchema<EntryCustomer, void>(
-                      read: SqlRead<EntryCustomer, void>(
-                        address: _apiAddress, 
-                        authToken: _authToken, 
-                        database: _database, 
-                        sqlBuilder: (sql, params) {
-                          return Sql(sql: 'select id, name from customer order by id;');
-                        },
-                        entryBuilder: (row) => EntryCustomer.from(row.cast()),
-                        debug: true,
-                      ),
-                      fields: [
-                        const Field(key: 'id'),
-                        const Field(key: 'name'),
-                      ],
-                    ),
-                  },                  
-                ),
+              child: TransactionPage(
+                authToken: _authToken,
+                user: _user,
               ),
             ),
+            //
+            // Product category Page
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(

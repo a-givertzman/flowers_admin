@@ -24,6 +24,22 @@ enum Lang {
 const tr = {
   'name': {Lang.en: 'name', Lang.ru: 'имя'},
   'Edit customer': {Lang.en: 'Edit customer', Lang.ru: 'Редактировать пользователя'},
+  'Edit transaction': {Lang.en: 'Edit transaction', Lang.ru: 'Редактировать транзакцию'},
+  'New transaction': {Lang.en: 'New transaction', Lang.ru: 'Новая транзакция'},
+  'from': {Lang.en: 'from', Lang.ru: 'от'},
+  'Author': {Lang.en: 'Author', Lang.ru: 'Автор'},
+  'Customer': {Lang.en: 'Customer', Lang.ru: 'Пользователь'},
+  'Value': {Lang.en: 'Value', Lang.ru: 'Сумма'},
+  'Created': {Lang.en: 'Created', Lang.ru: 'Создано'},
+  'Description': {Lang.en: 'Description', Lang.ru: 'Описание'},
+  'TransactionDetails': {Lang.en: 'Details', Lang.ru: 'Назначение'},
+  'CustomerAccountBefore': {Lang.en: 'Customer account before', Lang.ru: 'Счет клиента до'},
+  'NotSampled': {Lang.en: 'Not sampled', Lang.ru: 'Не выбрано'},
+  'AllowIndebted': {Lang.en: 'Allow indebted', Lang.ru: 'Разрешить в долг'},
+  'Amount': {Lang.en: 'Amount', Lang.ru: 'Сумма'},
+  'amount': {Lang.en: 'amount', Lang.ru: 'сумма'},
+  'of': {Lang.en: 'of', Lang.ru: 'от'},
+  'Show deleted': {Lang.en: 'Show deleted', Lang.ru: 'Показывать удаленные'},
 };
 
 

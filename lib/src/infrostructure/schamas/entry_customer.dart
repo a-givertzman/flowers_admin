@@ -6,6 +6,7 @@ import 'package:hmi_core/hmi_core_log.dart';
 class EntryCustomer implements SchemaEntryAbstract {
   final _log = Log("$EntryCustomer");
   late final SchemaEntry _entry;
+  final bool _isEmpty;
   ///
   ///
   static Map<String, FieldValue> get _initial {
@@ -32,11 +33,15 @@ class EntryCustomer implements SchemaEntryAbstract {
   /// - [keys] - list of field names
   EntryCustomer({
     required Map<String, FieldValue> map,
+    bool isEmpty = false,
   }) :
-    _entry = SchemaEntry(map: map);
+    _entry = SchemaEntry(map: map),
+    _isEmpty = isEmpty;
   //
   //
-  EntryCustomer.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+  EntryCustomer.from(Map<String, dynamic> row):
+    _entry = SchemaEntry(map: _initial),
+    _isEmpty = false {
     _log.debug('.from | row: $row');
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
@@ -45,7 +50,9 @@ class EntryCustomer implements SchemaEntryAbstract {
   }
   //
   //
-  EntryCustomer.empty(): _entry = SchemaEntry(map: _initial);
+  EntryCustomer.empty(): 
+    _entry = SchemaEntry(map: _initial),
+    _isEmpty = true;
   //
   //
   @override
@@ -58,6 +65,10 @@ class EntryCustomer implements SchemaEntryAbstract {
   //
   @override
   bool get isSelected => _entry.isSelected;
+  //
+  //
+  @override
+  bool get isEmpty => _isEmpty;
   //
   //
   @override

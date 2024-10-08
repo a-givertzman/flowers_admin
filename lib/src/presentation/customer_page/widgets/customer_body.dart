@@ -1,4 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/customer/customer_sqls.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
@@ -7,24 +9,29 @@ import 'package:flowers_admin/src/presentation/customer_page/widgets/edit_custom
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
-
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 ///
 ///
 class CustomerBody extends StatefulWidget {
   final String _authToken;
+  final AppUser _user;
   ///
   ///
   const CustomerBody({
     super.key,
     required String authToken,
+    required AppUser user,
   }):
-    _authToken = authToken;
+    _authToken = authToken,
+    _user = user;
   ///
   ///
   @override
   // ignore: no_logic_in_create_state
   State<CustomerBody> createState() => _CustomerBodyState(
     authToken: _authToken,
+    user: _user,
   );
 }
 ///
@@ -32,26 +39,40 @@ class CustomerBody extends StatefulWidget {
 class _CustomerBodyState extends State<CustomerBody> {
   late final Log _log;
   final String _authToken;
+  final AppUser _user;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   ///
   ///
   _CustomerBodyState({
     required String authToken,
+    required AppUser user,
   }):
-    _authToken = authToken {
+    _authToken = authToken,
+    _user = user {
       _log = Log("$runtimeType");
     }
   ///
   ///
   @override
   Widget build(BuildContext context) {
+    final editableRole = [AppUserRole.admin].contains(_user.role);
+    final editableLogin = [AppUserRole.admin].contains(_user.role);
+    final editablePass = [AppUserRole.admin].contains(_user.role);
+    final editableAccount = [AppUserRole.admin].contains(_user.role);
     return TableWidget<EntryCustomer, void>(
+      showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
+      fetchAction: TableWidgetAction(
+        onPressed: (schema) {
+          return Future.value(Ok(EntryCustomer.empty()));
+        }, 
+        icon: const Icon(Icons.add),
+      ),
       addAction: TableWidgetAction(
         onPressed: (schema) {
           return showDialog<Result<EntryCustomer, void>?>(
             context: context, 
-            builder: (_) => const EditCustomerForm(),
+            builder: (_) => EditCustomerForm(user: _user),
           ).then((result) {
             _log.debug('.build | new entry: $result');
             return switch (result) {
@@ -72,7 +93,7 @@ class _CustomerBodyState extends State<CustomerBody> {
           ).toList();
           return showDialog<Result<EntryCustomer, void>?>(
             context: context, 
-            builder: (_) => EditCustomerForm(entry: toBeUpdated.lastOrNull),
+            builder: (_) => EditCustomerForm(user: _user, entry: toBeUpdated.lastOrNull),
           ).then((result) {
             _log.debug('.build | edited entry: $result');
             return switch (result) {
@@ -86,19 +107,22 @@ class _CustomerBodyState extends State<CustomerBody> {
       ),      
       delAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeDeleted = schema.entries.firstWhere((e) {
-            return e.isSelected;
+          final toBeDeleted = schema.entries.firstWhereOrNull((e) {
+              return e.isSelected;
           });
-          return showConfirmDialog(
-            context, 
-            const Text('Delete Customer'), 
-            Text('Are you sure want to delete following:\n$toBeDeleted'),
-          ).then((value) {
-            return switch (value) {
-              Ok() => Ok(toBeDeleted),
-              Err(:final error) => Err(error),
-            };
-          });
+          if (toBeDeleted != null) {
+            return showConfirmDialog(
+              context, 
+              const Text('Delete Customer'), 
+              Text('Are you sure want to delete following:\n${toBeDeleted.value('name').str}'),
+            ).then((value) {
+              return switch (value) {
+                Ok() => Ok(toBeDeleted),
+                Err(:final error) => Err(error),
+              };
+            });
+          }
+          return Future.value(const Err(null));
         },
         icon: const Icon(Icons.add),
       ),
@@ -124,19 +148,20 @@ class _CustomerBodyState extends State<CustomerBody> {
           database: _database, 
           updateSqlBuilder: updateSqlBuilderCustomer,
           insertSqlBuilder: insertSqlBuilderCustomer,
+          deleteSqlBuilder: deleteSqlBuilderCustomer,
           emptyEntryBuilder: EntryCustomer.empty,
           debug: true,
         ),
         fields: [
           const Field(hidden: false, editable: false, key: 'id'),
-          const Field(hidden: false, editable: true, key: 'role'),
+          Field(hidden: false, editable: editableRole, key: 'role'),
           const Field(hidden: false, editable: true, key: 'email'),
           const Field(hidden: false, editable: true, key: 'phone'),
           const Field(hidden: false, editable: true, key: 'name'),
           const Field(hidden: false, editable: true, key: 'location'),
-          const Field(hidden: false, editable: true, key: 'login'),
-          const Field(hidden: false, editable: true, key: 'pass'),
-          const Field(hidden: false, editable: true, key: 'account'),
+          Field(hidden: false, editable: editableLogin, key: 'login'),
+          Field(hidden: false, editable: editablePass, key: 'pass'),
+          Field(hidden: false, editable: editableAccount, key: 'account'),
           const Field(hidden: false, editable: true, key: 'last_act'),
           const Field(hidden: false, editable: true, key: 'blocked'),
           const Field(hidden: true, editable: true, key: 'created'),

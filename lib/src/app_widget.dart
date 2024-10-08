@@ -1,3 +1,5 @@
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/presentation/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
@@ -77,18 +79,18 @@ class _AppWidgetState extends State<AppWidget> {
   //
   @override
   Widget build(BuildContext context) {
+    final homePage = HomePage(
+      authToken: _authToken,
+      user: AppUser(id: '15', name: 'Anton Lobanov', role: AppUserRole.admin),
+    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(
-        authToken: _authToken,
-      ), 
+      home: homePage, 
       theme: ThemeData(useMaterial3: true),
           // themeSwitch: _themeSwitch,
       initialRoute: 'homePage',
       routes: {
-        'homePahe': (context) => HomePage(
-          authToken: _authToken,
-        ),
+        'homePahe': (context) => homePage,
       },
       // theme: _themeSwitch.themeData,
     );

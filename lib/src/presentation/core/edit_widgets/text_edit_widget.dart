@@ -7,6 +7,7 @@ class TextEditWidget extends StatefulWidget {
   final Function(String)? _onComplete;
   final String? _labelText;
   final String? _errorText;
+  final bool _editable;
   ///
   ///
   const TextEditWidget({
@@ -15,11 +16,13 @@ class TextEditWidget extends StatefulWidget {
     Function(String)? onComplete,
     String? labelText,
     String? errorText,
+    bool editable = true,
   }):
     _value = value ?? '',
     _onComplete = onComplete,
     _labelText = labelText,
-    _errorText = errorText;
+    _errorText = errorText,
+    _editable = editable;
   //
   //
   @override
@@ -29,6 +32,7 @@ class TextEditWidget extends StatefulWidget {
     onComplete: _onComplete,
     labelText: _labelText,
     errorText: _errorText,
+    editable: _editable,
   );
 }
 ///
@@ -39,6 +43,7 @@ class _TextEditWidgetState extends State<TextEditWidget> {
   final String? _labelText;
   final String? _errorText;
   final String _value;
+  final bool _editable;
   bool _isChanged = false;
   ///
   ///
@@ -47,44 +52,44 @@ class _TextEditWidgetState extends State<TextEditWidget> {
     required Function(String)? onComplete,
     required String? labelText,
     required String? errorText,
+    required bool editable,
   }):
     _value = value,
     _controller = TextEditingController.fromValue(TextEditingValue(text: value)),
     _onComplete = onComplete,
     _labelText = labelText,
-    _errorText = errorText;
+    _errorText = errorText,
+    _editable = editable;
   //
   //
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: _controller,
-        style: _isChanged 
-          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
-          : null,
-        // textAlign: _textAlign,
-        decoration: InputDecoration(
-          // contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
-          // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red : Colors.black)),
-          // border: const OutlineInputBorder(),
-          isDense: true,
-          labelText: _labelText,
-          errorText: _errorText,
-        ),
-        onChanged: (value) {
-          setState(() {
-            _isChanged = value != _value;
-          });
-        },
-        onTapOutside: (_) {
-          _onEditingComplete(_controller.text);
-        },
-        onEditingComplete: () {
-          _onEditingComplete(_controller.text);
-        },
+    return TextField(
+      controller: _controller,
+      enabled: _editable,
+      style: _isChanged 
+        ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
+        : null,
+      // textAlign: _textAlign,
+      decoration: InputDecoration(
+        // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withOpacity(0.5) : Colors.black.withOpacity(0.5))),
+        // border: const OutlineInputBorder(),
+        isDense: true,
+        labelText: _labelText,
+        errorText: _errorText,
+        contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
       ),
+      onChanged: (value) {
+        setState(() {
+          _isChanged = value != _value;
+        });
+      },
+      onTapOutside: (_) {
+        _onEditingComplete(_controller.text);
+      },
+      onEditingComplete: () {
+        _onEditingComplete(_controller.text);
+      },
     );
   }
   ///

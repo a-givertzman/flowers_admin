@@ -4,6 +4,7 @@ import 'package:ext_rw/ext_rw.dart';
 /// Single row of table "Purchase"
 class EntryPurchase implements SchemaEntryAbstract {
   final SchemaEntry _entry;
+  final bool _isEmpty;
   ///
   ///
   static Map<String, FieldValue> get _initial {
@@ -27,19 +28,25 @@ class EntryPurchase implements SchemaEntryAbstract {
   /// - [keys] - list of field names
   EntryPurchase({
     required Map<String, FieldValue> map,
+    bool isEmpty = false,
   }) :
-    _entry = SchemaEntry(map: map);
+    _entry = SchemaEntry(map: map),
+    _isEmpty = isEmpty;
   //
   //
   @override
-  EntryPurchase.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+  EntryPurchase.from(Map<String, dynamic> row):
+    _entry = SchemaEntry(map: _initial),
+    _isEmpty = false {
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
   }
   //
   //
-  EntryPurchase.empty(): _entry = SchemaEntry(map: _initial);
+  EntryPurchase.empty():
+    _entry = SchemaEntry(map: _initial),
+    _isEmpty = true;
   //
   //
   @override
@@ -52,6 +59,10 @@ class EntryPurchase implements SchemaEntryAbstract {
   //
   @override
   bool get isSelected => _entry.isSelected;
+  //
+  //
+  @override
+  bool get isEmpty => _isEmpty;
   //
   //
   @override
