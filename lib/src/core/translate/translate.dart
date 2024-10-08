@@ -40,6 +40,8 @@ const tr = {
   'amount': {Lang.en: 'amount', Lang.ru: 'сумма'},
   'of': {Lang.en: 'of', Lang.ru: 'от'},
   'Show deleted': {Lang.en: 'Show deleted', Lang.ru: 'Показывать удаленные'},
+  'Customers': {Lang.en: 'Customers', Lang.ru: 'Пользователи'},
+  'Transactions': {Lang.en: 'Transactions', Lang.ru: 'Транзакции'},
   'Payment': {Lang.en: 'Payment', Lang.ru: 'Оплата'},
 };
 

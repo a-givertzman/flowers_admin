@@ -60,8 +60,8 @@ class _HomeBodyState extends State<HomeBody> {
   Widget build(BuildContext context) {
     final tabHeadesStyle = Theme.of(context).textTheme.headlineSmall;
     final tabs = [
-      Tab(child: Text("customer".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("transaction".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("Customers".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("Transactions".inRu(), style: tabHeadesStyle)),
       Tab(child: Text("product_category".inRu(), style: tabHeadesStyle)),
       Tab(child: Text("product".inRu(), style: tabHeadesStyle)),
       Tab(child: Text("purchase".inRu(), style: tabHeadesStyle)),
