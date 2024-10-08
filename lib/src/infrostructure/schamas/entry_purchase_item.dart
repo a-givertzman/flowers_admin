@@ -1,8 +1,8 @@
 import 'package:ext_rw/ext_rw.dart';
 
 ///
-/// Single row of table "PurchaseContent"
-class EntryPurchaseContent implements SchemaEntryAbstract {
+/// Single row of table "PurchaseItem"
+class EntryPurchaseItem implements SchemaEntryAbstract {
   final SchemaEntry _entry;
   final bool _isEmpty;
   ///
@@ -17,7 +17,7 @@ class EntryPurchaseContent implements SchemaEntryAbstract {
 	    'sale_price': FieldValue('0.00'),
 	    'sale_currency': FieldValue(''),
 	    'shipping': FieldValue('0.00'),
-	    'amount': FieldValue('0.00'),
+	    'remains': FieldValue('0.00'),
 	    'name': FieldValue(''),
 	    'details': FieldValue(''),
 	    'description': FieldValue(''),
@@ -29,9 +29,9 @@ class EntryPurchaseContent implements SchemaEntryAbstract {
     return initial;
   }
   ///
-  /// Single row of table "PurchaseContent"
+  /// Single row of table "PurchaseItem"
   /// - [keys] - list of field names
-  EntryPurchaseContent({
+  EntryPurchaseItem({
     required Map<String, FieldValue> map,
     bool isEmpty = false,
   }) :
@@ -40,7 +40,7 @@ class EntryPurchaseContent implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryPurchaseContent.from(Map<String, dynamic> row):
+  EntryPurchaseItem.from(Map<String, dynamic> row):
     _entry = SchemaEntry(map: _initial),
     _isEmpty = false {
     for (final MapEntry(:key, :value) in row.entries) {
@@ -49,7 +49,7 @@ class EntryPurchaseContent implements SchemaEntryAbstract {
   }
   //
   //
-  EntryPurchaseContent.empty():
+  EntryPurchaseItem.empty():
     _entry = SchemaEntry(map: _initial),
     _isEmpty = true;
   //

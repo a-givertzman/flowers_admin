@@ -4,7 +4,7 @@ import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.da
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_content.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_item.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/customer_page/customer_page.dart';
@@ -73,7 +73,7 @@ class _HomeBodyState extends State<HomeBody> {
             Tab(child: Text("product_category", style: tabHeadesStyle)),
             Tab(child: Text("product", style: tabHeadesStyle)),
             Tab(child: Text("purchase", style: tabHeadesStyle)),
-            Tab(child: Text("purchase_content", style: tabHeadesStyle)),
+            Tab(child: Text("purchase_item", style: tabHeadesStyle)),
             Tab(child: Text("order", style: tabHeadesStyle)),
           ],
         ),
@@ -204,25 +204,25 @@ class _HomeBodyState extends State<HomeBody> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: TableWidget(
-                schema: RelationSchema<EntryPurchaseContent, void>(
-                  schema: TableSchema<EntryPurchaseContent, void>(
-                    read: SqlRead<EntryPurchaseContent, void>(
+                schema: RelationSchema<EntryPurchaseItem, void>(
+                  schema: TableSchema<EntryPurchaseItem, void>(
+                    read: SqlRead<EntryPurchaseItem, void>(
                       address: _apiAddress, 
                       authToken: _authToken, 
                       database: _database, 
                       sqlBuilder: (sql, params) {
-                        return Sql(sql: 'select * from purchase_content order by id;');
+                        return Sql(sql: 'select * from purchase_item order by id;');
                       },
-                      entryBuilder: (row) => EntryPurchaseContent.from(row),
+                      entryBuilder: (row) => EntryPurchaseItem.from(row),
                       debug: true,
                     ),
-                    write: SqlWrite<EntryPurchaseContent>(
+                    write: SqlWrite<EntryPurchaseItem>(
                       address: _apiAddress, 
                       authToken: _authToken, 
                       database: _database, 
-                      updateSqlBuilder: updateSqlBuilderPurchaseContent,
-                      // insertSqlBuilder: insertSqlBuilderPurchaseContent,
-                      emptyEntryBuilder: EntryPurchaseContent.empty,
+                      updateSqlBuilder: updateSqlBuilderPurchaseItem,
+                      // insertSqlBuilder: insertSqlBuilderPurchaseItem,
+                      emptyEntryBuilder: EntryPurchaseItem.empty,
                       debug: true,
                     ),                  
                     fields: [
@@ -232,7 +232,7 @@ class _HomeBodyState extends State<HomeBody> {
                       const Field(hidden: false, editable: true, key: 'sale_price'),
                       const Field(hidden: false, editable: true, key: 'sale_currency'),
                       const Field(hidden: false, editable: true, key: 'shipping'),
-                      const Field(hidden: false, editable: true, key: 'amount'),
+                      const Field(hidden: false, editable: true, key: 'remains'),
                       const Field(hidden: false, editable: true, key: 'name'),
                       const Field(hidden: false, editable: true, key: 'details'),
                       const Field(hidden: false, editable: true, key: 'description'),
@@ -307,9 +307,9 @@ class _HomeBodyState extends State<HomeBody> {
                       const Field(hidden: false, editable: false, key: 'id'),
                       const Field(hidden: false, editable: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
                       // const Field(hidden: false, editable: false, key: 'customer'),
-                      const Field(hidden: false, editable: true, key: 'purchase_content_id'),
-                      const Field(hidden: false, editable: true, title: 'Purchase id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'purchase')),
-                      const Field(hidden: false, editable: true, title: 'Product id', key: 'purchase_content_id', relation: Relation(id: 'purchase_content_id', field: 'product')),
+                      const Field(hidden: false, editable: true, key: 'purchase_item_id'),
+                      const Field(hidden: false, editable: true, title: 'Purchase id', key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
+                      const Field(hidden: false, editable: true, title: 'Product id', key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
                       // const Field(hidden: false, editable: true, key: 'purchase'),
                       // const Field(hidden: false, editable: true, key: 'product'),
                       const Field(hidden: false, editable: true, key: 'count'),
@@ -340,15 +340,15 @@ class _HomeBodyState extends State<HomeBody> {
                         const Field(key: 'name'),
                       ],
                     ),
-                    'purchase_content_id': TableSchema<EntryPurchaseContent, void>(
-                      read: SqlRead<EntryPurchaseContent, void>(
+                    'purchase_item_id': TableSchema<EntryPurchaseItem, void>(
+                      read: SqlRead<EntryPurchaseItem, void>(
                         address: _apiAddress, 
                         authToken: _authToken, 
                         database: _database, 
                         sqlBuilder: (sql, params) {
-                          return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_content_view order by id;');
+                          return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_item_view order by id;');
                         },
-                        entryBuilder: (row) => EntryPurchaseContent.from(row),
+                        entryBuilder: (row) => EntryPurchaseItem.from(row),
                         debug: true,
                       ),
                       fields: [
@@ -429,15 +429,15 @@ Sql updateSqlBuilderPurchase(Sql sql, EntryPurchase entry) {
 }
 ///
 ///
-Sql updateSqlBuilderPurchaseContent(Sql sql, EntryPurchaseContent entry) {
-  return Sql(sql: """UPDATE purchase_content SET (
+Sql updateSqlBuilderPurchaseItem(Sql sql, EntryPurchaseItem entry) {
+  return Sql(sql: """UPDATE purchase_item SET (
     id,
     purchase_id,
     product_id,
     sale_price,
     sale_currency,
     shipping,
-    amount,
+    remains,
     name,
     details,
     description,
@@ -452,7 +452,7 @@ Sql updateSqlBuilderPurchaseContent(Sql sql, EntryPurchaseContent entry) {
     ${entry.value('sale_price').str},
     ${entry.value('sale_currency').str},
     ${entry.value('shipping').str},
-    ${entry.value('amount').str},
+    ${entry.value('remains').str},
     ${entry.value('name').str},
     ${entry.value('details').str},
     ${entry.value('description').str},
@@ -470,7 +470,7 @@ Sql updateSqlBuilderCustomerOrder(Sql sql, EntryCustomerOrder entry) {
   return Sql(sql: """UPDATE customer_order SET (
     id,
     customer_id,
-    purchase_content_id,
+    purchase_item_id,
     count,
     paid,
     distributed,
@@ -480,7 +480,7 @@ Sql updateSqlBuilderCustomerOrder(Sql sql, EntryCustomerOrder entry) {
   ) = (
     ${entry.value('id').str},
     ${entry.value('customer_id').str},
-    ${entry.value('purchase_content_id').str},
+    ${entry.value('purchase_item_id').str},
     ${entry.value('count').str},
     ${entry.value('paid').str},
     ${entry.value('distributed').str},
