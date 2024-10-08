@@ -82,13 +82,16 @@ class _ProductBodyState extends State<ProductBody> {
       ),      
       delAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeDeleted = schema.entries.firstWhere((e) {
-            return e.isSelected;
-          });
+          final toBeDeleted = schema.entries.firstWhere(
+            (e) {
+              return e.isSelected;
+            },
+            orElse: () => EntryProduct.empty(),
+          );
           return showConfirmDialog(
             context, 
             const Text('Delete Product'), 
-            Text('Are you sure want to delete following:\n$toBeDeleted'),
+            Text('Are you sure want to delete following:\n${toBeDeleted.value('name').str}'),
           ).then((value) {
             return switch (value) {
               Ok() => Ok(toBeDeleted),

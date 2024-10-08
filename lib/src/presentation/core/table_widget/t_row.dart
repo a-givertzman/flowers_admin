@@ -89,29 +89,39 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   //
   @override
   Widget build(BuildContext context) {
-    final textStile = Theme.of(context).textTheme.bodyMedium;
+    final deleted = _entry?.value('deleted').str;
+    final isDeleted = (deleted != null && deleted.isNotEmpty && deleted.toLowerCase() != 'null');
+    final textStile = !isDeleted
+      ? Theme.of(context).textTheme.bodyMedium 
+      : Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4),
+        );
     return GestureDetector(
       // behavior: HitTestBehavior.deferToChild,
       // enableFeedback: false,
       // focusColor: Colors.transparent,
       // canRequestFocus: false,
       onTap: () {
-        _isSelected = ! _isSelected;
-        _entry?.select(_isSelected);
-        final onSelectionChange = _onSelectionChange;
-        if (onSelectionChange != null) onSelectionChange(_entry);
-        setState(() {return;});
-        final onTap = _onTap;
-        if (onTap != null) onTap();
+        if (!isDeleted) {
+          _isSelected = ! _isSelected;
+          _entry?.select(_isSelected);
+          final onSelectionChange = _onSelectionChange;
+          if (onSelectionChange != null) onSelectionChange(_entry);
+          setState(() {return;});
+          final onTap = _onTap;
+          if (onTap != null) onTap();
+        }
       },
       onDoubleTap: () {
-        _isSelected = true;
-        _entry?.select(_isSelected);
-        final onSelectionChange = _onSelectionChange;
-        if (onSelectionChange != null) onSelectionChange(_entry);
-        setState(() {return;});
-        final onDoubleTap = _onDoubleTap;
-        if (onDoubleTap != null) onDoubleTap();
+        if (!isDeleted) {
+          _isSelected = true;
+          _entry?.select(_isSelected);
+          final onSelectionChange = _onSelectionChange;
+          if (onSelectionChange != null) onSelectionChange(_entry);
+          setState(() {return;});
+          final onDoubleTap = _onDoubleTap;
+          if (onDoubleTap != null) onDoubleTap();
+        }
       },
       child: MouseRegion(
         onEnter: (_) {
@@ -124,16 +134,29 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             _onEnter = false;
           });
         },
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: _isSelected ? Colors.blue.withAlpha(128) : null,
-            border: _onEnter ? Border.all(color: Theme.of(context).primaryColor) : Border.all(color: Colors.transparent),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildRow(_fields, _entry, textStile),
-          ),
+        child: Stack(
+          children: [
+            if (isDeleted)
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Divider(
+                    color: Theme.of(context).colorScheme.error.withOpacity(0.5),
+                  ),
+                ),
+              ),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: _isSelected ? Colors.blue.withAlpha(128) : null,
+                border: _onEnter ? Border.all(color: Theme.of(context).primaryColor) : Border.all(color: Colors.transparent),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: _buildRow(_fields, _entry, textStile),
+              ),
+            ),
+          ],
         ),
       ),
     );

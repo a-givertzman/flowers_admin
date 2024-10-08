@@ -1,6 +1,7 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/transaction_sqls.dart';
@@ -58,12 +59,22 @@ class _TransactionBodyState extends State<TransactionBody> {
   ///
   @override
   Widget build(BuildContext context) {
+    final editableAuthor = [AppUserRole.admin].contains(_user.role);
+    final editableValue = [AppUserRole.admin].contains(_user.role);
+    final editableDetails = [AppUserRole.admin].contains(_user.role);
     return TableWidget<EntryTransaction, void>(
+      showDeleted: [AppUserRole.admin].contains(_user.role),
+      fetchAction: TableWidgetAction(
+        onPressed: (schema) {
+          return Future.value(Ok(EntryTransaction.empty()));
+        }, 
+        icon: const Icon(Icons.add),
+      ),
       addAction: TableWidgetAction(
         onPressed: (schema) {
           return showDialog<Result<EntryTransaction, void>?>(
             context: context, 
-            builder: (_) => AddTransactionForm(fields: schema.fields, user: _user, relations: schema.relations,),
+            builder: (_) => AddTransactionForm(user: _user, fields: schema.fields, relations: schema.relations,),
           ).then((result) {
             _log.debug('.build | new entry: $result');
             return switch (result) {
@@ -80,7 +91,7 @@ class _TransactionBodyState extends State<TransactionBody> {
           final toBeUpdated = schema.entries.where((e) => e.isSelected).toList();
           return showDialog<Result<EntryTransaction, void>?>(
             context: context, 
-            builder: (_) => EditTransactionForm(fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
+            builder: (_) => EditTransactionForm(user: _user, fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
           ).then((result) {
             _log.debug('.build | edited entry: $result');
             return switch (result) {
@@ -101,7 +112,7 @@ class _TransactionBodyState extends State<TransactionBody> {
             return showConfirmDialog(
               context, 
               const Text('Delete Product'), 
-              Text('Are you sure want to delete following:\n$toBeDeleted'),
+              Text('Are you sure want to delete transaction:\n${'amount'.inRu()}: ${toBeDeleted.value('value').str}\n${'of'.inRu()}: ${toBeDeleted.value('updated').str}'),
             ).then((value) {
               return switch (value) {
                 Ok() => Ok(toBeDeleted),
@@ -133,13 +144,14 @@ class _TransactionBodyState extends State<TransactionBody> {
               debug: true,
               updateSqlBuilder: updateSqlBuilderTransaction,
               insertSqlBuilder: insertSqlBuilderTransaction,
+              deleteSqlBuilder: deleteSqlBuilderTransaction,
               // deleteSqlBuilder: 
             ),
             fields: [
               const Field(hidden: false, editable: false, key: 'id'),
-              Field(hidden: false, editable: false, title: '${InRu('Author')}', key: 'author_id', relation: const Relation(id: 'author_id', field: 'name')),
-              Field(hidden: false, editable: true, title: '${InRu('Value')}', key: 'value'),
-              Field(hidden: false, editable: true, title: '${InRu('TransactionDetails')}', key: 'details'),
+              Field(hidden: false, editable: editableAuthor, title: '${InRu('Author')}', key: 'author_id', relation: const Relation(id: 'author_id', field: 'name')),
+              Field(hidden: false, editable: editableValue, title: '${InRu('Value')}', key: 'value'),
+              Field(hidden: false, editable: editableDetails, title: '${InRu('TransactionDetails')}', key: 'details'),
               const Field(hidden: true, editable: true, key: 'order_id'),
               Field(hidden: false, editable: false, title: '${InRu('Customer')}', key: 'customer_id', relation: const Relation(id: 'customer_id', field: 'name')),
               Field(hidden: false, editable: false, title: '${InRu('CustomerAccountBefore')}', key: 'customer_account'),

@@ -85,6 +85,7 @@ class _HomeBodyState extends State<HomeBody> {
               padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
               child: CustomerPage(
                 authToken: _authToken,
+                user: _user,
               ),
             ),
             //

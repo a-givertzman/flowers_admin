@@ -35,6 +35,11 @@ const tr = {
   'TransactionDetails': {Lang.en: 'Details', Lang.ru: 'Назначение'},
   'CustomerAccountBefore': {Lang.en: 'Customer account before', Lang.ru: 'Счет клиента до'},
   'NotSampled': {Lang.en: 'Not sampled', Lang.ru: 'Не выбрано'},
+  'AllowIndebted': {Lang.en: 'Allow indebted', Lang.ru: 'Разрешить в долг'},
+  'Amount': {Lang.en: 'Amount', Lang.ru: 'Сумма'},
+  'amount': {Lang.en: 'amount', Lang.ru: 'сумма'},
+  'of': {Lang.en: 'of', Lang.ru: 'от'},
+  'Show deleted': {Lang.en: 'Show deleted', Lang.ru: 'Показывать удаленные'},
 };
 
 

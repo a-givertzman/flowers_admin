@@ -1,6 +1,7 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
@@ -11,56 +12,56 @@ import 'package:hmi_core/hmi_core_result_new.dart';
 ///
 ///
 class AddTransactionForm extends StatefulWidget {
+  final AppUser _user;
   final List<Field> _fields;
   final EntryTransaction? _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
-  final AppUser _user;
   ///
   ///
   const AddTransactionForm({
     super.key,
+    required AppUser user,
     required List<Field> fields,
     EntryTransaction? entry,
     Map<String, List<SchemaEntryAbstract>> relations = const {},
-    required AppUser user,
   }):
+    _user = user,
     _fields = fields,
     _entry = entry,
-    _relations = relations,
-    _user = user;
+    _relations = relations;
   //
   //
   @override
   // ignore: no_logic_in_create_state
   State<AddTransactionForm> createState() => _AddProductFormState(
+    user: _user,
     fields: _fields,
     entry: _entry ?? EntryTransaction.empty(),
     relations: _relations,
-    user: _user,
   );
 }
 ///
 ///
 class _AddProductFormState extends State<AddTransactionForm> {
   final _log = Log("$_AddProductFormState._");
+  final AppUser _user;
   final List<Field> _fields;
   final EntryTransaction _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
-  final AppUser _user;
   String? _customerId;
   String? _customerAccount;
   ///
   ///
   _AddProductFormState({
+    required AppUser user,
     required List<Field> fields,
     required EntryTransaction entry,
     required Map<String, List<SchemaEntryAbstract>> relations,
-    required AppUser user,
   }):
+    _user = user,
     _fields = fields,
     _entry = entry,
-    _relations = relations,
-    _user = user;
+    _relations = relations;
   ///
   ///
   Field field(String key) {
@@ -152,6 +153,16 @@ class _AddProductFormState extends State<AddTransactionForm> {
                             setState(() {return;});
                           },
                         ),
+                        if ([AppUserRole.admin].contains(_user.role))
+                          Checkbox(
+                            semanticLabel: 'Allow indebted'.inRu(),
+                            value: _entry.value('allow_indebted').value ?? false, 
+                            onChanged: (value) {
+                              _entry.update('allow_indebted', value ?? false);
+                              setState(() {return;});
+                            },
+                          ),
+
                         // TextEditWidget(
                         //   labelText: field('created').title.inRu(),
                         //   value: '${_entry.value('created').value}',

@@ -18,6 +18,7 @@ import 'package:ext_rw/ext_rw.dart';
 /// - Created timestamp
 class EntryTransaction implements SchemaEntryAbstract {
   final SchemaEntry _entry;
+  final bool _isEmpty;
   ///
   ///
   static Map<String, FieldValue> get _initial {
@@ -44,19 +45,25 @@ class EntryTransaction implements SchemaEntryAbstract {
   /// - [keys] - list of field names
   EntryTransaction({
     required Map<String, FieldValue> map,
+    bool isEmpty = false,
   }) :
-    _entry = SchemaEntry(map: map);
+    _entry = SchemaEntry(map: map),
+    _isEmpty = isEmpty;
   //
   //
   @override
-  EntryTransaction.from(Map<String, dynamic> row): _entry = SchemaEntry(map: _initial) {
+  EntryTransaction.from(Map<String, dynamic> row):
+    _entry = SchemaEntry(map: _initial),
+    _isEmpty = false {
     for (final MapEntry(:key, :value) in row.entries) {
       _entry.update(key, value);
     }
   }
   //
   //
-  EntryTransaction.empty(): _entry = SchemaEntry(map: _initial);
+  EntryTransaction.empty():
+    _entry = SchemaEntry(map: _initial),
+    _isEmpty = true;
   //
   //
   @override
@@ -69,6 +76,10 @@ class EntryTransaction implements SchemaEntryAbstract {
   //
   @override
   bool get isSelected => _entry.isSelected;
+  //
+  //
+  @override
+  bool get isEmpty => _isEmpty;
   //
   //
   @override

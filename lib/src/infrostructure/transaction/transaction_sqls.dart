@@ -1,4 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 ///
 /// Returns SQL to insert/update the transaction
 /// ```
@@ -28,18 +29,25 @@ import 'package:ext_rw/ext_rw.dart';
 /// - [description]         - varchar(2048), Additional info about transfer
 ///	- [allow_indebted]      - bool, allow the transfer to be done with insufficient funds, transfer will be completed if account is positive but insufficient
 ///
-Sql updateSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
-  return Sql(sql: """select
-    edit_transaction(
-      ${entry.value('author_id').str},
-      ${entry.value('customer_id').str},
-      ${entry.value('value').str},
-      ${entry.value('details').str},
-      ${entry.value('order_id').str},
-      ${entry.value('description').str},
-      false
+Sql updateSqlBuilderTransaction(Sql sql, EntryTransaction entry) {
+  if (entry.isEmpty) {
+    return Sql(sql: "select ;");
+  } else {
+    return Sql(sql: """select * from
+      edit_transaction(
+        ${entry.value('id').str},
+        ${entry.value('author_id').str},
+        ${entry.value('customer_id').str},
+        ${entry.value('value').str},
+        ${entry.value('details').str},
+        ${entry.value('order_id').str},
+        ${entry.value('description').str},
+        false
+      );
+      """,
     );
-""");
+  }
+
 //   return Sql(sql: """UPDATE transaction SET (
 //     id,
 //     author_id,
@@ -76,16 +84,39 @@ Sql updateSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
 /// - [description]         - varchar(2048), Additional info about transfer
 ///	- [allow_indebted]      - bool, allow the transfer to be done with insufficient funds, transfer will be completed if account is positive but insufficient
 ///
-Sql insertSqlBuilderTransaction(Sql sql, SchemaEntryAbstract entry) {
-  return Sql(sql: """select
-    add_transaction(
-      ${entry.value('author_id').str},
-      ${entry.value('customer_id').str},
-      ${entry.value('value').str},
-      ${entry.value('details').str},
-      ${entry.value('order_id').str},
-      ${entry.value('description').str},
-      false
+Sql insertSqlBuilderTransaction(Sql sql, EntryTransaction entry) {
+  if (entry.isEmpty) {
+    return Sql(sql: "select ;");
+  } else {
+    return Sql(sql: """select * from
+      add_transaction(
+        ${entry.value('author_id').str},
+        ${entry.value('customer_id').str},
+        ${entry.value('value').str},
+        ${entry.value('details').str},
+        ${entry.value('order_id').str},
+        ${entry.value('description').str},
+        false
+      );
+      """,
     );
-""");
+  }
+}
+///
+/// Returns delete transaction Sql 
+Sql deleteSqlBuilderTransaction(Sql sql, EntryTransaction entry) {
+  if (entry.isEmpty) {
+    return Sql(sql: "select ;");
+  } else {
+    return Sql(sql: """select * from
+      del_transaction(
+        ${entry.value('id').str},
+        ${entry.value('author_id').str},
+        ${entry.value('customer_id').str},
+        ${entry.value('description').str},
+        false
+      );
+      """,
+    );
+  }
 }

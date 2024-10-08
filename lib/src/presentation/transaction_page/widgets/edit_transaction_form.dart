@@ -1,5 +1,7 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
@@ -10,6 +12,7 @@ import 'package:hmi_core/hmi_core_result_new.dart';
 ///
 ///
 class EditTransactionForm extends StatefulWidget {
+  final AppUser _user;
   final List<Field> _fields;
   final EntryTransaction? _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
@@ -17,10 +20,12 @@ class EditTransactionForm extends StatefulWidget {
   ///
   const EditTransactionForm({
     super.key,
+    required AppUser user,
     required List<Field> fields,
     EntryTransaction? entry,
     Map<String, List<SchemaEntryAbstract>> relations = const {},
   }):
+    _user = user,
     _fields = fields,
     _entry = entry,
     _relations = relations;
@@ -29,6 +34,7 @@ class EditTransactionForm extends StatefulWidget {
   @override
   // ignore: no_logic_in_create_state
   State<EditTransactionForm> createState() => _EditProductFormState(
+    user: _user,
     fields: _fields,
     entry: _entry ?? EntryTransaction.empty(),
     relations: _relations,
@@ -37,17 +43,20 @@ class EditTransactionForm extends StatefulWidget {
 ///
 ///
 class _EditProductFormState extends State<EditTransactionForm> {
-  final _log = Log("$_EditProductFormState._");
+  final _log = Log("$_EditProductFormState");
+  final AppUser _user;
   final List<Field> _fields;
   final EntryTransaction _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
   ///
   ///
   _EditProductFormState({
+    required AppUser user,
     required List<Field> fields,
     required EntryTransaction entry,
     required Map<String, List<SchemaEntryAbstract>> relations,
   }):
+    _user = user,
     _fields = fields,
     _entry = entry,
     _relations = relations;
@@ -108,6 +117,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
                         TextEditWidget(
                           labelText: field('value').title.inRu(),
                           value: '${_entry.value('value').value}',
+                          editable: field('value').isEditable,
                           onComplete: (value) {
                             _entry.update('value', value);
                             setState(() {return;});
@@ -116,6 +126,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
                         TextEditWidget(
                           labelText: field('details').title.inRu(),
                           value: '${_entry.value('details').value}',
+                          editable: field('details').isEditable,
                           onComplete: (value) {
                             _entry.update('details', value);
                             setState(() {return;});
@@ -147,6 +158,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
                         TextEditWidget(
                           labelText: field('description').title.inRu(),
                           value: '${_entry.value('description').value}',
+                          editable: field('description').isEditable,
                           onComplete: (value) {
                             _entry.update('description', value);
                             setState(() {return;});
@@ -167,6 +179,15 @@ class _EditProductFormState extends State<EditTransactionForm> {
                             labelText: field('deleted').title.inRu(),
                             value: '${_entry.value('deleted').value}',
                             editable: field('deleted').isEditable,
+                          ),
+                        if ([AppUserRole.admin].contains(_user.role))
+                          Checkbox(
+                            semanticLabel: 'Allow indebted'.inRu(),
+                            value: _entry.value('allow_indebted').value ?? false, 
+                            onChanged: (value) {
+                              _entry.update('allow_indebted', value ?? false);
+                              setState(() {return;});
+                            },
                           ),
                       ],
                     ),

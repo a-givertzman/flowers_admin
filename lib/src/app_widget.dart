@@ -1,4 +1,5 @@
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/presentation/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
@@ -80,7 +81,7 @@ class _AppWidgetState extends State<AppWidget> {
   Widget build(BuildContext context) {
     final homePage = HomePage(
       authToken: _authToken,
-      user: AppUser(id: '15', name: 'Anton Lobanov'),
+      user: AppUser(id: '15', name: 'Anton Lobanov', role: AppUserRole.operator),
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
