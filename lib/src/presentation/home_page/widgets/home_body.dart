@@ -1,4 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
@@ -8,6 +9,7 @@ import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_item.dar
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/customer_page/customer_page.dart';
+import 'package:flowers_admin/src/presentation/payment_page/payment_page.dart';
 import 'package:flowers_admin/src/presentation/product_page/product_page.dart';
 import 'package:flowers_admin/src/presentation/transaction_page/transaction_page.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +59,18 @@ class _HomeBodyState extends State<HomeBody> {
   @override
   Widget build(BuildContext context) {
     final tabHeadesStyle = Theme.of(context).textTheme.headlineSmall;
+    final tabs = [
+      Tab(child: Text("customer".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("transaction".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("product_category".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("product".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("purchase".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("purchase_item".inRu().inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("order".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("Payment".inRu(), style: tabHeadesStyle)),
+    ];
     return DefaultTabController(
-      length: 7,
+      length: tabs.length,
       child: Scaffold(
         appBar: TabBar(
           indicatorColor: Colors.amber,
@@ -67,15 +79,7 @@ class _HomeBodyState extends State<HomeBody> {
           // indicator: BoxDecoration(
           //   color: Theme.of(context).cardColor,
           // ),
-          tabs: [
-            Tab(child: Text("customer", style: tabHeadesStyle)),
-            Tab(child: Text("transaction", style: tabHeadesStyle)),
-            Tab(child: Text("product_category", style: tabHeadesStyle)),
-            Tab(child: Text("product", style: tabHeadesStyle)),
-            Tab(child: Text("purchase", style: tabHeadesStyle)),
-            Tab(child: Text("purchase_item", style: tabHeadesStyle)),
-            Tab(child: Text("order", style: tabHeadesStyle)),
-          ],
+          tabs: tabs,
         ),
         body: TabBarView(
           children: [
@@ -361,6 +365,15 @@ class _HomeBodyState extends State<HomeBody> {
                     ),
                   },
                 ),
+              ),
+            ),
+            //
+            // Payment Page
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: _paddingV, horizontal: _paddingH),
+              child: PaymentPage(
+                authToken: _authToken,
+                user: _user,
               ),
             ),
           ],
