@@ -1,35 +1,29 @@
 import 'package:ext_rw/ext_rw.dart';
-
 ///
-/// Single row of table "Product"
-class EntryProduct implements SchemaEntryAbstract {
+/// Single row of table "ProductCategory"
+class EntryProductCategory implements SchemaEntryAbstract {
   final SchemaEntry _entry;
   final bool _isEmpty;
   ///
   ///
   static Map<String, FieldValue> get _initial {
     final initial = <String, FieldValue>{
-	  'id': FieldValue(0),
-	  'product_category_id': FieldValue(0),
-	  'category': FieldValue(''),
-	  'name': FieldValue(''),
-	  'details': FieldValue(''),
-	  'primary_price': FieldValue('0.00'),
-	  'primary_currency': FieldValue(''),
-	  'primary_order_quantity': FieldValue('0'),
-	  'order_quantity': FieldValue('0'),
-	  'description': FieldValue(''),
-	  'picture': FieldValue(''),
-	  'created': FieldValue(''),
-	  'updated': FieldValue(''),
-	  'deleted': FieldValue(''),
+      'id': FieldValue(0),
+      'category_id': FieldValue(0),
+      'name': FieldValue(''),
+      'details': FieldValue(''),
+      'description': FieldValue(''),
+      'picture': FieldValue(''),
+      'created': FieldValue(''),
+      'updated': FieldValue(''),
+      'deleted': FieldValue(''),
     };
     return initial;
   }
   ///
-  /// Single row of table "Product"
+  /// Single row of table "ProductCategory"
   /// - [keys] - list of field names
-  EntryProduct({
+  EntryProductCategory({
     required Map<String, FieldValue> map,
     bool isEmpty = false,
   }) :
@@ -38,7 +32,7 @@ class EntryProduct implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryProduct.from(Map<String, dynamic> row):
+  EntryProductCategory.from(Map<String, dynamic> row):
     _entry = SchemaEntry(map: _initial),
     _isEmpty = false {
     for (final MapEntry(:key, :value) in row.entries) {
@@ -47,7 +41,7 @@ class EntryProduct implements SchemaEntryAbstract {
   }
   //
   //
-  EntryProduct.empty():
+  EntryProductCategory.empty():
     _entry = SchemaEntry(map: _initial),
     _isEmpty = true;
   //
@@ -86,4 +80,32 @@ class EntryProduct implements SchemaEntryAbstract {
   //
   @override
   String toString() => _entry.toString();
+  ///
+  ///
+  static Sql updateSqlBuilder(Sql sql, EntryProductCategory entry) {
+    return Sql(sql: """UPDATE product_category SET (
+      id,
+      category_id,
+      name,
+      details,
+      description,
+      picture,
+      created,
+      updated,
+      deleted
+    ) = (
+      ${entry.value('id').str},
+      ${entry.value('category_id').str},
+      ${entry.value('name').str},
+      ${entry.value('details').str},
+      ${entry.value('description').str},
+      ${entry.value('picture').str},
+      ${entry.value('created').str},
+      ${entry.value('updated').str},
+      ${entry.value('deleted').str}
+    )
+    WHERE id = ${entry.value('id').str};
+  """);
+  }
+
 }

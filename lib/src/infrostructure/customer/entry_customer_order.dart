@@ -1,5 +1,4 @@
 import 'package:ext_rw/ext_rw.dart';
-
 ///
 /// Single row of table "CustomerOredr"
 class EntryCustomerOrder implements SchemaEntryAbstract {
@@ -84,4 +83,41 @@ class EntryCustomerOrder implements SchemaEntryAbstract {
   //
   @override
   String toString() => _entry.toString();
+  ///
+  ///
+  static Sql updateSqlBuilder(Sql sql, EntryCustomerOrder entry) {
+    return Sql(sql: """UPDATE customer_order SET (
+      id,
+      customer_id,
+      purchase_item_id,
+      count,
+      paid,
+      distributed,
+      to_refound,
+      refounded,
+      description
+    ) = (
+      ${entry.value('id').str},
+      ${entry.value('customer_id').str},
+      ${entry.value('purchase_item_id').str},
+      ${entry.value('count').str},
+      ${entry.value('paid').str},
+      ${entry.value('distributed').str},
+      ${entry.value('to_refound').str},
+      ${entry.value('refounded').str},
+      ${entry.value('description').str}
+    )
+    WHERE id = ${entry.value('id').str};
+  """);
+  }
+  // ///
+  // ///
+  // Sql updateSqlBuilder(Sql sql, SchemaEntry entry) {
+  //   return Sql(sql: """UPDATE _____ SET (
+  //   ) = (
+  //     '${entry.value('')}'
+  //   )
+  //   WHERE id = ${entry.value('id')};
+  // """);
+  // }
 }

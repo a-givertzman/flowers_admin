@@ -11,13 +11,13 @@ import 'package:hmi_core/hmi_core_result_new.dart';
 
 ///
 ///
-class EditProductForm extends StatefulWidget {
+class EditCustomerOrderForm extends StatefulWidget {
   final List<Field> _fields;
   final EntryProduct? _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
   ///
   ///
-  const EditProductForm({
+  const EditCustomerOrderForm({
     super.key,
     required List<Field> fields,
     EntryProduct? entry,
@@ -30,7 +30,7 @@ class EditProductForm extends StatefulWidget {
   //
   @override
   // ignore: no_logic_in_create_state
-  State<EditProductForm> createState() => _EditProductFormState(
+  State<EditCustomerOrderForm> createState() => _EditCustomerOrderFormState(
     fields: _fields,
     entry: _entry ?? EntryProduct.empty(),
     relations: _relations,
@@ -38,14 +38,14 @@ class EditProductForm extends StatefulWidget {
 }
 ///
 ///
-class _EditProductFormState extends State<EditProductForm> {
-  final _log = Log("$_EditProductFormState._");
+class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
+  final _log = Log("$_EditCustomerOrderFormState._");
   final List<Field> _fields;
   final EntryProduct _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
   ///
   ///
-  _EditProductFormState({
+  _EditCustomerOrderFormState({
     required List<Field> fields,
     required EntryProduct entry,
     required Map<String, List<SchemaEntryAbstract>> relations,

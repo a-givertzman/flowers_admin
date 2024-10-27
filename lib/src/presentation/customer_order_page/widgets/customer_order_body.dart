@@ -1,88 +1,69 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
-import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer_order.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result_new.dart';
-// ignore: depend_on_referenced_packages
-import 'package:collection/collection.dart';
 ///
 ///
-class PaymentBody extends StatefulWidget {
+class CustomerOrderBody extends StatefulWidget {
   final String _authToken;
-  final AppUser _user;
   ///
   ///
-  const PaymentBody({
+  const CustomerOrderBody({
     super.key,
     required String authToken,
-    required AppUser user,
   }):
-    _authToken = authToken,
-    _user = user;
-  ///
-  ///
+    _authToken = authToken;
+  //
+  //
   @override
   // ignore: no_logic_in_create_state
-  State<PaymentBody> createState() => _PaymentBodyState(
+  State<CustomerOrderBody> createState() => _CustomerOrderBodyState(
     authToken: _authToken,
-    user: _user,
   );
 }
-///
-///
-class _PaymentBodyState extends State<PaymentBody> {
+//
+//
+class _CustomerOrderBodyState extends State<CustomerOrderBody> {
   late final Log _log;
   final String _authToken;
-  final AppUser _user;
   final _database = 'flowers_app_server';
   final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
-  ///
-  ///
-  _PaymentBodyState({
+  //
+  //
+  _CustomerOrderBodyState({
     required String authToken,
-    required AppUser user,
   }):
-    _authToken = authToken,
-    _user = user {
+    _authToken = authToken {
       _log = Log("$runtimeType");
     }
-  ///
-  ///
+  //
+  //
   @override
   Widget build(BuildContext context) {
-    final editableAuthor = [AppUserRole.admin].contains(_user.role);
-    final editableValue = [AppUserRole.admin].contains(_user.role);
-    final editableDetails = [AppUserRole.admin].contains(_user.role);
-    return TableWidget<EntryCustomerOrder, void>(
-      showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
-      fetchAction: TableWidgetAction(
-        onPressed: (schema) {
-          return Future.value(Ok(EntryCustomerOrder.empty()));
-        }, 
-        icon: const Icon(Icons.add),
-      ),
+    _log.debug('.build | ');
+    return TableWidget(
       schema: RelationSchema<EntryCustomerOrder, void>(
         schema: TableSchema<EntryCustomerOrder, void>(
           read: SqlRead<EntryCustomerOrder, void>(
-            address: _apiAddress, 
-            authToken: _authToken, 
-            database: _database, 
+            address: _apiAddress,
+            authToken: _authToken,
+            database: _database,
             sqlBuilder: (sql, params) {
               return Sql(sql: 'select * from customer_order order by id;');
             },
-            entryBuilder: (row) => EntryCustomerOrder.from(row.cast()),
+            entryBuilder: (row) => EntryCustomerOrder.from(row),
             debug: true,
           ),
           write: SqlWrite<EntryCustomerOrder>(
-            address: _apiAddress, 
-            authToken: _authToken, 
-            database: _database, 
+            address: _apiAddress,
+            authToken: _authToken,
+            database: _database,
+            updateSqlBuilder: EntryCustomerOrder.updateSqlBuilder,
+            // insertSqlBuilder: insertSqlBuilderCustomerOrder,
             emptyEntryBuilder: EntryCustomerOrder.empty,
             debug: true,
           ),
@@ -109,9 +90,9 @@ class _PaymentBodyState extends State<PaymentBody> {
         relations: {
           'customer_id': TableSchema<EntryCustomer, void>(
             read: SqlRead<EntryCustomer, void>(
-              address: _apiAddress, 
-              authToken: _authToken, 
-              database: _database, 
+              address: _apiAddress,
+              authToken: _authToken,
+              database: _database,
               sqlBuilder: (sql, params) {
                 return Sql(sql: 'select id, name from customer order by id;');
               },
@@ -125,9 +106,9 @@ class _PaymentBodyState extends State<PaymentBody> {
           ),
           'purchase_item_id': TableSchema<EntryPurchaseItem, void>(
             read: SqlRead<EntryPurchaseItem, void>(
-              address: _apiAddress, 
-              authToken: _authToken, 
-              database: _database, 
+              address: _apiAddress,
+              authToken: _authToken,
+              database: _database,
               sqlBuilder: (sql, params) {
                 return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_item_view order by id;');
               },
@@ -142,7 +123,7 @@ class _PaymentBodyState extends State<PaymentBody> {
               const Field(key: 'product'),
             ],
           ),
-        },                  
+        },
       ),
     );
   }

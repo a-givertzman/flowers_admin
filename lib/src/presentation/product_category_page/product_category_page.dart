@@ -1,13 +1,12 @@
 
-import 'package:flowers_admin/src/presentation/product_page/widgets/product_body.dart';
+import 'package:flowers_admin/src/presentation/product_category_page/widgets/product_category_body.dart';
 import 'package:flutter/material.dart';
-///
-///
-class ProductPage extends StatelessWidget {
+
+class ProductCategoryPage extends StatelessWidget {
   final String _authToken;
   ///
   ///
-  const ProductPage({
+  const ProductCategoryPage({
     super.key,
     required String authToken,
   }):
@@ -16,7 +15,7 @@ class ProductPage extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    return ProductBody(
+    return ProductCategoryBody(
       authToken: _authToken,
     );
   }
