@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 ///
 void main() async {
   const apiAuthToken = '';
+  WidgetsFlutterBinding.ensureInitialized();
   Log.initialize(level: LogLevel.all);
   await AppSettings.initialize(
     jsonMap: JsonMap.fromTextFile(
