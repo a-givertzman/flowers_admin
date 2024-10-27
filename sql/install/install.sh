@@ -8,11 +8,16 @@ source ./sql/install/conf
 # list of SQL scripts to be executed in the format:
 # 	<database> <path to sql script> [description]
 read -r -d '' scripts << EOF
-    ""      "sql/install/create_db.sql" "Creating database '$db'..."
-    ""      "sql/install/create_user.sql" "Creating database user '$user'..."
+    ""        "sql/install/create_db.sql" "Creating database '$db'..."
+    "$db"     "sql/install/create_log.sql" "Creating log pocedures"
+    "$db"     "sql/install/create_user.sql" "Creating database user '$user'..."
+    "$db"     "sql/install/create_customer.sql" "Creating 'Customer' table..."
+    "$db"     "sql/install/create_notice.sql" "Creating 'Notice' table..."
+    "$db"     "sql/install/create_purchase.sql" "Creating 'Customer Order' table..."
+    "$db"     "sql/install/create_purchase_item.sql" "Creating 'Customer Order' table..."
+    "$db"     "sql/install/create_customer_order.sql" "Creating 'Customer Order' table..."
 EOF
-    # ""      "/etc/cma-history/create_grant_user.sql" "Grant user '$user' to access database '$db'..."
-    # "$db"   "/etc/cma-history/create_tags.sql" "Creating 'tags' table..."
+    # "$db"     "sql/install/create_purchase.sql" "Creating 'Customer' table..."
     # "$db"   "/etc/cma-history/create_event.sql" "Creating 'event' table..."
     # "$db"   "/etc/cma-history/create_event_view.sql" "Creating 'event_view' view..."
 
@@ -28,6 +33,7 @@ echo -e "\t${GRAY} creating temporary user${NC} '$user'..."
 sudo adduser --gecos "" --disabled-password "$user" --ingroup sudo
 echo -e "\t${GRAY} setting pass for temporary user${NC}..."
 sudo chpasswd <<<"$user:$pass"
+echo "pwd: $PWD"
 regex='\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 # regex='\"([^\"]*?)\"[ \t]+\"([^\"]*?)\"[ \t]+\"([^\"]+?)\"([ \t]+\"([^\"]+?)\")?'
 while IFS= read -r row; do
@@ -36,7 +42,6 @@ while IFS= read -r row; do
     path=${BASH_REMATCH[2]:="${RED}not specified${NC}"}
     description=${BASH_REMATCH[4]:="Unnamed SQL script..."}
     echo ""
-    echo "pwd: $PWD"
     echo -e "$description"
     echo -e "\t${GRAY}from file:${NC} $path"
     install -D "$path" "/tmp/$path"
@@ -44,7 +49,8 @@ while IFS= read -r row; do
         sudo -u "postgres" psql --echo-errors -a -f "/tmp/$path"
     else
         echo -e "\t${GRAY}connect to database:${NC} $connect"
-        sudo -i -u "$user" psql --echo-errors --dbname=$connect -a -f "tmp/$path"
+        sudo -i -u "postgres" psql --echo-errors --dbname=$connect -a -f "/tmp/$path"
+        # sudo -i -u "$user" psql --echo-errors --dbname=$connect -a -f "/tmp/$path"
     fi
 done <<< "$scripts"
 #

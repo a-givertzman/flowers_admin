@@ -13,7 +13,7 @@ create table public.customer_order (
     description         text,
 	created 	        timestamp default current_timestamp NOT NULL,
 	updated 	        timestamp default current_timestamp NOT NULL,
-	deleted 	        timestamp null,
+	deleted 	        timestamp null
 );
 
 -- public."customer_order_view" definition

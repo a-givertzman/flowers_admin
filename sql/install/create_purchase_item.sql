@@ -1,19 +1,21 @@
 --
--- public.notice
-drop table public.notice;
-create table public.notice (
-
-
-  
-	id                  bigserial primary key not null,
-	customer_id         int8 not null,			-- Author of the notice
-	purchase_id         int8,					-- If notice refers to whole Purchase, not to exact position
-	purchase_item_id    int8,			-- If notice refers to single position of the Purchase, purchase_id - not required
-	title               varchar(255) not null,		-- Title of the notice
-	body                text not null,					-- Text of the notice
-	created             timestamp default current_timestamp not null,
-	updated             timestamp default current_timestamp not null,
-	deleted             timestamp null
+-- public.purchase_item
+drop table public.purchase_item;
+create table public.purchase_item (
+    id                  bigserial primary key not null,
+    purchase_id         int8 not null,     -- item refers to Purchase
+    product_id          int8 not null,     -- item refers to Product
+    sale_price          numeric(20, 2) default '0.0' not null,
+    sale_currency       varchar(16) not null,
+    shipping            numeric(20, 2) default '0.0' not null,
+    remains             int8 not null,
+    name                varchar(255) not null,
+    details             varchar(255) not null,
+    description         text not null,     -- Text of the notice
+    picture             text,
+    created             timestamp default current_timestamp not null,
+    updated             timestamp default current_timestamp not null,
+    deleted             timestamp null
 );
 --
 -- public.purchase_item_view
