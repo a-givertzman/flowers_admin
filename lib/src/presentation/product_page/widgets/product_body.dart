@@ -1,4 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/core/settings/settings.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product_category.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
@@ -31,8 +32,8 @@ class ProductBody extends StatefulWidget {
 class _ProductBodyState extends State<ProductBody> {
   late final Log _log;
   final String _authToken;
-  final _database = 'flowers_app_server';
-  final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
+  final _database = Setting('api-database').toString();
+  final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   //
   //
   _ProductBodyState({

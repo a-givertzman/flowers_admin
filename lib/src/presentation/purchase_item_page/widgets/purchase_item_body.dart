@@ -1,4 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/core/settings/settings.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
@@ -30,8 +31,8 @@ class PurchaseItemBody extends StatefulWidget {
 class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   late final Log _log;
   final String _authToken;
-  final _database = 'flowers_app_server';
-  final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
+  final _database = Setting('api-database').toString();
+  final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   //
   //
   _PurchaseItemBodyState({

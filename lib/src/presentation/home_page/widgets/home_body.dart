@@ -1,4 +1,3 @@
-import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/presentation/customer_order_page/customer_order_page.dart';
@@ -10,6 +9,7 @@ import 'package:flowers_admin/src/presentation/purchase_item_page/purchase_item_
 import 'package:flowers_admin/src/presentation/purchase_page/purchase_page.dart';
 import 'package:flowers_admin/src/presentation/transaction_page/transaction_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 ///
 ///
 class HomeBody extends StatefulWidget {
@@ -35,11 +35,9 @@ class HomeBody extends StatefulWidget {
 //
 //
 class _HomeBodyState extends State<HomeBody> {
-  // final _log = Log("$_HomeBodyState._");
+  final _log = Log("$_HomeBodyState._");
   final String _authToken;
   final AppUser _user;
-  final _database = 'flowers_app_server';
-  final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
   final _paddingH = 8.0;
   final _paddingV = 8.0;
   //
@@ -53,6 +51,7 @@ class _HomeBodyState extends State<HomeBody> {
   //
   @override
   Widget build(BuildContext context) {
+    _log.debug('.build | ');
     final tabHeadesStyle = Theme.of(context).textTheme.headlineSmall;
     final tabs = [
       Tab(child: Text("Customers".inRu(), style: tabHeadesStyle)),

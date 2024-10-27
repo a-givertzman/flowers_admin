@@ -1,0 +1,17 @@
+############ CONFIGURATION SECTION ############
+#
+# Standart user, pass, database name for History service
+#
+# user="flowers_app"
+# pass="00d0-25e4-*&s2-ccds"
+# db="flowers_app"
+#
+if [ ! -n "$db" ]; then
+    db="flowers_app"
+fi
+if [ ! -n "$user" ]; then
+    user="flowers_app"
+fi
+if [ ! -n "$pass" ]; then
+    pass="00d0-25e4-*&s2-ccds"
+fi

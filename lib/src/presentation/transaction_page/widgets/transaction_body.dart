@@ -1,4 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/core/settings/settings.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
@@ -42,8 +43,8 @@ class _TransactionBodyState extends State<TransactionBody> {
   late final Log _log;
   final String _authToken;
   final AppUser _user;
-  final _database = 'flowers_app_server';
-  final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
+  final _database = Setting('api-database').toString();
+  final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   ///
   ///
   _TransactionBodyState({

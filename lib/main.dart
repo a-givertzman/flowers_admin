@@ -13,17 +13,17 @@ import 'package:flutter/material.dart';
 ///
 void main() async {
   const apiAuthToken = '';
-  WidgetsFlutterBinding.ensureInitialized();
-  Log.initialize(level: LogLevel.all);
-  await AppSettings.initialize(
-    jsonMap: JsonMap.fromTextFile(
-      const TextFile.asset(
-        'assets/settings/app-settings.json',
-      ),
-    ),
-  );
   runZonedGuarded(
     () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      Log.initialize(level: LogLevel.all);
+      await AppSettings.initialize(
+        jsonMap: JsonMap.fromTextFile(
+          const TextFile.asset(
+            'assets/settings/app-settings.json',
+          ),
+        ),
+      );
       // final appThemeSwitch = AppThemeSwitch();
       runApp(
         const AppWidget(
