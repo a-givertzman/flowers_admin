@@ -1,50 +1,32 @@
 import 'package:ext_rw/ext_rw.dart';
+
 ///
-/// # Single record of table Transaction
-/// 
-/// ## Defination
-/// Represents the operation of debiting/crediting amount from/to Customer's account, and storing it as historian record.
-/// - Crediting the amount to the Customer's account in case of adding funds
-/// - Debiting the amount from the Customer's account in case of refund (payback)
-/// - Debiting the amount from the Customer's account in case of payment operation (charge of Purchase Item payment)
-/// 
-/// ## Fields
-/// - ID
-/// - Author (ID) - Person who created the transaction
-/// - Customer (ID)
-/// - Customer Account before transaction
-/// - Details - Payment details
-/// - Value - the amount of payment
-/// - Created timestamp
-class EntryTransaction implements SchemaEntryAbstract {
+/// Single row of table "Purchase"
+class EntryPurchase implements SchemaEntryAbstract {
   final SchemaEntry _entry;
   final bool _isEmpty;
   ///
   ///
   static Map<String, FieldValue> get _initial {
     final initial = <String, FieldValue>{
-	    'id': FieldValue(0),
-	    'author_id': FieldValue(0),
-	    'author': FieldValue(''),
-	    'value': FieldValue(''),
+	    'id': FieldValue(null),
+	    'name': FieldValue(''),
 	    'details': FieldValue(''),
-	    'order_id': FieldValue(0),
-	    'order': FieldValue(''),
-	    'customer_id': FieldValue(null, type: FieldType.int),
-	    'customer': FieldValue(''),
-	    'customer_account': FieldValue(''),
+	    'status': FieldValue(''),
+	    'date_of_start': FieldValue(''),
+	    'date_of_end': FieldValue(''),
 	    'description': FieldValue(''),
+	    'picture': FieldValue(''),
 	    'created': FieldValue(''),
 	    'updated': FieldValue(''),
 	    'deleted': FieldValue(''),
-	    'allow_indebted': FieldValue(false),
     };
     return initial;
   }
   ///
-  /// Single row of table "Transaction"
+  /// Single row of table "Purchase"
   /// - [keys] - list of field names
-  EntryTransaction({
+  EntryPurchase({
     required Map<String, FieldValue> map,
     bool isEmpty = false,
   }) :
@@ -53,7 +35,7 @@ class EntryTransaction implements SchemaEntryAbstract {
   //
   //
   @override
-  EntryTransaction.from(Map<String, dynamic> row):
+  EntryPurchase.from(Map<String, dynamic> row):
     _entry = SchemaEntry(map: _initial),
     _isEmpty = false {
     for (final MapEntry(:key, :value) in row.entries) {
@@ -62,7 +44,7 @@ class EntryTransaction implements SchemaEntryAbstract {
   }
   //
   //
-  EntryTransaction.empty():
+  EntryPurchase.empty():
     _entry = SchemaEntry(map: _initial),
     _isEmpty = true;
   //
@@ -101,4 +83,35 @@ class EntryTransaction implements SchemaEntryAbstract {
   //
   @override
   String toString() => _entry.toString();
+  ///
+  ///
+  static Sql updateSqlBuilder(Sql sql, EntryPurchase entry) {
+    return Sql(sql: """UPDATE purchase SET (
+        id,
+        name,
+        details,
+        status,
+        date_of_start,
+        date_of_end,
+        description,
+        picture,
+        created,
+        updated,
+        deleted
+      ) = (
+        ${entry.value('id').str},
+        ${entry.value('name').str},
+        ${entry.value('details').str},
+        ${entry.value('status').str},
+        ${entry.value('date_of_start').str},
+        ${entry.value('date_of_end').str},
+        ${entry.value('description').str},
+        ${entry.value('picture').str},
+        ${entry.value('created').str},
+        ${entry.value('updated').str},
+        ${entry.value('deleted').str}
+      )
+      WHERE id = ${entry.value('id').str};
+    """);
+  }
 }

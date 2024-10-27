@@ -1,9 +1,9 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
+import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/schamas/entry_customer_order.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_purchase_item.dart';
+import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flutter/material.dart';

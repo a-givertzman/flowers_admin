@@ -88,4 +88,41 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   //
   @override
   String toString() => _entry.toString();
+  ///
+  ///
+  static Sql updateSqlBuilder(Sql sql, EntryPurchaseItem entry) {
+    return Sql(sql: """UPDATE purchase_item SET (
+        id,
+        purchase_id,
+        product_id,
+        sale_price,
+        sale_currency,
+        shipping,
+        remains,
+        name,
+        details,
+        description,
+        picture,
+        created,
+        updated,
+        deleted
+      ) = (
+        ${entry.value('id').str},
+        ${entry.value('purchase_id').str},
+        ${entry.value('product_id').str},
+        ${entry.value('sale_price').str},
+        ${entry.value('sale_currency').str},
+        ${entry.value('shipping').str},
+        ${entry.value('remains').str},
+        ${entry.value('name').str},
+        ${entry.value('details').str},
+        ${entry.value('description').str},
+        ${entry.value('picture').str},
+        ${entry.value('created').str},
+        ${entry.value('updated').str},
+        ${entry.value('deleted').str}
+      )
+      WHERE id = ${entry.value('id').str};
+    """);
+  }
 }

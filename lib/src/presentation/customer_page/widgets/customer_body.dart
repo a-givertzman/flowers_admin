@@ -1,8 +1,7 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
-import 'package:flowers_admin/src/infrostructure/customer/customer_sqls.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_customer.dart';
+import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flowers_admin/src/presentation/customer_page/widgets/edit_customer_form.dart';
@@ -146,9 +145,9 @@ class _CustomerBodyState extends State<CustomerBody> {
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
-          updateSqlBuilder: updateSqlBuilderCustomer,
-          insertSqlBuilder: insertSqlBuilderCustomer,
-          deleteSqlBuilder: deleteSqlBuilderCustomer,
+          updateSqlBuilder: EntryCustomer.updateSqlBuilder,
+          insertSqlBuilder: EntryCustomer.insertSqlBuilder,
+          deleteSqlBuilder: EntryCustomer.deleteSqlBuilder,
           emptyEntryBuilder: EntryCustomer.empty,
           debug: true,
         ),
