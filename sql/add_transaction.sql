@@ -20,12 +20,12 @@ declare
 	result_account numeric(20, 2);
 	result_error text = null;
 begin
-	call raise_notice(format('add_transaction | start with:'));	
-	call raise_notice(format('add_transaction | value  : ' || value_));	
+	call log_info(format('add_transaction | start with:'));	
+	call log_info(format('add_transaction | value  : ' || value_));	
 	select c.account, c.name into account_, name_ from public.customer c
 	 	where c.id = customer_id_;
-	call raise_notice(format('add_transaction | name_   : ' || name_));	
-	call raise_notice(format('add_transaction | account_: ' || account_));	
+	call log_info(format('add_transaction | name_   : ' || name_));	
+	call log_info(format('add_transaction | account_: ' || account_));	
     if (not allow_indebted and account_ + value_ > 0.0) or (allow_indebted and account_ > 0.0) then
 		execute 'update public.customer SET account = ' || account_ + value_
 			|| ' where id = ' || customer_id_;
@@ -54,31 +54,31 @@ begin
     end if;
 	select c.account into result_account from public.customer c
 	 	where c.id = customer_id_;
-	call raise_notice('add_transaction | result_account: ' || result_account);
-	call raise_notice('add_transaction | result_error  : ' || coalesce(result_error, ''));
+	call log_info('add_transaction | result_account: ' || result_account);
+	call log_info('add_transaction | result_error  : ' || coalesce(result_error, ''));
 	return query values (result_account, result_error);
 end
 $$;
-
+--
 -- Testing
-select * from add_transaction(15, 2, -330.33, 'Testing transaction - 33.33', null, 'Empty description', false);
-select * from add_transaction(15, 2, 100.33, 'Testing transaction +100.33', null, 'Empty description', false);
-select * from add_transaction(15, 2, 100.33, 'Testing transaction +100.33',    1, 'Empty description', false);
-
-select
-    t.id,
-    t.author_id,
-    t.customer_id,
-    t.customer_account,
-    t.value,
-    t.customer_account + t.value as after,
-    c.account,
-    t.details,
-    t.order_id,
-    t.description,
-    t.created,
-    t.updated,
-    t.deleted
-from public."transaction" t
-join customer c on c.id = t.customer_id;
+-- select * from add_transaction(15, 2, -330.33, 'Testing transaction - 33.33', null, 'Empty description', false);
+-- select * from add_transaction(15, 2, 100.33, 'Testing transaction +100.33', null, 'Empty description', false);
+-- select * from add_transaction(15, 2, 100.33, 'Testing transaction +100.33',    1, 'Empty description', false);
+--
+-- select
+--     t.id,
+--     t.author_id,
+--     t.customer_id,
+--     t.customer_account,
+--     t.value,
+--     t.customer_account + t.value as after,
+--     c.account,
+--     t.details,
+--     t.order_id,
+--     t.description,
+--     t.created,
+--     t.updated,
+--     t.deleted
+-- from public."transaction" t
+-- join customer c on c.id = t.customer_id;
 

@@ -1,6 +1,5 @@
-
+--
 -- public."customer_order" definition
-drop table public.customer_order;
 create table public.customer_order (
     id                  bigserial primary key not null,
     customer_id         int8 not null,
@@ -11,13 +10,12 @@ create table public.customer_order (
     to_refound          numeric(20, 2) not null,
     refounded           numeric(20, 2) not null,
     description         text,
-	created 	        timestamp default current_timestamp NOT NULL,
-	updated 	        timestamp default current_timestamp NOT NULL,
-	deleted 	        timestamp null
+    created             timestamp default current_timestamp NOT NULL,
+    updated             timestamp default current_timestamp NOT NULL,
+    deleted             timestamp null
 );
-
+--
 -- public."customer_order_view" definition
-drop view public.customer_order_view;
 CREATE OR REPLACE VIEW public.customer_order_view
 AS SELECT cord.id,
     cord.customer_id as customer_id,

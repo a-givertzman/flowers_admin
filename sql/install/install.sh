@@ -10,16 +10,22 @@ source ./sql/install/conf
 read -r -d '' scripts << EOF
     ""        "sql/install/create_db.sql" "Creating database '$db'..."
     "$db"     "sql/install/create_log.sql" "Creating log pocedures"
+    "$db"     "sql/install/drop_tables.sql" "Deleating tables"
     "$db"     "sql/install/create_user.sql" "Creating database user '$user'..."
     "$db"     "sql/install/create_customer.sql" "Creating 'Customer' table..."
     "$db"     "sql/install/create_notice.sql" "Creating 'Notice' table..."
-    "$db"     "sql/install/create_purchase.sql" "Creating 'Customer Order' table..."
-    "$db"     "sql/install/create_purchase_item.sql" "Creating 'Customer Order' table..."
+    "$db"     "sql/install/create_product_category.sql" "Creating 'Product Category' table..."
+    "$db"     "sql/install/create_product.sql" "Creating 'Product' table..."
+    "$db"     "sql/install/create_purchase.sql" "Creating 'Purchase' table..."
+    "$db"     "sql/install/create_purchase_item.sql" "Creating 'Purchase Item' table..."
     "$db"     "sql/install/create_customer_order.sql" "Creating 'Customer Order' table..."
+    "$db"     "sql/install/create_transaction.sql" "Creating 'Transaction' table..."
+    "$db"     "sql//add_transaction.sql" "Creating 'Creating AddTransaction' function..."
+    "$db"     "sql//del_transaction.sql" "Creating 'Creating DelTransaction' function..."
+    "$db"     "sql//edit_transaction.sql" "Creating 'Creating EditTransaction' function..."
+    "$db"     "sql//set_order.sql" "Creating 'Creating SetOrder' function..."
+    "$db"     "sql//set_order_payment.sql" "Creating 'Creating SetOrderPayment' function..."
 EOF
-    # "$db"     "sql/install/create_purchase.sql" "Creating 'Customer' table..."
-    # "$db"   "/etc/cma-history/create_event.sql" "Creating 'event' table..."
-    # "$db"   "/etc/cma-history/create_event_view.sql" "Creating 'event_view' view..."
 
 ############ INSTALLATION ACTIONS ############
 RED='\033[0;31m'

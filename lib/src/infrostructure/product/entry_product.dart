@@ -8,20 +8,20 @@ class EntryProduct implements SchemaEntryAbstract {
   ///
   static Map<String, FieldValue> get _initial {
     final initial = <String, FieldValue>{
-	  'id': FieldValue(0),
-	  'product_category_id': FieldValue(0),
-	  'category': FieldValue(''),
-	  'name': FieldValue(''),
-	  'details': FieldValue(''),
-	  'primary_price': FieldValue('0.00'),
-	  'primary_currency': FieldValue(''),
-	  'primary_order_quantity': FieldValue('0'),
-	  'order_quantity': FieldValue('0'),
-	  'description': FieldValue(''),
-	  'picture': FieldValue(''),
-	  'created': FieldValue(''),
-	  'updated': FieldValue(''),
-	  'deleted': FieldValue(''),
+    'id': FieldValue(0),
+    'product_category_id': FieldValue(0),
+    'category': FieldValue(''),
+    'name': FieldValue(''),
+    'details': FieldValue(''),
+    'primary_price': FieldValue('0.00'),
+    'primary_currency': FieldValue(''),
+    'primary_order_quantity': FieldValue('0'),
+    'order_quantity': FieldValue('0'),
+    'description': FieldValue(''),
+    'picture': FieldValue(''),
+    'created': FieldValue(''),
+    'updated': FieldValue(''),
+    'deleted': FieldValue(''),
     };
     return initial;
   }

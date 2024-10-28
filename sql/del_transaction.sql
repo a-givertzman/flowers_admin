@@ -19,14 +19,14 @@ declare
 	result_account numeric(20, 2);
 	result_error text = null;
 begin
-	call raise_notice(format('del_transaction | deleting transaction: ' || id_));	
+	call log_info(format('del_transaction | deleting transaction: ' || id_));	
 	select tr.value, tr.customer_account into value_, account_before from public.transaction tr
 	 	where tr.id = id_;
 	select c.account, c.name into account_, name_ from public.customer c
 	 	where c.id = customer_id_;
-	call raise_notice(format('del_transaction | 	name_         : ' || name_));	
-	call raise_notice(format('del_transaction | 	account_before: ' || account_before));	
-	call raise_notice(format('del_transaction | 	account_      : ' || account_));	
+	call log_info(format('del_transaction | 	name_         : ' || name_));	
+	call log_info(format('del_transaction | 	account_before: ' || account_before));	
+	call log_info(format('del_transaction | 	account_      : ' || account_));	
     if (not allow_indebted and account_before > 0.0) or (allow_indebted) THEN
 		-- revert customer account 
 		execute 'update public.customer SET account = ' || account_before 
@@ -41,33 +41,32 @@ begin
     end if;
 	select c.account into result_account from public.customer c
 	 	where c.id = customer_id_;
-	call raise_notice('del_transaction | result_account: ' || result_account);
-	call raise_notice('del_transaction | result_error  : ' || coalesce(result_error, ''));
+	call log_info('del_transaction | result_account: ' || result_account);
+	call log_info('del_transaction | result_error  : ' || coalesce(result_error, ''));
 	return query values (result_account, result_error);
 end
 $$;
-
--- Testing
-select * from del_transaction(4, 15, 2, 'Testing transaction delete', false);
-update public.transaction set (description, deleted) = ('Testing transaction delete', CURRENT_TIMESTAMP) where id = 4;
-
-
-select
-    t.id,
-    t.author_id,
-    t.customer_id,
-    t.customer_account,
-    t.value,
-    t.customer_account + t.value as after,
-    c.account,
-    t.details,
-    t.order_id,
-    t.description,
-    t.created,
-    t.updated,
-    t.deleted
-from public."transaction" t
-join customer c on c.id = t.customer_id;
+--
+-- -- Testing
+-- select * from del_transaction(4, 15, 2, 'Testing transaction delete', false);
+-- update public.transaction set (description, deleted) = ('Testing transaction delete', CURRENT_TIMESTAMP) where id = 4;
+--
+-- select
+--     t.id,
+--     t.author_id,
+--     t.customer_id,
+--     t.customer_account,
+--     t.value,
+--     t.customer_account + t.value as after,
+--     c.account,
+--     t.details,
+--     t.order_id,
+--     t.description,
+--     t.created,
+--     t.updated,
+--     t.deleted
+-- from public."transaction" t
+-- join customer c on c.id = t.customer_id;
 
 
 

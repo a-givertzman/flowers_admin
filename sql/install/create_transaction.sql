@@ -1,6 +1,6 @@
+-- DROP TABLE public."transaction";
 
 -- public."transaction" definition
-DROP TABLE public."transaction";
 CREATE TABLE public."transaction" (
 	id bigserial,
 	author_id int8 NOT NULL,                      -- Person who created the transaction

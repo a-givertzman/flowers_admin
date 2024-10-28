@@ -1,6 +1,5 @@
 --
 -- public.purchase_item
-drop table public.purchase_item;
 create table public.purchase_item (
     id                  bigserial primary key not null,
     purchase_id         int8 not null,     -- item refers to Purchase
@@ -19,7 +18,6 @@ create table public.purchase_item (
 );
 --
 -- public.purchase_item_view
-drop view public.purchase_item_view ;
 CREATE OR REPLACE VIEW public.purchase_item_view AS
 SELECT puc.id,
     puc.purchase_id,
