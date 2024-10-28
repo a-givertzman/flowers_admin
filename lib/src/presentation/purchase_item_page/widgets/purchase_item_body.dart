@@ -54,7 +54,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
             authToken: _authToken,
             database: _database,
             sqlBuilder: (sql, params) {
-              return Sql(sql: 'select * from purchase_item order by id;');
+              return Sql(sql: 'select * from purchase_item_view order by id;');
             },
             entryBuilder: (row) => EntryPurchaseItem.from(row),
             debug: true,

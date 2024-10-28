@@ -22,6 +22,7 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
 	    'details': FieldValue(''),
 	    'description': FieldValue(''),
 	    'picture': FieldValue(''),
+	    'status': FieldValue(''),
 	    'created': FieldValue(''),
 	    'updated': FieldValue(''),
 	    'deleted': FieldValue(''),

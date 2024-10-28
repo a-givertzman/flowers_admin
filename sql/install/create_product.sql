@@ -16,6 +16,26 @@ create table public.product (
     deleted                 timestamp null
 );
 --
+-- public.product_view
+CREATE OR REPLACE VIEW public.product_view AS
+    SELECT
+        p.id,
+        p.product_category_id,
+        pc.name as category,
+        p.name,
+        p.details,
+        p.primary_price,
+        p.primary_currency,
+        p.primary_order_quantity,
+        p.order_quantity,
+        p.description,
+        p.picture,                 
+        p.created,
+        p.updated,
+        p.deleted
+    FROM product p
+        JOIN product_category pc ON p.product_category_id = pc.id;
+--
 -- Testing public.product table
 insert into public.product (id, product_category_id, name, details, primary_price, primary_currency, primary_order_quantity, order_quantity, description, picture, created, updated, deleted) values 
     (1, 2, '01. Freesia andersoniae', 'Freesia andersoniae детали...', 1.1, 'EUR', 3, 1,

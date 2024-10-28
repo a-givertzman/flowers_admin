@@ -12,6 +12,7 @@ class EntryPurchase implements SchemaEntryAbstract {
 	    'id': FieldValue(null),
 	    'name': FieldValue(''),
 	    'details': FieldValue(''),
+	    'preview': FieldValue(''),
 	    'status': FieldValue(''),
 	    'date_of_start': FieldValue(''),
 	    'date_of_end': FieldValue(''),

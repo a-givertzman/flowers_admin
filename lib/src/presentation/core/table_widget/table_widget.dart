@@ -226,7 +226,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                         ),
                       );
                     } else {
-                      return Center(child: Text("No orders received", style: textStile,));
+                      return Center(child: Text("No items received", style: textStile,));
                     }
                   }(),
                   Err(:final error) => () {
@@ -236,7 +236,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                 };
               }
             }
-            return Center(child: Text("No orders received", style: textStile,));
+            return Center(child: Text("No items received", style: textStile,));
           },
         ),
       ],
