@@ -91,6 +91,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
             children: [
               Text('${InRu('New transaction')}', style: Theme.of(context).textTheme.titleLarge,),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
@@ -162,7 +163,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                               setState(() {return;});
                             },
                           ),
-
+                                    
                         // TextEditWidget(
                         //   labelText: field('created').title.inRu(),
                         //   value: '${_entry.value('created').value}',

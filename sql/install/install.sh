@@ -20,11 +20,11 @@ read -r -d '' scripts << EOF
     "$db"     "sql/install/create_purchase_item.sql" "Creating 'Purchase Item' table..."
     "$db"     "sql/install/create_customer_order.sql" "Creating 'Customer Order' table..."
     "$db"     "sql/install/create_transaction.sql" "Creating 'Transaction' table..."
-    "$db"     "sql//add_transaction.sql" "Creating 'Creating AddTransaction' function..."
-    "$db"     "sql//del_transaction.sql" "Creating 'Creating DelTransaction' function..."
-    "$db"     "sql//edit_transaction.sql" "Creating 'Creating EditTransaction' function..."
-    "$db"     "sql//set_order.sql" "Creating 'Creating SetOrder' function..."
-    "$db"     "sql//set_order_payment.sql" "Creating 'Creating SetOrderPayment' function..."
+    "$db"     "sql/add_transaction.sql" "Creating 'Creating AddTransaction' function..."
+    "$db"     "sql/del_transaction.sql" "Creating 'Creating DelTransaction' function..."
+    "$db"     "sql/edit_transaction.sql" "Creating 'Creating EditTransaction' function..."
+    "$db"     "sql/set_order.sql" "Creating 'Creating SetOrder' function..."
+    "$db"     "sql/set_order_payment.sql" "Creating 'Creating SetOrderPayment' function..."
 EOF
 
 ############ INSTALLATION ACTIONS ############

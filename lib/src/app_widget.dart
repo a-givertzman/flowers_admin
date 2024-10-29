@@ -81,7 +81,7 @@ class _AppWidgetState extends State<AppWidget> {
   Widget build(BuildContext context) {
     final homePage = HomePage(
       authToken: _authToken,
-      user: AppUser(id: '15', name: 'Anton Lobanov', role: AppUserRole.admin),
+      user: AppUser(id: '1', name: 'Anton Lobanov', role: AppUserRole.admin),
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,

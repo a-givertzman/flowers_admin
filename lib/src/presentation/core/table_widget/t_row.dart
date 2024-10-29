@@ -151,9 +151,11 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
                 color: _isSelected ? Colors.blue.withAlpha(128) : null,
                 border: _onEnter ? Border.all(color: Theme.of(context).primaryColor) : Border.all(color: Colors.transparent),
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: _buildRow(_fields, _entry, textStile),
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _buildRow(_fields, _entry, textStile),
+                ),
               ),
             ),
           ],
@@ -164,12 +166,12 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   ///
   ///
   List<Widget> _buildRow(List<Field> fields, T? entry, textStyle) {
-    _log.debug("._buildRow | entry: $entry");
+    // _log.debug("._buildRow | entry: $entry");
     final cells = fields
       .where((field) => !field.isHidden)
       .map((field) {
         final fieldValue = entry?.value(field.key);
-        _log.debug("._buildRow | \t value: $fieldValue");
+        // _log.debug("._buildRow | \t value: $fieldValue");
         if (field.relation.isEmpty) {
           return TCell(
             value: fieldValue?.value.toString() ?? (field.title.isNotEmpty ? field.title : field.key),
@@ -188,8 +190,8 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
           final List<SchemaEntryAbstract>? relEntries = _relations[field.relation.id];
           if (relEntries != null) {
             final relation = EditListEntry(entries: relEntries, field: field.relation.field);
-            _log.debug("._buildRow | \t fieldValue '$fieldValue");
-            _log.debug("._buildRow | \t relation '${field.relation.id}': $relation");
+            // _log.debug("._buildRow | \t fieldValue '$fieldValue");
+            // _log.debug("._buildRow | \t relation '${field.relation.id}': $relation");
             // _log.debug("._buildRow | \t relEntries '$relEntries");
             return TCellList(
               id: '${fieldValue?.value}',

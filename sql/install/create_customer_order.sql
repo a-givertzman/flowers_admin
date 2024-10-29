@@ -41,4 +41,9 @@ CREATE OR REPLACE VIEW public.customer_order_view AS
 --
 -- Testing public.customer_order table
 insert into public.customer_order (id, customer_id, purchase_item_id, count, paid, distributed, to_refound, refounded, description, created, updated, deleted) values 
-    (1, 1, 2, 1, 0.0, 0, 0.0, 0.0, 'Description...', '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null);
+    (1, 1, 1, 11, 200.0, 0, 0.0, 0.0, 'Purchase Id 1, Description...', '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null),
+    (2, 1, 2, 12, 2000.0, 0, 0.0, 0.0, 'Purchase Id 2, Description...', '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null),
+    (3, 2, 1, 13, 0.0, 0, 0.0, 0.0, 'Purchase Id 1, Description...', '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null),
+    (4, 2, 2, 14, 0.0, 0, 0.0, 0.0, 'Purchase Id 1, Description...', '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null);
+alter sequence customer_order_id_seq restart with 5;
+

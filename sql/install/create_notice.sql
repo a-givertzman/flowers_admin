@@ -13,10 +13,11 @@ create table public.notice (
 );
 --
 -- Testing public.notice table
-insert into public.notice (customer_id, purchase_id, purchase_item_id, title, body) values (15, 1, null, 'Notice 1 to Purchase 1', 'Some text of the Notice 1 to Purchase 1...');
-insert into public.notice (customer_id, purchase_id, purchase_item_id, title, body) values (15, 3, null, 'Notice 1 to Purchase 3', 'Some text of the Notice 1 to Purchase 3...');
-insert into public.notice (customer_id, purchase_id, purchase_item_id, title, body) values (15, null, 2, 'Notice 1 to PurchaseItem 2', 'Some text of the Notice 1 to PurchaseItem 2...');
-insert into public.notice (customer_id, purchase_id, purchase_item_id, title, body) values (15, null, 2, 'Notice 2 to PurchaseItem 2', 'Some text of the Notice 2 to PurchaseItem 2...');
+insert into public.notice (customer_id, purchase_id, purchase_item_id, title, body) values 
+    (15, 1, null, 'Notice 1 to Purchase 1', 'Some text of the Notice 1 to Purchase 1...'),
+    (15, 3, null, 'Notice 1 to Purchase 3', 'Some text of the Notice 1 to Purchase 3...'),
+    (15, null, 2, 'Notice 1 to PurchaseItem 2', 'Some text of the Notice 1 to PurchaseItem 2...'),
+    (15, null, 2, 'Notice 2 to PurchaseItem 2', 'Some text of the Notice 2 to PurchaseItem 2...');
 
 
 

@@ -50,7 +50,7 @@ begin
 			|| ');';
 		end if;
 	else
-		select 'Error: Insufficient funds' into result_error;
+		select 'Err: Insufficient funds' into result_error;
     end if;
 	select c.account into result_account from public.customer c
 	 	where c.id = customer_id_;

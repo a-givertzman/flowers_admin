@@ -30,12 +30,8 @@ create table public.customer (
 --
 -- Testing public.customer table
 insert into public.customer (role, email, phone, name, location, login, pass, account, last_act, blocked, created, updated, deleted) values 
-    ('admin', 'lobanov.anton@gmail.com', '+79615258088', 'Lobanov Anton', 'SPB', '+79615258088', 'pass', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null);
-insert into public.customer (role, email, phone, name, location, login, pass, account, last_act, blocked, created, updated, deleted) values 
-    ('operator', 'lobanov.anton1@gmail.com', '+79615258088', 'Lobanov Anton', 'SPB', 'lobanov.anton1@gmail.com', 'pass', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null);
-insert into public.customer (role, email, phone, name, location, login, pass, account, last_act, blocked, created, updated, deleted) values 
-    ('customer', 'lobanov.anton2@gmail.com', '+79615258088', 'Lobanov Anton', 'SPB', 'lobanov.anton2@gmail.com', 'pass', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null);
-insert into public.customer (role, email, phone, name, location, login, pass, account, last_act, blocked, created, updated, deleted) values 
-    ('customer', 'lobanov.anton3@gmail.com', '+79615258088', 'Lobanov Anton', 'SPB', 'lobanov.anton3@gmail.com', 'pass', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null);
-insert into public.customer (role, email, phone, name, location, login, pass, account, last_act, blocked, created, updated, deleted) values 
-    ('customer', 'lobanov.anton4@gmail.com', '+79615258088', 'Lobanov Anton', 'SPB', 'lobanov.anton4@gmail.com', 'pass', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null);
+    ('admin',    'lobanov.anton@gmail.com',  '+79615258088', 'Lobanov Anton',   'SPB', '+79615258088', '3201,3202,3203', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null),
+    ('operator', 'lobanov.anton1@gmail.com', '+79615258089', 'Lobanov Anton 1', 'SPB', 'lobanov.anton1@gmail.com', 'pass', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null),
+    ('customer', 'lobanov.anton2@gmail.com', '+79615258091', 'Lobanov Anton 2', 'SPB', 'lobanov.anton2@gmail.com', 'pass', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null),
+    ('customer', 'lobanov.anton3@gmail.com', '+79615258092', 'Lobanov Anton 3', 'SPB', 'lobanov.anton3@gmail.com', 'pass', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null),
+    ('customer', 'lobanov.anton4@gmail.com', '+79615258093', 'Lobanov Anton 4', 'SPB', 'lobanov.anton4@gmail.com', 'pass', 0.0, '2023-11-05 21:49:42.251', null, '2023-11-05 21:49:42.251', '2023-11-05 21:49:42.251', null);
