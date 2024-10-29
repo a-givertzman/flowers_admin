@@ -22,6 +22,7 @@ CREATE OR REPLACE VIEW public.customer_order_view AS
         cord.customer_id as customer_id,
         cord.purchase_item_id as purchase_item_id,
         cord.count as count,
+        cord.count * (puc.sale_price + puc.shipping) as cost,
         cord.paid as paid,
         cord.distributed as distributed,
         cord.to_refound as to_refound,

@@ -14,7 +14,7 @@ create or replace function set_order_payment(
     description_ text,                  -- Additional info about payment
     allow_indebted_ bool                -- allow the transfer to be done with insufficient funds, transfer will be completed if account is positive but insufficient
 )
-returns table (account numeric(20, 2), error text)
+returns table (account numeric, error text)
 language plpgsql
 as $$
 declare
@@ -24,18 +24,18 @@ declare
     customer_id_ int8;
     customer_name_ text;
     count_ int8;
-    paid_ numeric(20, 2);       -- уже оплачено
-    cost numeric(20, 2);        -- стоимость
-    to_pay numeric(20, 2);      -- к оплате
-    to_refound numeric(20, 2);      -- к оплате
-    sale_price_ numeric(20, 2);     -- цена за единицу
-    shipping_ numeric(20, 2);       -- стоимость доставки за единицу
+    paid_ numeric;       -- уже оплачено
+    cost numeric;        -- стоимость
+    to_pay numeric;      -- к оплате
+    to_refound numeric;      -- к оплате
+    sale_price_ numeric;     -- цена за единицу
+    shipping_ numeric;       -- стоимость доставки за единицу
     details_ varchar(2048);
     product_name text = 'ProductName';
-    tr_acc numeric(20, 2);
+    tr_acc numeric;
     tr_err text;
     t text;
-    result_account numeric(20, 2);
+    customer_account numeric;
     result_error text = null;
 begin
     select name into author from customer where id = author_id_;
@@ -46,50 +46,71 @@ begin
         for order_id_, customer_id_, count_, paid_ in
             select id, customer_id, count, paid from customer_order co 
                 where co.purchase_item_id = item_id
-                and co.customer_id = any ( coalesce(NULLIF(customer_ids_, array[]::int8[]), array[co.customer_id]) )
+                and co.customer_id = any ( coalesce(nullif(customer_ids_, array[]::int8[]), array[co.customer_id]) )
         loop
             select sale_price, shipping into sale_price_, shipping_ from purchase_item pitem
                 where pitem.id = item_id;
-            call log_info(format('set_order_payment |        paid_ type : %L', pg_typeof(paid_)));
             call log_info(format('set_order_payment |     customer_id_: %s ...', customer_id_, customer_name_));
-            cost := (cast(sale_price_ as numeric(20, 2)) + cast(shipping_ as numeric(20, 2))) * cast(count_ as numeric(20, 2));
-            call log_info(format('set_order_payment |        cost type : %L', pg_typeof(cost)));
+            cost := (cast(sale_price_ as numeric) + cast(shipping_ as numeric)) * cast(count_ as numeric);
             call log_info(format('set_order_payment |     Order: [%s] %s', order_id_, product_name));
             call log_info(format('set_order_payment |        count_: %L', count_));
             call log_info(format('set_order_payment |        cost  : %s', cost));
             call log_info(format('set_order_payment |        paid_ : %L', paid_));
             case
                 when paid_ < cost then
-                    to_pay := cast(cost as numeric(20, 2)) - cast(paid_ as numeric(20, 2));
-                    call log_info(format('set_order_payment |        to_pay type : %L', pg_typeof(to_pay)));
+                    to_pay := cast(cost as numeric) - cast(paid_ as numeric);
                     select format('Payment to Order [%s] "%s"', order_id_, product_name) into details_;
-                    call log_info(format('set_order_payment |        to pay: %s', to_pay));
+                    call log_info(format('set_order_payment |        to_pay: %s', to_pay));
                     call log_info(format('set_order_payment |        details: %s', details_));
-                    select add_transaction(
+                    select * into tr_acc, tr_err from add_transaction(
 	                    author_id_,         -- int8, 
                         customer_id_,       -- int8, 
-                        cast(to_pay as numeric(20, 2)),             -- value_ numeric(20, 2), 
+                        - to_pay,             -- value_ numeric, 
                         details_,           -- varchar(2048), 
                         order_id_,          -- int8, 
                         description_,       -- varchar(2048), 
                         allow_indebted_     -- bool
-                    ) into tr_acc, tr_err;
+                    );
                     call log_info(format('set_order_payment |        tr_acc: %s', tr_acc));
                     call log_info(format('set_order_payment |        tr_err: %s', tr_err));
-                    execute 'update public.customer_order SET paid = ' || to_pay_
-                        || ' where id = ' || order_id_;
+                    if (tr_err <> '') IS NOT true then
+                        execute 'update public.customer_order SET paid = ' || paid_ + to_pay
+                            || ' where id = ' || order_id_;
+                        call log_info(format('set_order_payment |        paid: %s', to_pay));
+                    else
+                        call log_info(format('set_order_payment |        payment fail'));
+                    end if;
                 when paid_ = cost then
                     call log_info(format('set_order_payment |        Customer %L, Order %L: Already paid', customer_id_, order_id_));
                 else -- paid_ > cost
                     select paid_ - cost into to_refound;
-                    call log_info(format('set_order_payment |        to refound: %L', to_refound));
-                    call log_info(format('set_order_payment |        Customer %L, Order %L: To be refound: %s', customer_id_, order_id_, paid_ - cost));
+                    select format('Refound from Order [%s] "%s"', order_id_, product_name) into details_;
+                    call log_info(format('set_order_payment |        to_refound: %s', to_refound));
+                    call log_info(format('set_order_payment |        details: %s', details_));
+                    select * into tr_acc, tr_err from add_transaction(
+	                    author_id_,         -- int8, 
+                        customer_id_,       -- int8, 
+                        to_refound,         -- value_ numeric, 
+                        details_,           -- varchar(2048), 
+                        order_id_,          -- int8, 
+                        description_,       -- varchar(2048), 
+                        true     -- bool
+                    );
+                    call log_info(format('set_order_payment |        tr_acc: %s', tr_acc));
+                    call log_info(format('set_order_payment |        tr_err: %s', tr_err));
+                    if (tr_err <> '') IS NOT true then
+                        execute 'update public.customer_order SET paid = ' || paid_ - to_refound
+                            || ' where id = ' || order_id_;
+                        call log_info(format('set_order_payment |        refounded: %s', to_refound));
+                    else
+                        call log_info(format('set_order_payment |        refounded fail'));
+                    end if;
             end case;
         end loop;
     end loop;
     -- call log_info('set_order_payment | result_account: ' || result_account);
-    call log_info('set_order_payment |   result_error  : ' || coalesce(result_error, '-'));
-    return query values (result_account, result_error);
+    -- call log_info('set_order_payment |   result_error  : ' || coalesce(result_error, '-'));
+    return query values (0.0, result_error);
 end
 $$;
 --
