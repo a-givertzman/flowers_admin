@@ -22,7 +22,6 @@ declare
     item_id int8;
     order_id_ int8;
     customer_id_ int8;
-    customer_name_ text;
     count_ int8;
     paid_ numeric;       -- уже оплачено
     cost numeric;        -- стоимость
@@ -35,6 +34,7 @@ declare
     tr_acc numeric;
     tr_err text;
     t text;
+    customer_name text;
     customer_account numeric;
     result_error text = null;
 begin
@@ -59,7 +59,12 @@ begin
             case
                 when paid_ < cost then
                     to_pay := cast(cost as numeric) - cast(paid_ as numeric);
-                    select format('Payment to Order [%s] "%s"', order_id_, product_name) into details_;
+                    details_ := format('Payment to Order [%s] "%s"', order_id_, product_name);
+                    select c.account, c.name into customer_account, customer_name from public.customer c
+                        where c.id = customer_id_;
+                    if customer_account < to_pay then
+                        to_pay := customer_account;
+                    end if;
                     call log_info(format('set_order_payment |        to_pay: %s', to_pay));
                     call log_info(format('set_order_payment |        details: %s', details_));
                     select * into tr_acc, tr_err from add_transaction(

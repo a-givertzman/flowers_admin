@@ -26,7 +26,7 @@ begin
 	 	where c.id = customer_id_;
 	call log_info(format('add_transaction | name_   : ' || name_));	
 	call log_info(format('add_transaction | account_: ' || account_));	
-    if (not allow_indebted and account_ + value_ > 0.0) or allow_indebted then
+    if (not allow_indebted and account_ + value_ >= 0.0) or allow_indebted then
 		execute 'update public.customer SET account = ' || account_ + value_
 			|| ' where id = ' || customer_id_;
 		if order_id_ is null then
