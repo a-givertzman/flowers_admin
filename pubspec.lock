@@ -240,8 +240,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2.0.0"
-      resolved-ref: "30a2cb25bac6aded063c447e29e284f69fcefc8d"
+      ref: "2.1.0"
+      resolved-ref: b79f50df2b669aac7c9e96135168ab4df2bee6b7
       url: "https://github.com/a-givertzman/hmi_core.git"
     source: git
     version: "2.0.0"

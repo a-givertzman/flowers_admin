@@ -6,7 +6,7 @@ import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widge
 import 'package:flowers_admin/src/presentation/core/image_widget/load_image_widget/load_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 ///
 ///
 class EditCustomerForm extends StatefulWidget {

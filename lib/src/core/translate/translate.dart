@@ -44,8 +44,8 @@ const tr = {
   'Transactions': {Lang.en: 'Transactions', Lang.ru: 'Транзакции'},
   'Payment': {Lang.en: 'Payment', Lang.ru: 'Оплата'},
 };
-
-
+///
+/// Simple translate
 extension StringTranslation on String{
   String inEn() {
     return tr[this]?[Lang.en] ?? this;

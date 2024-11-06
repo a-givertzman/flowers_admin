@@ -5,7 +5,7 @@ import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_ad
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 ///
 ///
 class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {

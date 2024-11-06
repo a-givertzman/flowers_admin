@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:flowers_admin/src/app_widget.dart';
 import 'package:flowers_admin/src/core/log/log.dart';
 import 'package:flowers_admin/src/core/log/log_level.dart';
-// ignore: implementation_imports
-import 'package:hmi_core/src/core/json/json_map.dart';
-// ignore: implementation_imports
-import 'package:hmi_core/src/core/text_file.dart';
+import 'package:hmi_core/hmi_core_json.dart';
+import 'package:hmi_core/hmi_core_text_file.dart';
 import 'package:flowers_admin/src/core/settings/app_settings.dart';
 import 'package:flutter/material.dart';
 ///

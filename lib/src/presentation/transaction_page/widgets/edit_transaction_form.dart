@@ -8,7 +8,7 @@ import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry
 import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 ///
 ///
 class EditTransactionForm extends StatefulWidget {

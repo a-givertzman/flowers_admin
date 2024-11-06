@@ -1,7 +1,7 @@
-import 'package:hmi_core/src/core/error/failure.dart';
-import 'package:hmi_core/src/core/json/json_map.dart';
-import 'package:hmi_core/src/core/log/log.dart';
-import 'package:hmi_core/src/core/result_new/result.dart';
+import 'package:hmi_core/hmi_core_failure.dart';
+import 'package:hmi_core/hmi_core_json.dart';
+import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 ///
 class AppSettings {
   static const _log = Log('AppSettings');

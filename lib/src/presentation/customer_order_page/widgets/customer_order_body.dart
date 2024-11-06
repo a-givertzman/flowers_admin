@@ -6,7 +6,7 @@ import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.da
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 ///
 ///
 class CustomerOrderBody extends StatefulWidget {

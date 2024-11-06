@@ -11,7 +11,7 @@ import 'package:flowers_admin/src/presentation/transaction_page/widgets/add_tran
 import 'package:flowers_admin/src/presentation/transaction_page/widgets/edit_transaction_form.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 ///
