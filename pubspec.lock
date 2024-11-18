@@ -167,7 +167,7 @@ packages:
       path: "../ext_rw"
       relative: true
     source: path
-    version: "1.0.1"
+    version: "1.0.2"
   fake_async:
     dependency: transitive
     description:
@@ -239,10 +239,12 @@ packages:
   hmi_core:
     dependency: "direct main"
     description:
-      path: "../hmi_core"
-      relative: true
-    source: path
-    version: "2.0.0"
+      path: "."
+      ref: "2.1.2"
+      resolved-ref: "4c0c8e28c95b50092a4c10e2d20a8e681b9b3784"
+      url: "https://github.com/a-givertzman/hmi_core.git"
+    source: git
+    version: "2.1.2"
   html:
     dependency: transitive
     description:
@@ -463,10 +465,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences
-      sha256: "746e5369a43170c25816cc472ee016d3a66bc13fcf430c0bc41ad7b4b2922051"
+      sha256: "95f9997ca1fb9799d494d0cb2a780fd7be075818d59f00c43832ed112b158a82"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   shared_preferences_android:
     dependency: transitive
     description:
