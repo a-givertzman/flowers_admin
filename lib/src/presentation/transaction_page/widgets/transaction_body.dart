@@ -130,6 +130,7 @@ class _TransactionBodyState extends State<TransactionBody> {
               address: _apiAddress, 
               authToken: _authToken, 
               database: _database, 
+              keepAlive: true,
               sqlBuilder: (sql, params) {
                 return Sql(sql: 'select * from transaction order by id;');
               },
@@ -140,6 +141,7 @@ class _TransactionBodyState extends State<TransactionBody> {
               address: _apiAddress, 
               authToken: _authToken, 
               database: _database, 
+              keepAlive: true,
               emptyEntryBuilder: EntryTransaction.empty,
               debug: true,
               updateSqlBuilder: EntryTransaction.updateSqlBuilder,

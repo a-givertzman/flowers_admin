@@ -256,7 +256,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
         return showDeleted || (!showDeleted && !isDeleted);
       })
       .map((entry) {
-        _log.debug("._buildRows | entry: $entry");
+        // _log.debug("._buildRows | entry: $entry");
         return TRow<T>(
           entry: entry,
           fields: schema.fields,

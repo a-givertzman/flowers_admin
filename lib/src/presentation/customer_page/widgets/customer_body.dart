@@ -131,6 +131,7 @@ class _CustomerBodyState extends State<CustomerBody> {
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
+          keepAlive: false,
           sqlBuilder: (sql, params) {
             return Sql(sql: 'select * from customer order by id;');
           },
@@ -146,6 +147,7 @@ class _CustomerBodyState extends State<CustomerBody> {
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
+          keepAlive: true,
           updateSqlBuilder: EntryCustomer.updateSqlBuilder,
           insertSqlBuilder: EntryCustomer.insertSqlBuilder,
           deleteSqlBuilder: EntryCustomer.deleteSqlBuilder,
