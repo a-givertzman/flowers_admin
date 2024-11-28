@@ -166,7 +166,7 @@ packages:
     description:
       path: "."
       ref: "1.1.0"
-      resolved-ref: ea224034614aa85a9aedcb91549eb17e28dbcfdc
+      resolved-ref: "772cd3bbd2c93634d00f0ec54fc33d2d6cc38c60"
       url: "https://github.com/a-givertzman/dart_ext_rw"
     source: git
     version: "1.1.0"
