@@ -42,6 +42,7 @@ class _CustomerBodyState extends State<CustomerBody> {
   final AppUser _user;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
+  late final TableSchema<EntryCustomer, void> _schema;
   ///
   ///
   _CustomerBodyState({
@@ -52,14 +53,65 @@ class _CustomerBodyState extends State<CustomerBody> {
     _user = user {
       _log = Log("$runtimeType");
     }
-  ///
-  ///
+  //
+  //
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     final editableRole = [AppUserRole.admin].contains(_user.role);
     final editableLogin = [AppUserRole.admin].contains(_user.role);
     final editablePass = [AppUserRole.admin].contains(_user.role);
     final editableAccount = [AppUserRole.admin].contains(_user.role);
+    _schema = TableSchema<EntryCustomer, void>(
+      read: SqlRead<EntryCustomer, void>(
+        address: _apiAddress, 
+        authToken: _authToken, 
+        database: _database, 
+        keepAlive: true,
+        sqlBuilder: (sql, params) {
+          return Sql(sql: 'select * from customer order by id;');
+        },
+        entryBuilder: (row) {
+          _log.debug('.build.entryBuilder | row: $row');
+          final entry = EntryCustomer.from(row);
+          _log.debug('.build.entryBuilder | entry: $entry');
+          return entry;
+        },
+        debug: true,
+      ),
+      write: SqlWrite<EntryCustomer>(
+        address: _apiAddress, 
+        authToken: _authToken, 
+        database: _database, 
+        keepAlive: true,
+        updateSqlBuilder: EntryCustomer.updateSqlBuilder,
+        insertSqlBuilder: EntryCustomer.insertSqlBuilder,
+        deleteSqlBuilder: EntryCustomer.deleteSqlBuilder,
+        emptyEntryBuilder: EntryCustomer.empty,
+        debug: true,
+      ),
+      fields: [
+        const Field(hidden: false, editable: false, key: 'id'),
+        Field(hidden: false, editable: editableRole, key: 'role'),
+        const Field(hidden: false, editable: true, key: 'email'),
+        const Field(hidden: false, editable: true, key: 'phone'),
+        const Field(hidden: false, editable: true, key: 'name'),
+        const Field(hidden: false, editable: true, key: 'location'),
+        Field(hidden: false, editable: editableLogin, key: 'login'),
+        Field(hidden: false, editable: editablePass, key: 'pass'),
+        Field(hidden: false, editable: editableAccount, key: 'account'),
+        const Field(hidden: false, editable: true, key: 'last_act'),
+        const Field(hidden: false, editable: true, key: 'blocked'),
+        const Field(hidden: true, editable: true, key: 'created'),
+        const Field(hidden: true, editable: true, key: 'updated'),
+        const Field(hidden: true, editable: true, key: 'deleted'),
+      ],
+    );
+    super.initState();
+  }
+  //
+  //
+  @override
+  Widget build(BuildContext context) {
     return TableWidget<EntryCustomer, void>(
       showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
       fetchAction: TableWidgetAction(
@@ -126,51 +178,7 @@ class _CustomerBodyState extends State<CustomerBody> {
         },
         icon: const Icon(Icons.add),
       ),
-      schema: TableSchema<EntryCustomer, void>(
-        read: SqlRead<EntryCustomer, void>(
-          address: _apiAddress, 
-          authToken: _authToken, 
-          database: _database, 
-          keepAlive: true,
-          sqlBuilder: (sql, params) {
-            return Sql(sql: 'select * from customer order by id;');
-          },
-          entryBuilder: (row) {
-            _log.debug('.build.entryBuilder | row: $row');
-            final entry = EntryCustomer.from(row);
-            _log.debug('.build.entryBuilder | entry: $entry');
-            return entry;
-          },
-          debug: true,
-        ),
-        write: SqlWrite<EntryCustomer>(
-          address: _apiAddress, 
-          authToken: _authToken, 
-          database: _database, 
-          keepAlive: true,
-          updateSqlBuilder: EntryCustomer.updateSqlBuilder,
-          insertSqlBuilder: EntryCustomer.insertSqlBuilder,
-          deleteSqlBuilder: EntryCustomer.deleteSqlBuilder,
-          emptyEntryBuilder: EntryCustomer.empty,
-          debug: true,
-        ),
-        fields: [
-          const Field(hidden: false, editable: false, key: 'id'),
-          Field(hidden: false, editable: editableRole, key: 'role'),
-          const Field(hidden: false, editable: true, key: 'email'),
-          const Field(hidden: false, editable: true, key: 'phone'),
-          const Field(hidden: false, editable: true, key: 'name'),
-          const Field(hidden: false, editable: true, key: 'location'),
-          Field(hidden: false, editable: editableLogin, key: 'login'),
-          Field(hidden: false, editable: editablePass, key: 'pass'),
-          Field(hidden: false, editable: editableAccount, key: 'account'),
-          const Field(hidden: false, editable: true, key: 'last_act'),
-          const Field(hidden: false, editable: true, key: 'blocked'),
-          const Field(hidden: true, editable: true, key: 'created'),
-          const Field(hidden: true, editable: true, key: 'updated'),
-          const Field(hidden: true, editable: true, key: 'deleted'),
-        ],
-      ),
+      schema: _schema,
     );
   }
 }

@@ -45,6 +45,7 @@ class _TransactionBodyState extends State<TransactionBody> {
   final AppUser _user;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
+  late final RelationSchema<EntryTransaction, void> _schema;
   ///
   ///
   _TransactionBodyState({
@@ -55,13 +56,106 @@ class _TransactionBodyState extends State<TransactionBody> {
     _user = user {
       _log = Log("$runtimeType");
     }
+  //
+  //
+  @override
+  void initState() {
+    _buildSchema();
+    super.initState();
+  }
+  ///
+  /// Builds Table schema
+  void _buildSchema() {
+    final editableAuthor = [AppUserRole.admin].contains(_user.role);
+    final editableValue = [AppUserRole.admin].contains(_user.role);
+    final editableDetails = [AppUserRole.admin].contains(_user.role);
+    _schema = RelationSchema<EntryTransaction, void>(
+      schema: TableSchema<EntryTransaction, void>(
+        read: SqlRead<EntryTransaction, void>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select * from transaction order by id;');
+          },
+          entryBuilder: (row) => EntryTransaction.from(row.cast()),
+          keepAlive: true,
+          debug: true,
+        ),
+        write: SqlWrite<EntryTransaction>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          emptyEntryBuilder: EntryTransaction.empty,
+          keepAlive: true,
+          debug: true,
+          updateSqlBuilder: EntryTransaction.updateSqlBuilder,
+          insertSqlBuilder: EntryTransaction.insertSqlBuilder,
+          deleteSqlBuilder: EntryTransaction.deleteSqlBuilder,
+          // deleteSqlBuilder: 
+        ),
+        fields: [
+          const Field(hidden: false, editable: false, key: 'id'),
+          Field(hidden: false, editable: editableAuthor, title: '${InRu('Author')}', key: 'author_id', relation: const Relation(id: 'author_id', field: 'name')),
+          Field(hidden: false, editable: editableValue, title: '${InRu('Value')}', key: 'value'),
+          Field(hidden: false, editable: editableDetails, title: '${InRu('TransactionDetails')}', key: 'details'),
+          const Field(hidden: true, editable: true, key: 'order_id'),
+          Field(hidden: false, editable: false, title: '${InRu('Customer')}', key: 'customer_id', relation: const Relation(id: 'customer_id', field: 'name')),
+          Field(hidden: false, editable: false, title: '${InRu('CustomerAccountBefore')}', key: 'customer_account'),
+          Field(hidden: false, editable: true, title: '${InRu('Description')}', key: 'description'),
+          Field(hidden: false, editable: false, title: '${InRu('Created')}', key: 'created'),
+          const Field(hidden: true, editable: false, key: 'updated'),
+          const Field(hidden: true, editable: false, key: 'deleted'),
+        ],
+      ),
+      relations: _relations(),                  
+    );    
+  }
+  ///
+  /// Builds Table schema relations
+  Map<String, TableSchema<EntryCustomer, void>> _relations() {
+    return {
+      'customer_id': TableSchema<EntryCustomer, void>(
+        read: SqlRead<EntryCustomer, void>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select id, name, account from customer order by id;');
+          },
+          entryBuilder: (row) => EntryCustomer.from(row.cast()),
+          keepAlive: true,
+          debug: true,
+        ),
+        fields: [
+          const Field(key: 'id'),
+          const Field(key: 'name'),
+          const Field(key: 'account'),
+        ],
+      ),
+      'author_id': TableSchema<EntryCustomer, void>(
+        read: SqlRead<EntryCustomer, void>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select id, name from customer order by id;');
+          },
+          entryBuilder: (row) => EntryCustomer.from(row.cast()),
+          keepAlive: true,
+          debug: true,
+        ),
+        fields: [
+          const Field(key: 'id'),
+          const Field(key: 'name'),
+        ],
+      ),
+    };
+  }
   ///
   ///
   @override
   Widget build(BuildContext context) {
-    final editableAuthor = [AppUserRole.admin].contains(_user.role);
-    final editableValue = [AppUserRole.admin].contains(_user.role);
-    final editableDetails = [AppUserRole.admin].contains(_user.role);
     return TableWidget<EntryTransaction, void>(
       showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
       fetchAction: TableWidgetAction(
@@ -124,81 +218,7 @@ class _TransactionBodyState extends State<TransactionBody> {
         },
         icon: const Icon(Icons.add),
       ),
-        schema: RelationSchema<EntryTransaction, void>(
-          schema: TableSchema<EntryTransaction, void>(
-            read: SqlRead<EntryTransaction, void>(
-              address: _apiAddress, 
-              authToken: _authToken, 
-              database: _database, 
-              keepAlive: true,
-              sqlBuilder: (sql, params) {
-                return Sql(sql: 'select * from transaction order by id;');
-              },
-              entryBuilder: (row) => EntryTransaction.from(row.cast()),
-              debug: true,
-            ),
-            write: SqlWrite<EntryTransaction>(
-              address: _apiAddress, 
-              authToken: _authToken, 
-              database: _database, 
-              keepAlive: true,
-              emptyEntryBuilder: EntryTransaction.empty,
-              debug: true,
-              updateSqlBuilder: EntryTransaction.updateSqlBuilder,
-              insertSqlBuilder: EntryTransaction.insertSqlBuilder,
-              deleteSqlBuilder: EntryTransaction.deleteSqlBuilder,
-              // deleteSqlBuilder: 
-            ),
-            fields: [
-              const Field(hidden: false, editable: false, key: 'id'),
-              Field(hidden: false, editable: editableAuthor, title: '${InRu('Author')}', key: 'author_id', relation: const Relation(id: 'author_id', field: 'name')),
-              Field(hidden: false, editable: editableValue, title: '${InRu('Value')}', key: 'value'),
-              Field(hidden: false, editable: editableDetails, title: '${InRu('TransactionDetails')}', key: 'details'),
-              const Field(hidden: true, editable: true, key: 'order_id'),
-              Field(hidden: false, editable: false, title: '${InRu('Customer')}', key: 'customer_id', relation: const Relation(id: 'customer_id', field: 'name')),
-              Field(hidden: false, editable: false, title: '${InRu('CustomerAccountBefore')}', key: 'customer_account'),
-              Field(hidden: false, editable: true, title: '${InRu('Description')}', key: 'description'),
-              Field(hidden: false, editable: false, title: '${InRu('Created')}', key: 'created'),
-              const Field(hidden: true, editable: false, key: 'updated'),
-              const Field(hidden: true, editable: false, key: 'deleted'),
-            ],
-          ),
-          relations: {
-            'customer_id': TableSchema<EntryCustomer, void>(
-              read: SqlRead<EntryCustomer, void>(
-                address: _apiAddress, 
-                authToken: _authToken, 
-                database: _database, 
-                sqlBuilder: (sql, params) {
-                  return Sql(sql: 'select id, name, account from customer order by id;');
-                },
-                entryBuilder: (row) => EntryCustomer.from(row.cast()),
-                debug: true,
-              ),
-              fields: [
-                const Field(key: 'id'),
-                const Field(key: 'name'),
-                const Field(key: 'account'),
-              ],
-            ),
-            'author_id': TableSchema<EntryCustomer, void>(
-              read: SqlRead<EntryCustomer, void>(
-                address: _apiAddress, 
-                authToken: _authToken, 
-                database: _database, 
-                sqlBuilder: (sql, params) {
-                  return Sql(sql: 'select id, name from customer order by id;');
-                },
-                entryBuilder: (row) => EntryCustomer.from(row.cast()),
-                debug: true,
-              ),
-              fields: [
-                const Field(key: 'id'),
-                const Field(key: 'name'),
-              ],
-            ),
-          },                  
-        ),
+        schema: _schema,
     );
   }
 }

@@ -43,6 +43,7 @@ class _PaymentBodyState extends State<PaymentBody> {
   final AppUser _user;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
+  late final RelationSchema<EntryCustomerOrder, void> _schema;
   ///
   ///
   _PaymentBodyState({
@@ -53,13 +54,105 @@ class _PaymentBodyState extends State<PaymentBody> {
     _user = user {
       _log = Log("$runtimeType");
     }
-  ///
-  ///
+  //
+  //
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     final editableAuthor = [AppUserRole.admin].contains(_user.role);
     final editableValue = [AppUserRole.admin].contains(_user.role);
     final editableDetails = [AppUserRole.admin].contains(_user.role);
+    _schema = RelationSchema<EntryCustomerOrder, void>(
+      schema: TableSchema<EntryCustomerOrder, void>(
+        read: SqlRead<EntryCustomerOrder, void>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database,
+          keepAlive: true,
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select * from customer_order order by id;');
+          },
+          entryBuilder: (row) => EntryCustomerOrder.from(row.cast()),
+          debug: true,
+        ),
+        write: SqlWrite<EntryCustomerOrder>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          keepAlive: true,
+          emptyEntryBuilder: EntryCustomerOrder.empty,
+          debug: true,
+        ),
+        fields: [
+          const Field(hidden: false, editable: false, key: 'id'),
+          const Field(hidden: false, editable: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+          // const Field(hidden: false, editable: false, key: 'customer'),
+          const Field(hidden: false, editable: true, key: 'purchase_item_id'),
+          const Field(hidden: false, editable: true, title: 'Purchase id', key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
+          const Field(hidden: false, editable: true, title: 'Product id', key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
+          // const Field(hidden: false, editable: true, key: 'purchase'),
+          // const Field(hidden: false, editable: true, key: 'product'),
+          const Field(hidden: false, editable: true, key: 'count'),
+          const Field(hidden: false, editable: true, key: 'paid'),
+          const Field(hidden: false, editable: true, key: 'distributed'),
+          const Field(hidden: false, editable: true, key: 'to_refound'),
+          const Field(hidden: false, editable: true, key: 'refounded'),
+          const Field(hidden: false, editable: true, key: 'description'),
+          const Field(hidden: true, editable: true, key: 'created'),
+          const Field(hidden: true, editable: true, key: 'updated'),
+          const Field(hidden: true, editable: true, key: 'deleted'),
+        ],
+      ),
+      relations: _relations(),
+    );
+    super.initState();
+  }
+  ///
+  ///
+  Map<String, TableSchema<SchemaEntryAbstract, void>> _relations() {
+    return {
+        'customer_id': TableSchema<EntryCustomer, void>(
+          read: SqlRead<EntryCustomer, void>(
+            address: _apiAddress, 
+            authToken: _authToken, 
+            database: _database, 
+            keepAlive: true,
+            sqlBuilder: (sql, params) {
+              return Sql(sql: 'select id, name from customer order by id;');
+            },
+            entryBuilder: (row) => EntryCustomer.from(row.cast()),
+            debug: true,
+          ),
+          fields: [
+            const Field(key: 'id'),
+            const Field(key: 'name'),
+          ],
+        ),
+        'purchase_item_id': TableSchema<EntryPurchaseItem, void>(
+          read: SqlRead<EntryPurchaseItem, void>(
+            address: _apiAddress, 
+            authToken: _authToken, 
+            database: _database, 
+            keepAlive: true,
+            sqlBuilder: (sql, params) {
+              return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_item_view order by id;');
+            },
+            entryBuilder: (row) => EntryPurchaseItem.from(row),
+            debug: true,
+          ),
+          fields: [
+            const Field(key: 'id'),
+            const Field(key: 'purchase_id'),
+            const Field(key: 'purchase'),
+            const Field(key: 'product_id'),
+            const Field(key: 'product'),
+          ],
+        ),
+      };
+  }
+  //
+  //
+  @override
+  Widget build(BuildContext context) {
     return TableWidget<EntryCustomerOrder, void>(
       showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
       fetchAction: TableWidgetAction(
@@ -68,85 +161,7 @@ class _PaymentBodyState extends State<PaymentBody> {
         }, 
         icon: const Icon(Icons.add),
       ),
-      schema: RelationSchema<EntryCustomerOrder, void>(
-        schema: TableSchema<EntryCustomerOrder, void>(
-          read: SqlRead<EntryCustomerOrder, void>(
-            address: _apiAddress, 
-            authToken: _authToken, 
-            database: _database, 
-            keepAlive: true,
-            sqlBuilder: (sql, params) {
-              return Sql(sql: 'select * from customer_order order by id;');
-            },
-            entryBuilder: (row) => EntryCustomerOrder.from(row.cast()),
-            debug: true,
-          ),
-          write: SqlWrite<EntryCustomerOrder>(
-            address: _apiAddress, 
-            authToken: _authToken, 
-            database: _database, 
-            keepAlive: true,
-            emptyEntryBuilder: EntryCustomerOrder.empty,
-            debug: true,
-          ),
-          fields: [
-            const Field(hidden: false, editable: false, key: 'id'),
-            const Field(hidden: false, editable: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
-            // const Field(hidden: false, editable: false, key: 'customer'),
-            const Field(hidden: false, editable: true, key: 'purchase_item_id'),
-            const Field(hidden: false, editable: true, title: 'Purchase id', key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
-            const Field(hidden: false, editable: true, title: 'Product id', key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
-            // const Field(hidden: false, editable: true, key: 'purchase'),
-            // const Field(hidden: false, editable: true, key: 'product'),
-            const Field(hidden: false, editable: true, key: 'count'),
-            const Field(hidden: false, editable: true, key: 'paid'),
-            const Field(hidden: false, editable: true, key: 'distributed'),
-            const Field(hidden: false, editable: true, key: 'to_refound'),
-            const Field(hidden: false, editable: true, key: 'refounded'),
-            const Field(hidden: false, editable: true, key: 'description'),
-            const Field(hidden: true, editable: true, key: 'created'),
-            const Field(hidden: true, editable: true, key: 'updated'),
-            const Field(hidden: true, editable: true, key: 'deleted'),
-          ],
-        ),
-        relations: {
-          'customer_id': TableSchema<EntryCustomer, void>(
-            read: SqlRead<EntryCustomer, void>(
-              address: _apiAddress, 
-              authToken: _authToken, 
-              database: _database, 
-              sqlBuilder: (sql, params) {
-                return Sql(sql: 'select id, name from customer order by id;');
-              },
-              entryBuilder: (row) => EntryCustomer.from(row.cast()),
-              debug: true,
-            ),
-            fields: [
-              const Field(key: 'id'),
-              const Field(key: 'name'),
-            ],
-          ),
-          'purchase_item_id': TableSchema<EntryPurchaseItem, void>(
-            read: SqlRead<EntryPurchaseItem, void>(
-              address: _apiAddress, 
-              authToken: _authToken, 
-              database: _database, 
-              sqlBuilder: (sql, params) {
-                return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_item_view order by id;');
-              },
-              entryBuilder: (row) => EntryPurchaseItem.from(row),
-              debug: true,
-            ),
-            fields: [
-              const Field(key: 'id'),
-              const Field(key: 'purchase_id'),
-              const Field(key: 'purchase'),
-              const Field(key: 'product_id'),
-              const Field(key: 'product'),
-            ],
-          ),
-        },                  
-      ),
+      schema: _schema,
     );
   }
 }
