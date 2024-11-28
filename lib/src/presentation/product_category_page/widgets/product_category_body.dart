@@ -51,6 +51,7 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
             address: _apiAddress,
             authToken: _authToken,
             database: _database,
+            keepAlive: true,
             sqlBuilder: (sql, params) {
               return Sql(sql: 'select * from product_category order by id;');
             },
@@ -62,6 +63,7 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
             address: _apiAddress,
             authToken: _authToken,
             database: _database,
+            keepAlive: true,
             updateSqlBuilder: EntryProductCategory.updateSqlBuilder,
             // insertSqlBuilder: EntryProductCategory.insertSqlBuilder,
             emptyEntryBuilder: EntryProductCategory.empty,

@@ -74,6 +74,7 @@ class _PaymentBodyState extends State<PaymentBody> {
             address: _apiAddress, 
             authToken: _authToken, 
             database: _database, 
+            keepAlive: true,
             sqlBuilder: (sql, params) {
               return Sql(sql: 'select * from customer_order order by id;');
             },
@@ -84,6 +85,7 @@ class _PaymentBodyState extends State<PaymentBody> {
             address: _apiAddress, 
             authToken: _authToken, 
             database: _database, 
+            keepAlive: true,
             emptyEntryBuilder: EntryCustomerOrder.empty,
             debug: true,
           ),
