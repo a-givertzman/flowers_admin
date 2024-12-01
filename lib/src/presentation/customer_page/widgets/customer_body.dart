@@ -182,6 +182,13 @@ class _CustomerBodyState extends State<CustomerBody> {
       schema: _schema,
     );
   }
+  //
+  //
+  @override
+  void dispose() {
+    _schema.close();
+    super.dispose();
+  }
 }
 ///
 ///

@@ -1,9 +1,9 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:hmi_core/hmi_core_log.dart';
+// import 'package:hmi_core/hmi_core_log.dart';
 ///
 /// Single row of table "Customer"
 class EntryCustomer implements SchemaEntryAbstract {
-  final _log = Log("$EntryCustomer");
+  // final _log = Log("$EntryCustomer");
   late final SchemaEntry _entry;
   final bool _isEmpty;
   ///
