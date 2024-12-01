@@ -90,7 +90,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                       shrinkWrap: true,
                       children: [
                                 LoadImageWidget(
-                                  labelText: field('picture').title.inRu(),
+                                  labelText: field('picture').title.inRu,
                                   src: '${_entry.value('picture').value}',
                                   onComplete: (value) {
                                     _entry.update('picture', value);
@@ -110,14 +110,14 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                                   relation: relation,
                                   editable: categoryField.isEditable,
                                   // style: textStyle,
-                                  // labelText: field('category').title.inRu(),
+                                  // labelText: field('category').title.inRu,
                                   onComplete: (value) {
                                     _entry.update('product_category_id', value);
                                     setState(() {return;});
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('name').title.inRu(),
+                                  labelText: field('name').title.inRu,
                                   value: '${_entry.value('name').value}',
                                   onComplete: (value) {
                                     _entry.update('name', value);
@@ -125,7 +125,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('details').title.inRu(),
+                                  labelText: field('details').title.inRu,
                                   value: '${_entry.value('details').value}',
                                   onComplete: (value) {
                                     _entry.update('details', value);
@@ -133,7 +133,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('primary_price').title.inRu(),
+                                  labelText: field('primary_price').title.inRu,
                                   value: '${_entry.value('primary_price').value}',
                                   onComplete: (value) {
                                     _entry.update('primary_price', value);
@@ -141,7 +141,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('primary_currency').title.inRu(),
+                                  labelText: field('primary_currency').title.inRu,
                                   value: '${_entry.value('primary_currency').value}',
                                   onComplete: (value) {
                                     _entry.update('primary_currency', value);
@@ -149,7 +149,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('primary_order_quantity').title.inRu(),
+                                  labelText: field('primary_order_quantity').title.inRu,
                                   value: '${_entry.value('primary_order_quantity').value}',
                                   onComplete: (value) {
                                     _entry.update('primary_order_quantity', value);
@@ -157,7 +157,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('order_quantity').title.inRu(),
+                                  labelText: field('order_quantity').title.inRu,
                                   value: '${_entry.value('order_quantity').value}',
                                   onComplete: (value) {
                                     _entry.update('order_quantity', value);
@@ -165,7 +165,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('description').title.inRu(),
+                                  labelText: field('description').title.inRu,
                                   value: '${_entry.value('description').value}',
                                   onComplete: (value) {
                                     _entry.update('description', value);

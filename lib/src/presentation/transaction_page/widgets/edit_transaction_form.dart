@@ -115,7 +115,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
                           },
                         ),
                         TextEditWidget(
-                          labelText: field('value').title.inRu(),
+                          labelText: field('value').title.inRu,
                           value: '${_entry.value('value').value}',
                           editable: field('value').isEditable,
                           onComplete: (value) {
@@ -124,7 +124,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
                           },
                         ),
                         TextEditWidget(
-                          labelText: field('details').title.inRu(),
+                          labelText: field('details').title.inRu,
                           value: '${_entry.value('details').value}',
                           editable: field('details').isEditable,
                           onComplete: (value) {
@@ -143,12 +143,12 @@ class _EditProductFormState extends State<EditTransactionForm> {
                           },
                         ),
                         TextEditWidget(
-                          labelText: field('customer_account').title.inRu(),
+                          labelText: field('customer_account').title.inRu,
                           value: '${_entry.value('customer_account').value}',
                           editable: field('customer_account').isEditable,
                         ),
                         // TextEditWidget(
-                        //   labelText: field('primary_currency').title.inRu(),
+                        //   labelText: field('primary_currency').title.inRu,
                         //   value: '${_entry.value('primary_currency').value}',
                         //   onComplete: (value) {
                         //     _entry.update('primary_currency', value);
@@ -156,7 +156,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
                         //   },
                         // ),
                         TextEditWidget(
-                          labelText: field('description').title.inRu(),
+                          labelText: field('description').title.inRu,
                           value: '${_entry.value('description').value}',
                           editable: field('description').isEditable,
                           onComplete: (value) {
@@ -165,24 +165,24 @@ class _EditProductFormState extends State<EditTransactionForm> {
                           },
                         ),
                         TextEditWidget(
-                          labelText: field('created').title.inRu(),
+                          labelText: field('created').title.inRu,
                           value: '${_entry.value('created').value}',
                           editable: field('created').isEditable,
                         ),
                         TextEditWidget(
-                          labelText: field('updated').title.inRu(),
+                          labelText: field('updated').title.inRu,
                           value: '${_entry.value('updated').value}',
                           editable: field('updated').isEditable,
                         ),
                         if (_entry.value('deleted').value != null)
                           TextEditWidget(
-                            labelText: field('deleted').title.inRu(),
+                            labelText: field('deleted').title.inRu,
                             value: '${_entry.value('deleted').value}',
                             editable: field('deleted').isEditable,
                           ),
                         if ([AppUserRole.admin].contains(_user.role))
                           Checkbox(
-                            semanticLabel: 'Allow indebted'.inRu(),
+                            semanticLabel: 'Allow indebted'.inRu,
                             value: _entry.value('allow_indebted').value ?? false, 
                             onChanged: (value) {
                               _entry.update('allow_indebted', value ?? false);

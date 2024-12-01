@@ -87,7 +87,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
           const Expanded(child: SizedBox.shrink()),
           if (showDeleted != null)
             Tooltip(
-              message: 'Show deleted'.inRu(),
+              message: 'Show deleted'.inRu,
               child: Checkbox(
                 value: showDeleted,
                 onChanged: (value) {

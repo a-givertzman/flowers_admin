@@ -104,7 +104,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           editable: false,
                         ),
                         TextEditWidget(
-                          labelText: field('value').title.inRu(),
+                          labelText: field('value').title.inRu,
                           value: '${_entry.value('value').value}',
                           onComplete: (value) {
                             _entry.update('value', value);
@@ -112,7 +112,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           },
                         ),
                         TextEditWidget(
-                          labelText: field('details').title.inRu(),
+                          labelText: field('details').title.inRu,
                           value: '${_entry.value('details').value}',
                           onComplete: (value) {
                             _entry.update('details', value);
@@ -134,12 +134,12 @@ class _AddProductFormState extends State<AddTransactionForm> {
                         ),
                         textWithLabel(
                           context: context,
-                          labelText: field('customer_account').title.inRu(),
+                          labelText: field('customer_account').title.inRu,
                           value:_customerAccount ?? '',
                           enable: false,
                         ),
                         // TextEditWidget(
-                        //   labelText: field('primary_currency').title.inRu(),
+                        //   labelText: field('primary_currency').title.inRu,
                         //   value: '${_entry.value('primary_currency').value}',
                         //   onComplete: (value) {
                         //     _entry.update('primary_currency', value);
@@ -147,7 +147,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                         //   },
                         // ),
                         TextEditWidget(
-                          labelText: field('description').title.inRu(),
+                          labelText: field('description').title.inRu,
                           value: '${_entry.value('description').value}',
                           onComplete: (value) {
                             _entry.update('description', value);
@@ -156,7 +156,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                         ),
                         if ([AppUserRole.admin].contains(_user.role))
                           Checkbox(
-                            semanticLabel: 'Allow indebted'.inRu(),
+                            semanticLabel: 'Allow indebted'.inRu,
                             value: _entry.value('allow_indebted').value ?? false, 
                             onChanged: (value) {
                               _entry.update('allow_indebted', value ?? false);
@@ -165,18 +165,18 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           ),
                                     
                         // TextEditWidget(
-                        //   labelText: field('created').title.inRu(),
+                        //   labelText: field('created').title.inRu,
                         //   value: '${_entry.value('created').value}',
                         //   editable: field('created').isEditable,
                         // ),
                         // TextEditWidget(
-                        //   labelText: field('updated').title.inRu(),
+                        //   labelText: field('updated').title.inRu,
                         //   value: '${_entry.value('updated').value}',
                         //   editable: field('updated').isEditable,
                         // ),
                         // if (_entry.value('deleted').value != null)
                         //   TextEditWidget(
-                        //     labelText: field('deleted').title.inRu(),
+                        //     labelText: field('deleted').title.inRu,
                         //     value: '${_entry.value('deleted').value}',
                         //     editable: field('deleted').isEditable,
                         //   ),           

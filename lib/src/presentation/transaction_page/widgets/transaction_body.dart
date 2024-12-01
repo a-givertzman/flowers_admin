@@ -207,7 +207,7 @@ class _TransactionBodyState extends State<TransactionBody> {
             return showConfirmDialog(
               context, 
               const Text('Delete Product'), 
-              Text('Are you sure want to delete transaction:\n${'amount'.inRu()}: ${toBeDeleted.value('value').str}\n${'of'.inRu()}: ${toBeDeleted.value('updated').str}'),
+              Text('Are you sure want to delete transaction:\n${'amount'.inRu}: ${toBeDeleted.value('value').str}\n${'of'.inRu}: ${toBeDeleted.value('updated').str}'),
             ).then((value) {
               return switch (value) {
                 Ok() => Ok(toBeDeleted),

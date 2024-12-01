@@ -108,7 +108,7 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
             errorBuilder: (context, error, stackTrace) {
               return Center(
                 child: Text(
-                  'Invalid link'.inRu(),
+                  'Invalid link'.inRu,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.error),
                 ),
               );
@@ -129,7 +129,7 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
       return Ok('https://drive.google.com/uc?export=view&id=$fileId');
     }
     return Err(Failure(
-      message: '${'Invalid Google Drive url'.inRu()} $url',
+      message: '${'Invalid Google Drive url'.inRu} $url',
       stackTrace: StackTrace.current,
     ));
   }

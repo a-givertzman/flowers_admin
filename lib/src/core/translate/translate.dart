@@ -44,18 +44,23 @@ const tr = {
   'Transactions': {Lang.en: 'Transactions', Lang.ru: 'Транзакции'},
   'Payment': {Lang.en: 'Payment', Lang.ru: 'Оплата'},
   'ProductCategory': {Lang.en: 'Product Category', Lang.ru: 'Категории'},
+  'Product': {Lang.en: 'Product', Lang.ru: 'Товар'},
   'Products': {Lang.en: 'Products', Lang.ru: 'Товары'},
+  'Purchase': {Lang.en: 'Purchase', Lang.ru: 'Закупка'},
   'Purchases': {Lang.en: 'Purchases', Lang.ru: 'Закупки'},
   'PurchaseItems': {Lang.en: 'Purchase Items', Lang.ru: 'Позиции закупок'},
   'Orders': {Lang.en: 'Orders', Lang.ru: 'Заказы'},
+  'Count': {Lang.en: 'Count', Lang.ru: 'Кол-во'},
+  'Paid': {Lang.en: 'Paid', Lang.ru: 'Оплачено'},
+  'Distributed': {Lang.en: 'Distributed', Lang.ru: 'Выдано'},
 };
 ///
 /// Simple translate
 extension StringTranslation on String{
-  String inEn() {
+  String get inEn {
     return tr[this]?[Lang.en] ?? this;
   }
-  String inRu() {
+  String get inRu {
     return tr[this]?[Lang.ru] ?? this;
   }
 }

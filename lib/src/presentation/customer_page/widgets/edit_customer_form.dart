@@ -69,7 +69,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       const LoadImageWidget(src: 'https://drive.google.com/uc?export=view&id=19gswvDI6xJod7kWm4cgRpqYbb2duiKB4',),
                       TextEditWidget(
                         editable: editableRole,
-                        labelText: 'role'.inRu(),
+                        labelText: 'role'.inRu,
                         value: '${_entry.value('role').value}',
                         onComplete: (value) {
                           _entry.update('role', value);
@@ -77,7 +77,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: 'email'.inRu(),
+                        labelText: 'email'.inRu,
                         value: '${_entry.value('email').value}',
                         onComplete: (value) {
                           _entry.update('email', value);
@@ -85,7 +85,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: 'phone'.inRu(),
+                        labelText: 'phone'.inRu,
                         value: '${_entry.value('phone').value}',
                         onComplete: (value) {
                           _entry.update('phone', value);
@@ -93,7 +93,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: 'name'.inRu(),
+                        labelText: 'name'.inRu,
                         value: '${_entry.value('name').value}',
                         onComplete: (value) {
                           _entry.update('name', value);
@@ -101,7 +101,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: 'location'.inRu(),
+                        labelText: 'location'.inRu,
                         value: '${_entry.value('location').value}',
                         onComplete: (value) {
                           _entry.update('location', value);
@@ -110,7 +110,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       ),
                       TextEditWidget(
                         editable: editableLogin,
-                        labelText: 'login'.inRu(),
+                        labelText: 'login'.inRu,
                         value: '${_entry.value('login').value}',
                         onComplete: (value) {
                           _entry.update('login', value);
@@ -120,7 +120,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       ),
                       TextEditWidget(
                         editable: editablePass,
-                        labelText: 'pass'.inRu(),
+                        labelText: 'pass'.inRu,
                         value: '${_entry.value('pass').value}',
                         onComplete: (value) {
                           _entry.update('pass', value);
@@ -129,7 +129,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       ),
                       TextEditWidget(
                         editable: editableAccount,
-                        labelText: 'account'.inRu(),
+                        labelText: 'account'.inRu,
                         value: '${_entry.value('account').value}',
                         onComplete: (value) {
                           _entry.update('account', value);
@@ -137,7 +137,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         },
                       ),
                       Checkbox(
-                        semanticLabel: 'Blocked'.inRu(),
+                        semanticLabel: 'Blocked'.inRu,
                         value: _entry.value('blocked').value ?? false, 
                         onChanged: (value) {
                           _entry.update('blocked', value ?? false);
@@ -145,7 +145,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: 'last_act'.inRu(),
+                        labelText: 'last_act'.inRu,
                         value: '${_entry.value('last_act').value}',
                         onComplete: (value) {
                           _entry.update('last_act', value);
@@ -153,7 +153,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: 'created'.inRu(),
+                        labelText: 'created'.inRu,
                         value: '${_entry.value('created').value}',
                         onComplete: (value) {
                           _entry.update('created', value);
@@ -161,7 +161,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: 'updated'.inRu(),
+                        labelText: 'updated'.inRu,
                         value: '${_entry.value('updated').value}',
                         onComplete: (value) {
                           _entry.update('updated', value);
@@ -169,7 +169,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: 'deleted'.inRu(),
+                        labelText: 'deleted'.inRu,
                         value: '${_entry.value('deleted').value}',
                         onComplete: (value) {
                           _entry.update('deleted', value);

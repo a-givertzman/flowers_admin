@@ -54,14 +54,14 @@ class _HomeBodyState extends State<HomeBody> {
     _log.debug('.build | ');
     final tabHeadesStyle = Theme.of(context).textTheme.headlineSmall;
     final tabs = [
-      Tab(child: Text("Customers".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("Transactions".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("ProductCategory".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("Products".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("Purchases".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("PurchaseItems".inRu().inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("Orders".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("Payment".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("Customers".inRu, style: tabHeadesStyle)),
+      Tab(child: Text("Transactions".inRu, style: tabHeadesStyle)),
+      Tab(child: Text("ProductCategory".inRu, style: tabHeadesStyle)),
+      Tab(child: Text("Products".inRu, style: tabHeadesStyle)),
+      Tab(child: Text("Purchases".inRu, style: tabHeadesStyle)),
+      Tab(child: Text("PurchaseItems".inRu.inRu, style: tabHeadesStyle)),
+      Tab(child: Text("Orders".inRu, style: tabHeadesStyle)),
+      Tab(child: Text("Payment".inRu, style: tabHeadesStyle)),
     ];
     return DefaultTabController(
       length: tabs.length,
