@@ -56,11 +56,11 @@ class _HomeBodyState extends State<HomeBody> {
     final tabs = [
       Tab(child: Text("Customers".inRu(), style: tabHeadesStyle)),
       Tab(child: Text("Transactions".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("product_category".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("product".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("purchase".inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("purchase_item".inRu().inRu(), style: tabHeadesStyle)),
-      Tab(child: Text("order".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("ProductCategory".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("Products".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("Purchases".inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("PurchaseItems".inRu().inRu(), style: tabHeadesStyle)),
+      Tab(child: Text("Orders".inRu(), style: tabHeadesStyle)),
       Tab(child: Text("Payment".inRu(), style: tabHeadesStyle)),
     ];
     return DefaultTabController(

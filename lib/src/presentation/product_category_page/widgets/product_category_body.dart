@@ -44,7 +44,7 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
   //
   @override
   void initState() {
-    
+    _schema = _buildSchema();
     super.initState();
   }
   ///
