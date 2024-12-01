@@ -209,7 +209,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
               if (result != null) {
                 return switch(result) {
                   Ok(value: final entries) => () {
-                    _log.debug(".build | snapshot entries: $entries");
+                    // _log.debug(".build | snapshot entries: $entries");
                     if (entries.isNotEmpty) {
                       // final rows = entries;
                       return Expanded(

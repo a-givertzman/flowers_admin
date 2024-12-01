@@ -20,25 +20,26 @@ create table public.purchase_item (
 -- public.purchase_item_view
 CREATE OR REPLACE VIEW public.purchase_item_view AS
     SELECT 
-        puc.id,
-        puc.purchase_id,
+        pui.id,
+        pui.purchase_id,
+        pu.name as purchase,
         pu.status as status,
-        puc.product_id,
-        puc.sale_price,
-        puc.sale_currency,
-        puc.shipping,
-        puc.remains,
-        coalesce(puc.name, p.name) as name,
-        coalesce(puc.details, p.details) as details,
-        coalesce(puc.description, p.description) as description,
-        coalesce(puc.picture, p.picture) as picture,
-        puc.created,
-        puc.updated,
-        puc.deleted
+        pui.product_id,
+        pui.sale_price,
+        pui.sale_currency,
+        pui.shipping,
+        pui.remains,
+        coalesce(pui.name, p.name) as product,
+        coalesce(pui.details, p.details) as details,
+        coalesce(pui.description, p.description) as description,
+        coalesce(pui.picture, p.picture) as picture,
+        pui.created,
+        pui.updated,
+        pui.deleted
         -- pu.name AS purchase,
-    FROM purchase_item puc
-        JOIN purchase pu ON puc.purchase_id = pu.id
-        JOIN product p ON puc.product_id = p.id;
+    FROM purchase_item pui
+        JOIN purchase pu ON pui.purchase_id = pu.id
+        JOIN product p ON pui.product_id = p.id;
 --
 -- Testing
 insert into public.purchase_item (id, purchase_id, product_id, sale_price, sale_currency, shipping, remains, name, details, description, picture, created, updated, deleted) values
