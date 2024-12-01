@@ -5,14 +5,14 @@ import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer_order.dart';
+import 'package:flowers_admin/src/infrostructure/payment/entry_payment.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
-// ignore: depend_on_referenced_packages
-import 'package:collection/collection.dart';
+import 'package:hmi_core/src/core/error/failure.dart';
 ///
 ///
 class PaymentBody extends StatefulWidget {
@@ -44,7 +44,7 @@ class _PaymentBodyState extends State<PaymentBody> {
   final AppUser _user;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
-  late final RelationSchema<EntryCustomerOrder, void> _schema;
+  late final RelationSchema<EntryPayment, void> _schema;
   ///
   ///
   _PaymentBodyState({
@@ -64,13 +64,13 @@ class _PaymentBodyState extends State<PaymentBody> {
   }
   ///
   /// Returns TableSchema
-  RelationSchema<EntryCustomerOrder, void> _buildSchema() {
+  RelationSchema<EntryPayment, void> _buildSchema() {
     final editableAuthor = [AppUserRole.admin].contains(_user.role);
     final editableValue = [AppUserRole.admin].contains(_user.role);
     final editableDetails = [AppUserRole.admin].contains(_user.role);
-    return RelationSchema<EntryCustomerOrder, void>(
-      schema: TableSchema<EntryCustomerOrder, void>(
-        read: SqlRead<EntryCustomerOrder, void>(
+    return RelationSchema<EntryPayment, void>(
+      schema: TableSchema<EntryPayment, void>(
+        read: SqlRead<EntryPayment, void>(
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database,
@@ -78,22 +78,23 @@ class _PaymentBodyState extends State<PaymentBody> {
           sqlBuilder: (sql, params) {
             return Sql(sql: 'select * from customer_order order by id;');
           },
-          entryBuilder: (row) => EntryCustomerOrder.from(row.cast()),
+          entryBuilder: (row) => EntryPayment.from(row.cast()),
           debug: true,
         ),
-        write: SqlWrite<EntryCustomerOrder>(
+        write: SqlWrite<EntryPayment>(
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
           keepAlive: true,
-          emptyEntryBuilder: EntryCustomerOrder.empty,
+          emptyEntryBuilder: EntryPayment.empty,
           debug: true,
         ),
         fields: [
+          const Field(hidden: false, editable: false, key: 'pay'),
           const Field(hidden: false, editable: false, key: 'id'),
           Field(hidden: false, editable: false, title: 'Customer'.inRu, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
           // const Field(hidden: false, editable: false, key: 'customer'),
-          const Field(hidden: false, editable: true, key: 'purchase_item_id'),
+          // const Field(hidden: false, editable: true, key: 'purchase_item_id'),
           Field(hidden: false, editable: true, title: 'Purchase'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
           Field(hidden: false, editable: true, title: 'Product'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
           // const Field(hidden: false, editable: true, key: 'purchase'),
@@ -159,15 +160,52 @@ class _PaymentBodyState extends State<PaymentBody> {
   //
   @override
   Widget build(BuildContext context) {
-    return TableWidget<EntryCustomerOrder, void>(
-      showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
-      fetchAction: TableWidgetAction(
-        onPressed: (schema) {
-          return Future.value(Ok(EntryCustomerOrder.empty()));
-        }, 
-        icon: const Icon(Icons.add),
-      ),
-      schema: _schema,
+    return Column(
+      children: [
+        Row(
+          children: [
+            TextButton(
+              onPressed: () {
+                _log.debug('.build.IconButton.onPressed | Payment started');
+                ApiRequest(
+                  authToken: _authToken,
+                  address: _apiAddress,
+                  query: SqlQuery(
+                    database: _database,
+                    sql: '',
+                  ),
+                ).fetch().then(
+                  (result) {
+                    _log.debug('.build.IconButton.onPressed.then | Payment result $result');
+                    switch (result) {
+                      case Ok<ApiReply, Failure>():
+                        // TODO: Handle this case.
+                      case Err<ApiReply, Failure>():
+                        // TODO: Handle this case.
+                    }
+                  },
+                  onError: (error) {
+                    _log.warning('.build.IconButton.onPressed.then | Payment error $error');
+                  },
+                );
+              },
+              child: Text('Pay'),
+            ),
+          ],
+        ),
+        Expanded(
+          child: TableWidget<EntryPayment, void>(
+            showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
+            fetchAction: TableWidgetAction(
+              onPressed: (schema) {
+                return Future.value(Ok(EntryPayment.empty()));
+              }, 
+              icon: const Icon(Icons.add),
+            ),
+            schema: _schema,
+          ),
+        ),
+      ],
     );
   }
   //
