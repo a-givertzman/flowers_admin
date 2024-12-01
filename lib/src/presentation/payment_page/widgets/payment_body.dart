@@ -167,12 +167,21 @@ class _PaymentBodyState extends State<PaymentBody> {
             TextButton(
               onPressed: () {
                 _log.debug('.build.IconButton.onPressed | Payment started');
+                final description = 'Payment description';
                 ApiRequest(
                   authToken: _authToken,
                   address: _apiAddress,
                   query: SqlQuery(
                     database: _database,
-                    sql: '',
+                    sql: '''
+                      select * from set_order_payment(
+                          ${_user.id},      -- author
+                          array[]::int[],   -- customer's
+                          array[]::int[],   -- purchase_item's
+                          '$description',	  -- description
+                          false		          -- allow_indebted
+                      );
+                    ''',
                   ),
                 ).fetch().then(
                   (result) {
