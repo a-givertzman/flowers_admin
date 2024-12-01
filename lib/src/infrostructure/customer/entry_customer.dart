@@ -38,15 +38,10 @@ class EntryCustomer implements SchemaEntryAbstract {
     _isEmpty = isEmpty;
   //
   //
+  @override
   EntryCustomer.from(Map<String, dynamic> row):
-    _entry = SchemaEntry(map: _initial),
-    _isEmpty = false {
-    _log.debug('.from | row: $row');
-    for (final MapEntry(:key, :value) in row.entries) {
-      _entry.update(key, value);
-    }
-    _log.debug('.from | _entry: $_entry');
-  }
+    _entry = SchemaEntry.from(row, def: _initial),
+    _isEmpty = false;
   //
   //
   EntryCustomer.empty(): 

@@ -57,6 +57,7 @@ class _CustomerBodyState extends State<CustomerBody> {
   //
   @override
   void initState() {
+  _log.warning('.build | Create schema...');
     final editableRole = [AppUserRole.admin].contains(_user.role);
     final editableLogin = [AppUserRole.admin].contains(_user.role);
     final editablePass = [AppUserRole.admin].contains(_user.role);
@@ -71,7 +72,7 @@ class _CustomerBodyState extends State<CustomerBody> {
           return Sql(sql: 'select * from customer order by id;');
         },
         entryBuilder: (row) {
-          _log.debug('.build.entryBuilder | row: $row');
+          // _log.debug('.build.entryBuilder | row: $row');
           final entry = EntryCustomer.from(row);
           _log.debug('.build.entryBuilder | entry: $entry');
           return entry;

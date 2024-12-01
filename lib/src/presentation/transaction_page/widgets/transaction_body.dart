@@ -66,6 +66,7 @@ class _TransactionBodyState extends State<TransactionBody> {
   ///
   /// Builds Table schema
   void _buildSchema() {
+    _log.warning('.build | Create schema...');
     final editableAuthor = [AppUserRole.admin].contains(_user.role);
     final editableValue = [AppUserRole.admin].contains(_user.role);
     final editableDetails = [AppUserRole.admin].contains(_user.role);
@@ -220,6 +221,13 @@ class _TransactionBodyState extends State<TransactionBody> {
       ),
         schema: _schema,
     );
+  }
+  //
+  //
+  @override
+  void dispose() {
+    _schema.close();
+    super.dispose();
   }
 }
 ///

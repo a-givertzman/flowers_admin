@@ -54,12 +54,8 @@ class EntryTransaction implements SchemaEntryAbstract {
   //
   @override
   EntryTransaction.from(Map<String, dynamic> row):
-    _entry = SchemaEntry(map: _initial),
-    _isEmpty = false {
-    for (final MapEntry(:key, :value) in row.entries) {
-      _entry.update(key, value);
-    }
-  }
+    _entry = SchemaEntry.from(row, def: _initial),
+    _isEmpty = false;
   //
   //
   EntryTransaction.empty():

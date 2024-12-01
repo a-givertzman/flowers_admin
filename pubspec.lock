@@ -164,11 +164,9 @@ packages:
   ext_rw:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "1.1.0"
-      resolved-ref: "772cd3bbd2c93634d00f0ec54fc33d2d6cc38c60"
-      url: "https://github.com/a-givertzman/dart_ext_rw"
-    source: git
+      path: "../ext_rw"
+      relative: true
+    source: path
     version: "1.1.0"
   fake_async:
     dependency: transitive
