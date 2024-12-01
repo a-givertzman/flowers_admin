@@ -33,6 +33,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   final String _authToken;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
+  late final RelationSchema<EntryPurchaseItem, void> _schema;
   //
   //
   _PurchaseItemBodyState({
@@ -44,10 +45,14 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   //
   //
   @override
-  Widget build(BuildContext context) {
-    _log.debug('.build | ');
-    return TableWidget(
-      schema: RelationSchema<EntryPurchaseItem, void>(
+  void initState() {
+    _schema = _buildSchema();
+    super.initState();
+  }
+  ///
+  /// Returns TableSchema
+  RelationSchema<EntryPurchaseItem, void> _buildSchema() {
+    return RelationSchema<EntryPurchaseItem, void>(
         schema: TableSchema<EntryPurchaseItem, void>(
           read: SqlRead<EntryPurchaseItem, void>(
             address: _apiAddress,
@@ -85,42 +90,62 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
             const Field(hidden: true, editable: true, key: 'deleted'),
           ],
         ),
-        relations: {
-          'purchase_id': TableSchema<EntryPurchase, void>(
-            read: SqlRead<EntryPurchase, void>(
-              address: _apiAddress,
-              authToken: _authToken,
-              database: _database,
-              sqlBuilder: (sql, params) {
-                return Sql(sql: 'select id, name from purchase order by id;');
-              },
-              entryBuilder: (row) => EntryPurchase.from(row),
-              debug: true,
-            ),
-            fields: [
-              const Field(key: 'id'),
-              const Field(key: 'name'),
-            ],
-          ),
-          'product_id': TableSchema<EntryProduct, void>(
-            read: SqlRead<EntryProduct, void>(
-              address: _apiAddress,
-              authToken: _authToken,
-              database: _database,
-              sqlBuilder: (sql, params) {
-                return Sql(sql: 'select id, name from product order by id;');
-              },
-              entryBuilder: (row) => EntryProduct.from(row),
-              debug: true,
-            ),
-            fields: [
-              const Field(key: 'id'),
-              const Field(key: 'name'),
-            ],
-          ),
-        },
+        relations: _buildRelations(),
+      );
+  }
+  ///
+  /// Returns Relations
+  _buildRelations() {
+    return {
+      'purchase_id': TableSchema<EntryPurchase, void>(
+        read: SqlRead<EntryPurchase, void>(
+          address: _apiAddress,
+          authToken: _authToken,
+          database: _database,
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select id, name from purchase order by id;');
+          },
+          entryBuilder: (row) => EntryPurchase.from(row),
+          debug: true,
+        ),
+        fields: [
+          const Field(key: 'id'),
+          const Field(key: 'name'),
+        ],
       ),
+      'product_id': TableSchema<EntryProduct, void>(
+        read: SqlRead<EntryProduct, void>(
+          address: _apiAddress,
+          authToken: _authToken,
+          database: _database,
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select id, name from product order by id;');
+          },
+          entryBuilder: (row) => EntryProduct.from(row),
+          debug: true,
+        ),
+        fields: [
+          const Field(key: 'id'),
+          const Field(key: 'name'),
+        ],
+      ),
+    };
+  }
+  //
+  //
+  @override
+  Widget build(BuildContext context) {
+    _log.debug('.build | ');
+    return TableWidget(
+      schema: _schema,
     );
+  }
+  //
+  //
+  @override
+  void dispose() {
+    _schema.close();
+    super.dispose();
   }
 }
 ///

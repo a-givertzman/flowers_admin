@@ -58,10 +58,16 @@ class _PaymentBodyState extends State<PaymentBody> {
   //
   @override
   void initState() {
+    _schema = _buildSchema();
+    super.initState();
+  }
+  ///
+  /// Returns TableSchema
+  RelationSchema<EntryCustomerOrder, void> _buildSchema() {
     final editableAuthor = [AppUserRole.admin].contains(_user.role);
     final editableValue = [AppUserRole.admin].contains(_user.role);
     final editableDetails = [AppUserRole.admin].contains(_user.role);
-    _schema = RelationSchema<EntryCustomerOrder, void>(
+    return RelationSchema<EntryCustomerOrder, void>(
       schema: TableSchema<EntryCustomerOrder, void>(
         read: SqlRead<EntryCustomerOrder, void>(
           address: _apiAddress, 
@@ -102,13 +108,12 @@ class _PaymentBodyState extends State<PaymentBody> {
           const Field(hidden: true, editable: true, key: 'deleted'),
         ],
       ),
-      relations: _relations(),
+      relations: _buildRelations(),
     );
-    super.initState();
   }
   ///
-  ///
-  Map<String, TableSchema<SchemaEntryAbstract, void>> _relations() {
+  /// Returns Relations
+  Map<String, TableSchema<SchemaEntryAbstract, void>> _buildRelations() {
     return {
         'customer_id': TableSchema<EntryCustomer, void>(
           read: SqlRead<EntryCustomer, void>(
@@ -163,6 +168,13 @@ class _PaymentBodyState extends State<PaymentBody> {
       ),
       schema: _schema,
     );
+  }
+  //
+  //
+  @override
+  void dispose() {
+    _schema.close();
+    super.dispose();
   }
 }
 ///

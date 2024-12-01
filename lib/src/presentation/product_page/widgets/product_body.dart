@@ -34,6 +34,7 @@ class _ProductBodyState extends State<ProductBody> {
   final String _authToken;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
+  late final RelationSchema<EntryProduct, void> _schema;
   //
   //
   _ProductBodyState({
@@ -42,6 +43,81 @@ class _ProductBodyState extends State<ProductBody> {
     _authToken = authToken {
       _log = Log("$runtimeType");
     }
+  //
+  //
+  @override
+  void initState() {
+    _schema = _buildSchema();
+    super.initState();
+  }
+  ///
+  /// Returns TableSchema
+  RelationSchema<EntryProduct, void> _buildSchema() {
+    return RelationSchema<EntryProduct, void>(
+      schema: TableSchema<EntryProduct, void>(
+        read: SqlRead<EntryProduct, void>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select * from product_view order by id;');
+          },
+          entryBuilder: (row) => EntryProduct.from(row),
+          keepAlive: true,
+          debug: true,
+        ),
+        write: SqlWrite<EntryProduct>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          updateSqlBuilder: EntryProduct.updateSqlBuilder,
+          // insertSqlBuilder: insertSqlBuilderProduct,
+          emptyEntryBuilder: EntryProduct.empty, 
+          keepAlive: true,
+          debug: true,
+        ),
+        fields: [
+          const Field(hidden: false, editable: false, key: 'id'),
+          const Field(hidden: false, editable: true, title: 'Category', key: 'product_category_id', relation: Relation(id: 'product_category_id', field: 'name')),
+          const Field(hidden: false, editable: true, title: 'Name', key: 'name'),
+          const Field(hidden: false, editable: true, key: 'details'),
+          const Field(hidden: false, editable: true, key: 'primary_price'),
+          const Field(hidden: false, editable: true, key: 'primary_currency'),
+          const Field(hidden: false, editable: true, key: 'primary_order_quantity'),
+          const Field(hidden: false, editable: true, key: 'order_quantity'),
+          const Field(hidden: false, editable: true, key: 'description'),
+          const Field(hidden: false, editable: true, key: 'picture'),
+          const Field(hidden: true, editable: true, key: 'created'),
+          const Field(hidden: true, editable: true, key: 'updated'),
+          const Field(hidden: true, editable: true, key: 'deleted'),
+        ],
+      ),
+      relations: _buildRelations(),
+    );
+  }
+  ///
+  /// Returns Relations
+  Map<String, TableSchemaAbstract<SchemaEntryAbstract, dynamic>> _buildRelations() {
+    return {
+      'product_category_id': TableSchema<EntryProductCategory, void>(
+        read: SqlRead<EntryProductCategory, void>(
+          address: _apiAddress, 
+          authToken: _authToken, 
+          database: _database, 
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select id, name from product_category order by id;');
+          },
+          entryBuilder: (row) => EntryProductCategory.from(row),
+          keepAlive: true,
+          debug: true,
+        ),
+        fields: [
+          const Field(key: 'id'),
+          const Field(key: 'name'),
+        ],
+      ),
+    };
+  }
   //
   //
   @override
@@ -102,63 +178,15 @@ class _ProductBodyState extends State<ProductBody> {
         },
         icon: const Icon(Icons.add),
       ),
-      schema: RelationSchema<EntryProduct, void>(
-        schema: TableSchema<EntryProduct, void>(
-          read: SqlRead<EntryProduct, void>(
-            address: _apiAddress, 
-            authToken: _authToken, 
-            database: _database, 
-            sqlBuilder: (sql, params) {
-              return Sql(sql: 'select * from product_view order by id;');
-            },
-            entryBuilder: (row) => EntryProduct.from(row),
-            debug: true,
-          ),
-          write: SqlWrite<EntryProduct>(
-            address: _apiAddress, 
-            authToken: _authToken, 
-            database: _database, 
-            updateSqlBuilder: EntryProduct.updateSqlBuilder,
-            // insertSqlBuilder: insertSqlBuilderProduct,
-            emptyEntryBuilder: EntryProduct.empty, 
-            debug: true,
-          ),
-          fields: [
-            const Field(hidden: false, editable: false, key: 'id'),
-            const Field(hidden: false, editable: true, title: 'Category', key: 'product_category_id', relation: Relation(id: 'product_category_id', field: 'name')),
-            const Field(hidden: false, editable: true, title: 'Name', key: 'name'),
-            const Field(hidden: false, editable: true, key: 'details'),
-            const Field(hidden: false, editable: true, key: 'primary_price'),
-            const Field(hidden: false, editable: true, key: 'primary_currency'),
-            const Field(hidden: false, editable: true, key: 'primary_order_quantity'),
-            const Field(hidden: false, editable: true, key: 'order_quantity'),
-            const Field(hidden: false, editable: true, key: 'description'),
-            const Field(hidden: false, editable: true, key: 'picture'),
-            const Field(hidden: true, editable: true, key: 'created'),
-            const Field(hidden: true, editable: true, key: 'updated'),
-            const Field(hidden: true, editable: true, key: 'deleted'),
-          ],
-        ),
-        relations: {
-          'product_category_id': TableSchema<EntryProductCategory, void>(
-            read: SqlRead<EntryProductCategory, void>(
-              address: _apiAddress, 
-              authToken: _authToken, 
-              database: _database, 
-              sqlBuilder: (sql, params) {
-                return Sql(sql: 'select id, name from product_category order by id;');
-              },
-              entryBuilder: (row) => EntryProductCategory.from(row),
-              debug: true,
-            ),
-            fields: [
-              const Field(key: 'id'),
-              const Field(key: 'name'),
-            ],
-          ),
-        },
-      ),
+      schema: _schema,
     );
+  }
+  //
+  //
+  @override
+  void dispose() {
+    _schema.close();
+    super.dispose();
   }
 }
 ///
