@@ -28,8 +28,8 @@ class TransactionBody extends StatefulWidget {
   }):
     _authToken = authToken,
     _user = user;
-  ///
-  ///
+  //
+  //
   @override
   // ignore: no_logic_in_create_state
   State<TransactionBody> createState() => _TransactionBodyState(
@@ -37,8 +37,8 @@ class TransactionBody extends StatefulWidget {
     user: _user,
   );
 }
-///
-///
+//
+//
 class _TransactionBodyState extends State<TransactionBody> {
   late final Log _log;
   final String _authToken;
@@ -153,8 +153,8 @@ class _TransactionBodyState extends State<TransactionBody> {
       ),
     };
   }
-  ///
-  ///
+  //
+  //
   @override
   Widget build(BuildContext context) {
     return TableWidget<EntryTransaction, void>(

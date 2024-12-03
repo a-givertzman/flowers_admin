@@ -1,4 +1,5 @@
 
+import 'package:ext_rw/ext_rw.dart';
 import 'package:flutter/material.dart';
 
 ///
@@ -7,6 +8,8 @@ class TCell extends StatefulWidget {
   final String _value;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
+  final Widget Function(BuildContext, SchemaEntryAbstract)? _builder;
+  final SchemaEntryAbstract? _entry;
   final bool _editable;
   ///
   ///
@@ -20,8 +23,28 @@ class TCell extends StatefulWidget {
     _value = value,
     _style = style,
     _onComplete = onComplete,
+    _builder = null,
+    _entry = null,
     _editable = editable;
-
+  ///
+  ///
+  const TCell.builder({
+    super.key,
+    String value = '',
+    TextStyle? style,
+    void Function(String value)? onComplete,
+    required Widget Function(BuildContext, SchemaEntryAbstract)? builder,
+    required SchemaEntryAbstract entry,
+    bool editable = true,
+  }) :
+    _value = value,
+    _style = style,
+    _onComplete = onComplete,
+    _builder = builder,
+    _entry = entry,
+    _editable = editable;
+  //
+  //
   @override
   // ignore: no_logic_in_create_state
   State<TCell> createState() => _TCellState(
@@ -31,8 +54,8 @@ class TCell extends StatefulWidget {
     editable: _editable,
   );
 }
-///
-///
+//
+//
 class _TCellState extends State<TCell> {
   // final _log = Log("$_TCellState._");
   final TextEditingController _controller;
@@ -57,10 +80,15 @@ class _TCellState extends State<TCell> {
     _style = style,
     _onComplete = onComplete,
     _editable = editable;
-  ///
-  ///
+  //
+  //
   @override
   Widget build(BuildContext context) {
+    final builder = widget._builder;
+    final entry = widget._entry;
+    if (builder != null && entry != null) {
+      return Expanded(child: builder(context, entry));
+    }
     return Expanded(
       child: _isEditing
         ? TextField(

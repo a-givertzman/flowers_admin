@@ -25,8 +25,8 @@ class CustomerBody extends StatefulWidget {
   }):
     _authToken = authToken,
     _user = user;
-  ///
-  ///
+  //
+  //
   @override
   // ignore: no_logic_in_create_state
   State<CustomerBody> createState() => _CustomerBodyState(
@@ -34,8 +34,8 @@ class CustomerBody extends StatefulWidget {
     user: _user,
   );
 }
-///
-///
+//
+//
 class _CustomerBodyState extends State<CustomerBody> {
   late final Log _log;
   final String _authToken;

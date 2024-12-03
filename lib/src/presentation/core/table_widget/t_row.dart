@@ -4,7 +4,7 @@ import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry
 import 'package:flowers_admin/src/presentation/core/table_widget/t_cell.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
 import 'package:flutter/material.dart';
-import 'package:hmi_core/hmi_core_log.dart';
+// import 'package:hmi_core/hmi_core_log.dart';
 
 ///
 ///
@@ -51,10 +51,10 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
   ///
   ///
 }
-///
-///
+//
+//
 class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
-  late final Log _log;
+  // late final Log _log;
   final T? _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
   final List<Field> _fields;
@@ -82,9 +82,9 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     _onTap = onTap,
     _onDoubleTap = onDoubleTap,
     _onSelectionChange = onSelectionChange,
-    _onEditingComplete = onEditingComplete {
-    _log = Log('$runtimeType');
-    }
+    _onEditingComplete = onEditingComplete; //{
+    // _log = Log('$runtimeType');
+    // }
   //
   //
   @override
@@ -154,7 +154,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
               child: IntrinsicHeight(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _buildRow(_fields, _entry, textStile),
+                  children: _buildRow(context, _fields, _entry, textStile),
                 ),
               ),
             ),
@@ -164,27 +164,47 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     );
   }
   ///
+  /// On editing completed
+  void _onComplete(String value, Field field) {
+    final entry = _entry;
+    final onEditingComplete = _onEditingComplete;
+    if (onEditingComplete != null && entry != null) {
+      entry.update(field.key, value);
+      onEditingComplete(entry);
+    }
+  }
   ///
-  List<Widget> _buildRow(List<Field> fields, T? entry, textStyle) {
+  ///
+  List<Widget> _buildRow(BuildContext context, List<Field> fields, T? entry, textStyle) {
     // _log.debug("._buildRow | entry: $entry");
     final cells = fields
       .where((field) => !field.isHidden)
       .map((field) {
+        return _cell(context, field, entry, textStyle);
+      }).toList();
+    return cells;
+  }
+  ///
+  /// Returns built cell widget
+  Widget _cell(BuildContext context, Field<SchemaEntryAbstract> field, T? entry, textStyle) {
         final fieldValue = entry?.value(field.key);
         // _log.debug("._buildRow | \t value: $fieldValue");
+        final builder = field.builder;
+        if (builder != null && entry != null) {
+          return TCell.builder(
+            builder: builder,
+            entry: entry,
+            editable: field.isEditable,
+            style: textStyle,
+            onComplete: (value) => _onComplete(value, field),
+          );
+        }
         if (field.relation.isEmpty) {
           return TCell(
             value: fieldValue?.value.toString() ?? (field.title.isNotEmpty ? field.title : field.key),
             editable: field.isEditable,
             style: textStyle,
-            onComplete: (value) {
-              final entry = _entry;
-              final onEditingComplete = _onEditingComplete;
-              if (onEditingComplete != null && entry != null) {
-                entry.update(field.key, value);
-                onEditingComplete(entry);
-              }
-            },
+            onComplete: (value) => _onComplete(value, field),
           );
         } else {
           final List<SchemaEntryAbstract>? relEntries = _relations[field.relation.id];
@@ -198,14 +218,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
               relation: relation,
               editable: field.isEditable,
               style: textStyle,
-              onComplete: (value) {
-                final entry = _entry;
-                final onEditingComplete = _onEditingComplete;
-                if (onEditingComplete != null && entry != null) {
-                  entry.update(field.key, value);
-                  onEditingComplete(entry);
-                }
-              },
+              onComplete: (value) => _onComplete(value, field),
             );
           }
           return TCell(
@@ -214,7 +227,5 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             style: textStyle,
           );
         }
-      }).toList();
-    return cells;
   }
 }

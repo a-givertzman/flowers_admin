@@ -35,8 +35,8 @@ class EditProductForm extends StatefulWidget {
     relations: _relations,
   );
 }
-///
-///
+//
+//
 class _EditProductFormState extends State<EditProductForm> {
   final _log = Log("$_EditProductFormState._");
   final List<Field> _fields;

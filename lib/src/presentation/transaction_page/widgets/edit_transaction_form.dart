@@ -40,8 +40,8 @@ class EditTransactionForm extends StatefulWidget {
     relations: _relations,
   );
 }
-///
-///
+//
+//
 class _EditProductFormState extends State<EditTransactionForm> {
   final _log = Log("$_EditProductFormState");
   final AppUser _user;

@@ -35,8 +35,8 @@ class LoadImageWidget extends StatefulWidget {
     errorText: _errorText,
   );
 }
-///
-///
+//
+//
 class _LoadImageWidgetState extends State<LoadImageWidget> {
   String _src;
   final Function(String)? _onComplete;

@@ -32,8 +32,8 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
     _delAction = delAction ?? const TableWidgetAction.empty(),
     _fetchAction = fetchAction ?? const TableWidgetAction.empty(),
     _showDeleted = showDeleted;
-  ///
-  ///
+  //
+  //
   @override
   // ignore: no_logic_in_create_state
   State<TableWidget<T, P>> createState() => _TableWidgetState(
@@ -45,8 +45,8 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
     showDeleted: _showDeleted,
   );
 }
-///
-///
+//
+//
 class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWidget<T, P>> {
   final _log = Log("$_TableWidgetState");
   final TableSchemaAbstract<T, P> _schema;
@@ -71,8 +71,8 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
     _delAction = delAction,
     _fetchAction = fetchAction,
     _showDeleted = showDeleted;
-  ///
-  ///
+  //
+  //
   @override
   Widget build(BuildContext context) {
     final editOnPressed = _editAction.onPressed;
