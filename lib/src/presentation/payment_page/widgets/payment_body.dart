@@ -8,10 +8,10 @@ import 'package:flowers_admin/src/infrostructure/payment/entry_pay_customer.dart
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase_item.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_payment.dart';
-import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
+import 'package:flowers_admin/src/presentation/payment_page/widgets/filter_schema.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_log.dart';
@@ -70,62 +70,87 @@ class _PaymentBodyState extends State<PaymentBody> {
     Future.delayed(Duration(milliseconds: 100), () => setState(() {return;}));
   }
   ///
+  ///
+  bool _filter(EntryPayment entry) {
+    final customersAllChecked = !_customers.entries.any((entry) => !entry.value.value('pay').value);
+    final purchasesAllChecked = !_purchases.entries.any((entry) => !entry.value.value('pay').value);
+    if (customersAllChecked && purchasesAllChecked) {
+      _log.warning('._filter | All checked');
+      return true;
+    }
+    final customerId = entry.value('customer_id').value;
+    final purchaseId = entry.value('purchase_id').value;
+    final customerIsChecked = _customers[customerId]?.value('pay').value ?? false;
+    final purchaseIsChecked = _purchases[purchaseId]?.value('pay').value ?? false;
+    _log.warning('._filter | customerId $customerId,  purchaseId $purchaseId,  checked: ${customerIsChecked && purchaseIsChecked}');
+    return customerIsChecked && purchaseIsChecked;
+  }
+  ///
   /// Returns TableSchema
   RelationSchema<EntryPayment, void> _buildSchema() {
     final editableAuthor = [AppUserRole.admin].contains(_user.role);
     final editableValue = [AppUserRole.admin].contains(_user.role);
     final editableDetails = [AppUserRole.admin].contains(_user.role);
     return RelationSchema<EntryPayment, void>(
-      schema: TableSchema<EntryPayment, void>(
-        read: SqlRead<EntryPayment, void>(
-          address: _apiAddress, 
-          authToken: _authToken, 
-          database: _database,
-          keepAlive: true,
-          sqlBuilder: (sql, params) {
-            return Sql(sql: 'select * from customer_order order by id;');
-          },
-          entryBuilder: (row) {
-            return EntryPayment.from(row.cast());
-          },
-          debug: true,
-        ),
-        write: SqlWrite<EntryPayment>(
-          address: _apiAddress, 
-          authToken: _authToken, 
-          database: _database, 
-          keepAlive: true,
-          emptyEntryBuilder: EntryPayment.empty,
-          debug: true,
-        ),
-        fields: [
-          Field(hidden: false, editable: false, key: 'pay', builder: (context, entry) => CheckBoxField(entry: entry)),
-          const Field(hidden: false, editable: false, key: 'id'),
-          Field(hidden: false, editable: false, title: 'Customer'.inRu, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
-          // const Field(hidden: false, editable: false, key: 'customer'),
-          // const Field(hidden: false, editable: true, key: 'purchase_item_id'),
-          // Field(hidden: false, editable: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
-          Field(hidden: false, editable: true, title: 'Purchase'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
-          Field(hidden: false, editable: true, title: 'Product'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
-          // const Field(hidden: false, editable: true, key: 'purchase'),
-          // const Field(hidden: false, editable: true, key: 'product'),
-          Field(hidden: false, editable: true, title: 'Count'.inRu, key: 'count'),
-          Field(hidden: false, editable: true, title: 'Paid'.inRu, key: 'paid'),
-          Field(hidden: false, editable: true, title: 'Distributed'.inRu, key: 'distributed'),
-          Field(hidden: false, editable: true, title: 'to_refound'.inRu, key: 'to_refound'),
-          Field(hidden: false, editable: true, title: 'refounded'.inRu, key: 'refounded'),
-          const Field(hidden: false, editable: true, key: 'description'),
-          const Field(hidden: true, editable: true, key: 'created'),
-          const Field(hidden: true, editable: true, key: 'updated'),
-          const Field(hidden: true, editable: true, key: 'deleted'),
-        ],
+      schema: FilterSchema(
+        filter: _filter,
+        schema: TableSchema<EntryPayment, void>(
+          read: SqlRead<EntryPayment, void>(
+            address: _apiAddress, 
+            authToken: _authToken, 
+            database: _database,
+            keepAlive: true,
+            sqlBuilder: (sql, params) {
+              return Sql(sql: 'select * from customer_order_view order by id;');
+            },
+            entryBuilder: (row) {
+              return EntryPayment.from({
+                ...{'pay': true},
+                ...row.cast(),
+            });
+            },
+            debug: true,
+          ),
+          write: SqlWrite<EntryPayment>(
+            address: _apiAddress, 
+            authToken: _authToken, 
+            database: _database, 
+            keepAlive: true,
+            emptyEntryBuilder: EntryPayment.empty,
+            debug: true,
+          ),
+          fields: [
+            Field(hidden: false, editable: false, key: 'pay', builder: (context, entry) => CheckBoxField(entry: entry)),
+            const Field(hidden: false, editable: false, key: 'id'),
+            Field(hidden: false, editable: false, title: 'Customer'.inRu, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+            // const Field(hidden: false, editable: false, key: 'customer'),
+            // const Field(hidden: false, editable: true, key: 'purchase_item_id'),
+            // Field(hidden: false, editable: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
+            Field(hidden: false, editable: true, title: 'Purchase'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
+            Field(hidden: false, editable: true, title: 'Product'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
+            // const Field(hidden: false, editable: true, key: 'purchase'),
+            // const Field(hidden: false, editable: true, key: 'product'),
+            Field(hidden: false, editable: true, title: 'Count'.inRu, key: 'count'),
+            Field(hidden: false, editable: true, title: 'Paid'.inRu, key: 'paid'),
+            Field(hidden: false, editable: true, title: 'Distributed'.inRu, key: 'distributed'),
+            Field(hidden: false, editable: true, title: 'to_refound'.inRu, key: 'to_refound'),
+            Field(hidden: false, editable: true, title: 'refounded'.inRu, key: 'refounded'),
+            const Field(hidden: false, editable: true, key: 'description'),
+            const Field(hidden: true, editable: true, key: 'created'),
+            const Field(hidden: true, editable: true, key: 'updated'),
+            const Field(hidden: true, editable: true, key: 'deleted'),
+          ],
+        ), 
       ),
-      relations: _buildRelations(),
+      relations: {
+        ..._buildCustomerRelation(),
+        ..._buildPurchaseItemRelation(),
+      },
     );
   }
   ///
   /// Returns Relations
-  Map<String, TableSchema<SchemaEntryAbstract, void>> _buildRelations() {
+  Map<String, TableSchema<SchemaEntryAbstract, void>> _buildCustomerRelation() {
     return {
         'customer_id': TableSchema<EntryCustomer, void>(
           read: SqlRead<EntryCustomer, void>(
@@ -137,17 +162,23 @@ class _PaymentBodyState extends State<PaymentBody> {
               return Sql(sql: 'select id, name from customer order by id;');
             },
             entryBuilder: (row) {
-              final payCustomer = EntryPayCustomer.from(row);
+              final payCustomer = EntryPayCustomer.from({
+                ...{'pay': true},
+                ...row,
+            });
               _customers.putIfAbsent(payCustomer.value('id').value, () => payCustomer);
               return EntryCustomer.from(row.cast());
             },
             debug: true,
           ),
-          fields: [
-            const Field(key: 'id'),
-            const Field(key: 'name'),
-          ],
+          fields: [const Field(key: 'id'), const Field(key: 'name')],
         ),
+      };
+  }
+  ///
+  /// Returns Relations
+  Map<String, TableSchema<SchemaEntryAbstract, void>> _buildPurchaseItemRelation() {
+    return {
         'purchase_item_id': TableSchema<EntryPurchaseItem, void>(
           read: SqlRead<EntryPurchaseItem, void>(
             address: _apiAddress, 
@@ -158,8 +189,9 @@ class _PaymentBodyState extends State<PaymentBody> {
               return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_item_view order by id;');
             },
             entryBuilder: (row) {
-              _log.warning('._buildRelations | row $row');
+              // _log.warning('._buildRelations | row $row');
               final payPurchase = EntryPayPurchase.from({
+                'pay': true,
                 'id': row['purchase_id'],
                 'name': row['purchase'],
               });
@@ -240,7 +272,7 @@ class _PaymentBodyState extends State<PaymentBody> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 16.0),
-                        child: Text('Purchase'.inRu, style: Theme.of(context).textTheme.titleLarge),
+                        child: Text('Purchase'.inRu, style: Theme.of(context).textTheme.titleMedium),
                       ),
                       Divider(),
                       ListView.builder(
@@ -278,7 +310,7 @@ class _PaymentBodyState extends State<PaymentBody> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 16.0),
-                        child: Text('Customer'.inRu, style: Theme.of(context).textTheme.titleLarge),
+                        child: Text('Customer'.inRu, style: Theme.of(context).textTheme.titleMedium),
                       ),
                       Divider(),
                       ListView.builder(
@@ -312,10 +344,11 @@ class _PaymentBodyState extends State<PaymentBody> {
             child: Card(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0),
-                    child: Text('Customer'.inRu, style: Theme.of(context).textTheme.titleLarge),
+                    child: Text('Заказы'.inRu, style: Theme.of(context).textTheme.titleMedium),
                   ),
                   Divider(),
                   Expanded(

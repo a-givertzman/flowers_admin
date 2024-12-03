@@ -20,6 +20,7 @@ CREATE OR REPLACE VIEW public.customer_order_view AS
     SELECT 
         cord.id,
         cord.customer_id as customer_id,
+        puc.purchase_id as purchase_id,
         cord.purchase_item_id as purchase_item_id,
         puc.sale_price as price,
         puc.shipping as shipping,
