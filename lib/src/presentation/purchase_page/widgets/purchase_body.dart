@@ -51,7 +51,7 @@ class _PurchaseBodyState extends State<PurchaseBody> {
   /// Returns TableSchema
   TableSchema<EntryPurchase, void> _buildSchema() {
     return TableSchema<EntryPurchase, void>(
-      read: SqlRead<EntryPurchase, void>(
+      read: SqlRead<EntryPurchase, void>.keep(
         address: _apiAddress,
         authToken: _authToken,
         database: _database,
@@ -59,17 +59,15 @@ class _PurchaseBodyState extends State<PurchaseBody> {
           return Sql(sql: 'select * from purchase order by id;');
         },
         entryBuilder: (row) => EntryPurchase.from(row),
-        keepAlive: true,
         debug: true,
       ),
-      write: SqlWrite<EntryPurchase>(
+      write: SqlWrite<EntryPurchase>.keep(
         address: _apiAddress,
         authToken: _authToken,
         database: _database,
         updateSqlBuilder: EntryPurchase.updateSqlBuilder,
         // insertSqlBuilder: insertSqlBuilderPurchase,
         emptyEntryBuilder: EntryPurchase.empty,
-        keepAlive: true,
         debug: true,
       ),
       fields: [

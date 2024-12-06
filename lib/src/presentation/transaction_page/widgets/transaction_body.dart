@@ -72,7 +72,7 @@ class _TransactionBodyState extends State<TransactionBody> {
     final editableDetails = [AppUserRole.admin].contains(_user.role);
     _schema = RelationSchema<EntryTransaction, void>(
       schema: TableSchema<EntryTransaction, void>(
-        read: SqlRead<EntryTransaction, void>(
+        read: SqlRead<EntryTransaction, void>.keep(
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
@@ -80,15 +80,13 @@ class _TransactionBodyState extends State<TransactionBody> {
             return Sql(sql: 'select * from transaction order by id;');
           },
           entryBuilder: (row) => EntryTransaction.from(row.cast()),
-          keepAlive: true,
           debug: true,
         ),
-        write: SqlWrite<EntryTransaction>(
+        write: SqlWrite<EntryTransaction>.keep(
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
           emptyEntryBuilder: EntryTransaction.empty,
-          keepAlive: true,
           debug: true,
           updateSqlBuilder: EntryTransaction.updateSqlBuilder,
           insertSqlBuilder: EntryTransaction.insertSqlBuilder,
@@ -117,7 +115,7 @@ class _TransactionBodyState extends State<TransactionBody> {
   Map<String, TableSchema<EntryCustomer, void>> _relations() {
     return {
       'customer_id': TableSchema<EntryCustomer, void>(
-        read: SqlRead<EntryCustomer, void>(
+        read: SqlRead<EntryCustomer, void>.keep(
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
@@ -125,7 +123,6 @@ class _TransactionBodyState extends State<TransactionBody> {
             return Sql(sql: 'select id, name, account from customer order by id;');
           },
           entryBuilder: (row) => EntryCustomer.from(row.cast()),
-          keepAlive: true,
           debug: true,
         ),
         fields: [
@@ -135,7 +132,7 @@ class _TransactionBodyState extends State<TransactionBody> {
         ],
       ),
       'author_id': TableSchema<EntryCustomer, void>(
-        read: SqlRead<EntryCustomer, void>(
+        read: SqlRead<EntryCustomer, void>.keep(
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
@@ -143,7 +140,6 @@ class _TransactionBodyState extends State<TransactionBody> {
             return Sql(sql: 'select id, name from customer order by id;');
           },
           entryBuilder: (row) => EntryCustomer.from(row.cast()),
-          keepAlive: true,
           debug: true,
         ),
         fields: [

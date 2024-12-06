@@ -95,11 +95,10 @@ class _PaymentBodyState extends State<PaymentBody> {
       schema: FilterSchema(
         filter: _filter,
         schema: TableSchema<EntryPayment, void>(
-          read: SqlRead<EntryPayment, void>(
+          read: SqlRead<EntryPayment, void>.keep(
             address: _apiAddress, 
             authToken: _authToken, 
             database: _database,
-            keepAlive: true,
             sqlBuilder: (sql, params) {
               return Sql(sql: 'select * from customer_order_view order by id;');
             },
@@ -111,11 +110,10 @@ class _PaymentBodyState extends State<PaymentBody> {
             },
             debug: true,
           ),
-          write: SqlWrite<EntryPayment>(
+          write: SqlWrite<EntryPayment>.keep(
             address: _apiAddress, 
             authToken: _authToken, 
             database: _database, 
-            keepAlive: true,
             emptyEntryBuilder: EntryPayment.empty,
             debug: true,
           ),
@@ -153,11 +151,10 @@ class _PaymentBodyState extends State<PaymentBody> {
   Map<String, TableSchema<SchemaEntryAbstract, void>> _buildCustomerRelation() {
     return {
         'customer_id': TableSchema<EntryCustomer, void>(
-          read: SqlRead<EntryCustomer, void>(
+          read: SqlRead<EntryCustomer, void>.keep(
             address: _apiAddress, 
             authToken: _authToken, 
             database: _database, 
-            keepAlive: true,
             sqlBuilder: (sql, params) {
               return Sql(sql: 'select id, name from customer order by id;');
             },
@@ -180,11 +177,10 @@ class _PaymentBodyState extends State<PaymentBody> {
   Map<String, TableSchema<SchemaEntryAbstract, void>> _buildPurchaseItemRelation() {
     return {
         'purchase_item_id': TableSchema<EntryPurchaseItem, void>(
-          read: SqlRead<EntryPurchaseItem, void>(
+          read: SqlRead<EntryPurchaseItem, void>.keep(
             address: _apiAddress, 
             authToken: _authToken, 
             database: _database, 
-            keepAlive: true,
             sqlBuilder: (sql, params) {
               return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_item_view order by id;');
             },

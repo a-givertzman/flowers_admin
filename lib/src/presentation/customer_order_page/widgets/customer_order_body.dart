@@ -54,7 +54,7 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
   _buildSchema() {
     _schema = RelationSchema<EntryCustomerOrder, void>(
       schema: TableSchema<EntryCustomerOrder, void>(
-        read: SqlRead<EntryCustomerOrder, void>(
+        read: SqlRead<EntryCustomerOrder, void>.keep(
           address: _apiAddress,
           authToken: _authToken,
           database: _database,
@@ -62,17 +62,15 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
             return Sql(sql: 'select * from customer_order order by id;');
           },
           entryBuilder: (row) => EntryCustomerOrder.from(row),
-          keepAlive: true,
           debug: true,
         ),
-        write: SqlWrite<EntryCustomerOrder>(
+        write: SqlWrite<EntryCustomerOrder>.keep(
           address: _apiAddress,
           authToken: _authToken,
           database: _database,
           updateSqlBuilder: EntryCustomerOrder.updateSqlBuilder,
           // insertSqlBuilder: insertSqlBuilderCustomerOrder,
           emptyEntryBuilder: EntryCustomerOrder.empty,
-          keepAlive: true,
           debug: true,
         ),
         fields: [
@@ -103,7 +101,7 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
   Map<String, TableSchemaAbstract<SchemaEntryAbstract, dynamic>> _buildRelations() {
     return {
       'customer_id': TableSchema<EntryCustomer, void>(
-        read: SqlRead<EntryCustomer, void>(
+        read: SqlRead<EntryCustomer, void>.keep(
           address: _apiAddress,
           authToken: _authToken,
           database: _database,
@@ -111,7 +109,6 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
             return Sql(sql: 'select id, name from customer order by id;');
           },
           entryBuilder: (row) => EntryCustomer.from(row.cast()),
-          keepAlive: true,
           debug: true,
         ),
         fields: [
@@ -120,7 +117,7 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
         ],
       ),
       'purchase_item_id': TableSchema<EntryPurchaseItem, void>(
-        read: SqlRead<EntryPurchaseItem, void>(
+        read: SqlRead<EntryPurchaseItem, void>.keep(
           address: _apiAddress,
           authToken: _authToken,
           database: _database,
@@ -128,7 +125,6 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
             return Sql(sql: 'select id, purchase_id, purchase, product_id, product from purchase_item_view order by id;');
           },
           entryBuilder: (row) => EntryPurchaseItem.from(row),
-          keepAlive: true,
           debug: true,
         ),
         fields: [

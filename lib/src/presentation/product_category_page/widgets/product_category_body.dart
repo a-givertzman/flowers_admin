@@ -52,11 +52,10 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
   RelationSchema<EntryProductCategory, void> _buildSchema() {
     return RelationSchema<EntryProductCategory, void>(
       schema: TableSchema<EntryProductCategory, void>(
-        read: SqlRead<EntryProductCategory, void>(
+        read: SqlRead<EntryProductCategory, void>.keep(
           address: _apiAddress,
           authToken: _authToken,
           database: _database,
-          keepAlive: true,
           sqlBuilder: (sql, params) {
             return Sql(sql: 'select * from product_category order by id;');
           },
@@ -64,11 +63,10 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
               EntryProductCategory.from(row.cast()),
           debug: true,
         ),
-        write: SqlWrite<EntryProductCategory>(
+        write: SqlWrite<EntryProductCategory>.keep(
           address: _apiAddress,
           authToken: _authToken,
           database: _database,
-          keepAlive: true,
           updateSqlBuilder: EntryProductCategory.updateSqlBuilder,
           // insertSqlBuilder: EntryProductCategory.insertSqlBuilder,
           emptyEntryBuilder: EntryProductCategory.empty,

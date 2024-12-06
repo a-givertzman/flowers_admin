@@ -55,7 +55,7 @@ class _ProductBodyState extends State<ProductBody> {
   RelationSchema<EntryProduct, void> _buildSchema() {
     return RelationSchema<EntryProduct, void>(
       schema: TableSchema<EntryProduct, void>(
-        read: SqlRead<EntryProduct, void>(
+        read: SqlRead<EntryProduct, void>.keep(
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
@@ -63,17 +63,15 @@ class _ProductBodyState extends State<ProductBody> {
             return Sql(sql: 'select * from product_view order by id;');
           },
           entryBuilder: (row) => EntryProduct.from(row),
-          keepAlive: true,
           debug: true,
         ),
-        write: SqlWrite<EntryProduct>(
+        write: SqlWrite<EntryProduct>.keep(
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
           updateSqlBuilder: EntryProduct.updateSqlBuilder,
           // insertSqlBuilder: insertSqlBuilderProduct,
           emptyEntryBuilder: EntryProduct.empty, 
-          keepAlive: true,
           debug: true,
         ),
         fields: [
@@ -100,7 +98,7 @@ class _ProductBodyState extends State<ProductBody> {
   Map<String, TableSchemaAbstract<SchemaEntryAbstract, dynamic>> _buildRelations() {
     return {
       'product_category_id': TableSchema<EntryProductCategory, void>(
-        read: SqlRead<EntryProductCategory, void>(
+        read: SqlRead<EntryProductCategory, void>.keep(
           address: _apiAddress, 
           authToken: _authToken, 
           database: _database, 
@@ -108,7 +106,6 @@ class _ProductBodyState extends State<ProductBody> {
             return Sql(sql: 'select id, name from product_category order by id;');
           },
           entryBuilder: (row) => EntryProductCategory.from(row),
-          keepAlive: true,
           debug: true,
         ),
         fields: [

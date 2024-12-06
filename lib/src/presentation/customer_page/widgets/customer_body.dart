@@ -63,11 +63,10 @@ class _CustomerBodyState extends State<CustomerBody> {
     final editablePass = [AppUserRole.admin].contains(_user.role);
     final editableAccount = [AppUserRole.admin].contains(_user.role);
     _schema = TableSchema<EntryCustomer, void>(
-      read: SqlRead<EntryCustomer, void>(
+      read: SqlRead<EntryCustomer, void>.keep(
         address: _apiAddress, 
         authToken: _authToken, 
         database: _database, 
-        keepAlive: true,
         sqlBuilder: (sql, params) {
           return Sql(sql: 'select * from customer order by id;');
         },
@@ -79,11 +78,10 @@ class _CustomerBodyState extends State<CustomerBody> {
         },
         debug: true,
       ),
-      write: SqlWrite<EntryCustomer>(
+      write: SqlWrite<EntryCustomer>.keep(
         address: _apiAddress, 
         authToken: _authToken, 
         database: _database, 
-        keepAlive: true,
         updateSqlBuilder: EntryCustomer.updateSqlBuilder,
         insertSqlBuilder: EntryCustomer.insertSqlBuilder,
         deleteSqlBuilder: EntryCustomer.deleteSqlBuilder,
