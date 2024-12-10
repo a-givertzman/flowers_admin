@@ -125,26 +125,26 @@ class _PaymentBodyState extends State<PaymentBody> {
             debug: true,
           ),
           fields: [
-            Field(hidden: false, editable: false, key: 'pay', builder: (context, entry) => CheckBoxField(entry: entry)),
-            const Field(hidden: false, editable: false, key: 'id'),
-            Field(hidden: false, editable: false, title: 'Customer'.inRu, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
-            // const Field(hidden: false, editable: false, key: 'customer'),
-            // const Field(hidden: false, editable: true, key: 'purchase_item_id'),
-            // Field(hidden: false, editable: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
-            Field(hidden: false, editable: true, title: 'Purchase'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
-            Field(hidden: false, editable: true, title: 'Product'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
-            // const Field(hidden: false, editable: true, key: 'purchase'),
-            // const Field(hidden: false, editable: true, key: 'product'),
-            Field(hidden: false, editable: true, title: 'Count'.inRu, key: 'count'),
-            Field(hidden: false, editable: true, title: 'Cost'.inRu, key: 'cost'),
-            Field(hidden: false, editable: true, title: 'Paid'.inRu, key: 'paid'),
-            Field(hidden: false, editable: true, title: 'Distributed'.inRu, key: 'distributed'),
-            Field(hidden: false, editable: true, title: 'to_refound'.inRu, key: 'to_refound'),
-            Field(hidden: false, editable: true, title: 'refounded'.inRu, key: 'refounded'),
-            const Field(hidden: false, editable: true, key: 'description'),
-            const Field(hidden: true, editable: true, key: 'created'),
-            const Field(hidden: true, editable: true, key: 'updated'),
-            const Field(hidden: true, editable: true, key: 'deleted'),
+            Field(hidden: false, key: 'pay', builder: (context, entry) => CheckBoxField(entry: entry)),
+            const Field(hidden: false, key: 'id'),
+            Field(hidden: false, title: 'Customer'.inRu, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+            // const Field(hidden: false, key: 'customer'),
+            // const Field(hidden: false, key: 'purchase_item_id'),
+            // Field(hidden: false, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
+            Field(hidden: false, title: 'Purchase'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
+            Field(hidden: false, title: 'Product'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
+            // const Field(hidden: false, key: 'purchase'),
+            // const Field(hidden: false, key: 'product'),
+            Field(hidden: false, title: 'Count'.inRu, key: 'count'),
+            Field(hidden: false, title: 'Cost'.inRu, key: 'cost'),
+            Field(hidden: false, title: 'Paid'.inRu, key: 'paid'),
+            Field(hidden: false, title: 'Distributed'.inRu, key: 'distributed'),
+            Field(hidden: false, title: 'to_refound'.inRu, key: 'to_refound'),
+            Field(hidden: false, title: 'refounded'.inRu, key: 'refounded'),
+            const Field(hidden: false, key: 'description'),
+            const Field(hidden: true, key: 'created'),
+            const Field(hidden: true, key: 'updated'),
+            const Field(hidden: true, key: 'deleted'),
           ],
         ), 
       ),
@@ -214,6 +214,46 @@ class _PaymentBodyState extends State<PaymentBody> {
         ),
       };
   }
+  ///
+  /// Performs a `Payment` request
+  Future<void> _paymentRequest() {
+    _log.debug('._paymentRequest | Payment started');
+    final description = 'Оплата позиций:\n \t${_schema.entries.values.map((item) => '${item.value('purchase').value} - ${item.value('product').value}' ).join(';\n\t')}';
+    final customers = _areAllCustomers() ? 'array[]::int[]' : 'array[${_customers.values.where((item) => item.value('pay').value).map((c) => c.value('id').str).join(', ')}]';
+    final purchaseItems = 'array[${_schema.entries.values.where((item) {
+      _log.debug('._paymentRequest | purchaseItem: ${item.value('purchase').value} - ${item.value('product').value},  pay: ${item.value('pay').value}');
+      return item.value('pay').value;
+    }).map((item) => item.value('purchase_item_id').value).join(', ')}]';
+    return ApiRequest(
+      authToken: _authToken,
+      address: _apiAddress,
+      query: SqlQuery(
+        database: _database,
+        sql: '''
+          select * from set_order_payment(
+              ${_user.id},      -- author
+              $customers,       -- array[]::int[],   -- customer's
+              $purchaseItems,   -- array[]::int[],   -- purchase_item's
+              '',	              -- description, empty is prefer, default will be generated automaticaly
+              false		          -- allow_indebted
+          );
+        ''',
+      ),
+    ).fetch().then(
+      (result) {
+        _log.debug('.build.IconButton.onPressed.then | Payment result $result');
+        switch (result) {
+          case Ok<ApiReply, Failure>():
+            // TODO: Handle this case.
+          case Err<ApiReply, Failure>():
+            // TODO: Handle this case.
+        }
+      },
+      onError: (error) {
+        _log.warning('.build.IconButton.onPressed.then | Payment error $error');
+      },
+    );
+  }
   //
   //
   @override
@@ -227,42 +267,7 @@ class _PaymentBodyState extends State<PaymentBody> {
             children: [
               TextButton(
                 onPressed: () {
-                  _log.debug('.build.IconButton.onPressed | Payment started');
-                  final description = 'Оплата позиций:\n \t${_schema.entries.values.map((item) => '${item.value('purchase').value} - ${item.value('product').value}' ).join(';\n\t')}';
-                  final customers = _areAllCustomers() ? 'array[]::int[]' : 'array[${_customers.values.map((c) => c.value('id').str).join(', ')}]';
-                  final purchaseItems = 'array[${_schema.entries.values.where((item) {
-                    _log.debug('.build.Pay | item: ${item.value('purchase').value} - ${item.value('product').value},  pay: ${item.value('pay').value}');
-                    return item.value('pay').value;
-                  }).map((item) => item.value('id').value).join(', ')}]';
-                  ApiRequest(
-                    authToken: _authToken,
-                    address: _apiAddress,
-                    query: SqlQuery(
-                      database: _database,
-                      sql: '''
-                        select * from set_order_payment(
-                            ${_user.id},      -- author
-                            $customers,       -- array[]::int[],   -- customer's
-                            $purchaseItems,   -- array[]::int[],   -- purchase_item's
-                            '$description',	  -- description
-                            false		          -- allow_indebted
-                        );
-                      ''',
-                    ),
-                  ).fetch().then(
-                    (result) {
-                      _log.debug('.build.IconButton.onPressed.then | Payment result $result');
-                      switch (result) {
-                        case Ok<ApiReply, Failure>():
-                          // TODO: Handle this case.
-                        case Err<ApiReply, Failure>():
-                          // TODO: Handle this case.
-                      }
-                    },
-                    onError: (error) {
-                      _log.warning('.build.IconButton.onPressed.then | Payment error $error');
-                    },
-                  );
+                  _paymentRequest();
                 },
                 child: Text('Pay'),
               ),

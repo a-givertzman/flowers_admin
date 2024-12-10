@@ -22,10 +22,13 @@ declare
     item_id int8;
     order_id_ int8;
     customer_id_ int8;
+    purchase_id_ int8;
+    purchase_name_ text;
+    tr_description_ text;    -- Additional info about transaction
     count_ int8;
-    paid_ numeric;       -- уже оплачено
-    cost numeric;        -- стоимость
-    to_pay numeric;      -- к оплате
+    paid_ numeric;           -- уже оплачено
+    cost numeric;            -- стоимость
+    to_pay numeric;          -- к оплате
     to_refound numeric;      -- к оплате
     sale_price_ numeric;     -- цена за единицу
     shipping_ numeric;       -- стоимость доставки за единицу
@@ -44,24 +47,29 @@ begin
         call log_info(format('set_order_payment |   purchase_item_id: %s', item_id));
         -- loop over all customer orders
         for order_id_, customer_id_, count_, paid_ in
-            select id, customer_id, count, paid from customer_order co 
+            select id, customer_id, count, paid
+                from customer_order co 
                 where co.purchase_item_id = item_id
                 and co.customer_id = any ( coalesce(nullif(customer_ids_, array[]::int8[]), array[co.customer_id]) )
         loop
-            select sale_price, shipping, coalesce(name, (select name from product p where p.id = pitem.product_id)) into sale_price_, shipping_, product_name from purchase_item pitem
+            select purchase_id, sale_price, shipping, coalesce(name, (select p.name from product p where p.id = pitem.product_id)) into purchase_id_, sale_price_, shipping_, product_name
+                from purchase_item pitem
                 where pitem.id = item_id;
-            select c.account, c.name into customer_account, customer_name from public.customer c
+            select p.name into purchase_name_ from purchase p where id = purchase_id_;
+            select c.account, c.name into customer_account, customer_name
+                from public.customer c
                 where c.id = customer_id_;
             call log_info(format('set_order_payment |     customer_id_: [%s] "%s" ( %s )', customer_id_, customer_name, customer_account));
             cost := (sale_price_ + shipping_) * count_;
-            call log_info(format('set_order_payment |     Order: [%s] "%s"', order_id_, product_name));
+            tr_description_ := coalesce(nullif(description_, ''), format('Заказ %s - "%s"', order_id_, product_name));
+            call log_info(format('set_order_payment |     Purchase: [%s], Order: [%s] "%s"', purchase_id_, order_id_, product_name));
             call log_info(format('set_order_payment |        count_: %s', count_));
             call log_info(format('set_order_payment |        cost  : %s', cost));
             call log_info(format('set_order_payment |        paid_ : %s', paid_));
             case
                 when paid_ < cost then
                     to_pay := cast(cost as numeric) - cast(paid_ as numeric);
-                    details_ := format('Payment to Order [%s] "%s"', order_id_, product_name);
+                    details_ := format('Оплата по закупке %s - "%s"', purchase_id_, purchase_name_);
                     if customer_account < to_pay then
                         to_pay := customer_account;
                     end if;
@@ -74,7 +82,7 @@ begin
                             - to_pay,             -- value_ numeric, 
                             details_,           -- varchar(2048), 
                             order_id_,          -- int8, 
-                            description_,       -- varchar(2048), 
+                            tr_description_,    -- varchar(2048), 
                             allow_indebted_     -- bool
                         );
                         call log_info(format('set_order_payment |        tr_acc: %s', tr_acc));
@@ -93,7 +101,7 @@ begin
                     call log_info(format('set_order_payment |        Customer %s, Order %s: Already paid', customer_id_, order_id_));
                 else -- paid_ > cost => Refounding...
                     to_refound := paid_ - cost;
-                    details_ := format('Refound from Order [%s] "%s"', order_id_, product_name);
+                    details_ := format('Возврат по закупке %s - "%s"', purchase_id_, purchase_name_);
                     call log_info(format('set_order_payment |        to_refound: %s', to_refound));
                     call log_info(format('set_order_payment |        details: %s', details_));
                     select * into tr_acc, tr_err from add_transaction(
@@ -102,7 +110,7 @@ begin
                         to_refound,         -- value_ numeric, 
                         details_,           -- varchar(2048), 
                         order_id_,          -- int8, 
-                        description_,       -- varchar(2048), 
+                        tr_description_,    -- varchar(2048), 
                         true     -- bool
                     );
                     call log_info(format('set_order_payment |        tr_acc: %s', tr_acc));

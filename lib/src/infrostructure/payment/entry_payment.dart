@@ -1,6 +1,7 @@
 import 'package:ext_rw/ext_rw.dart';
 ///
-/// Single row of table "CustomerOredr"
+/// Single entry to be payed,
+/// - represents "CustomerOredrView" row
 class EntryPayment implements SchemaEntryAbstract {
   final SchemaEntry _entry;
   bool _isEmpty;
