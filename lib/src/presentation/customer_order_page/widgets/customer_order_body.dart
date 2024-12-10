@@ -59,7 +59,7 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
           authToken: _authToken,
           database: _database,
           sqlBuilder: (sql, params) {
-            return Sql(sql: 'select * from customer_order order by id;');
+            return Sql(sql: 'select * from customer_order_view order by id;');
           },
           entryBuilder: (row) => EntryCustomerOrder.from(row),
           debug: true,
@@ -83,6 +83,7 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
           // const Field(hidden: false, editable: true, key: 'purchase'),
           // const Field(hidden: false, editable: true, key: 'product'),
           const Field(hidden: false, editable: true, key: 'count'),
+          const Field(hidden: false, editable: true, key: 'cost'),
           const Field(hidden: false, editable: true, key: 'paid'),
           const Field(hidden: false, editable: true, key: 'distributed'),
           const Field(hidden: false, editable: true, key: 'to_refound'),

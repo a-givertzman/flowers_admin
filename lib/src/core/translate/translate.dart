@@ -52,6 +52,7 @@ const tr = {
   'Orders': {Lang.en: 'Orders', Lang.ru: 'Заказы'},
   'Count': {Lang.en: 'Count', Lang.ru: 'Кол-во'},
   'Paid': {Lang.en: 'Paid', Lang.ru: 'Оплачено'},
+  'Cost': {Lang.en: 'Cost', Lang.ru: 'Стоимость'},
   'Distributed': {Lang.en: 'Distributed', Lang.ru: 'Выдано'},
 };
 ///

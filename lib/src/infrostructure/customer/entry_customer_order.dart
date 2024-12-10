@@ -12,6 +12,7 @@ class EntryCustomerOrder implements SchemaEntryAbstract {
       'customer_id': FieldValue(null),
       'purchase_item_id': FieldValue(null),
       'count': FieldValue('0'),
+      'cost': FieldValue('0.0'),
       'paid': FieldValue('0.0'),
       'distributed': FieldValue('0'),
       'to_refound': FieldValue('0.0'),

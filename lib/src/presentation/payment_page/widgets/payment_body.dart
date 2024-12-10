@@ -6,7 +6,6 @@ import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_customer.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase.dart';
-import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase_item.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_payment.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
@@ -48,7 +47,6 @@ class _PaymentBodyState extends State<PaymentBody> {
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   late final RelationSchema<EntryPayment, void> _schema;
   final Map<int, EntryPayPurchase> _purchases = {};
-  final Map<int, EntryPayPurchaseItem> _purchaseItems = {};
   final Map<int, EntryPayCustomer> _customers = {};
   ///
   ///
@@ -138,6 +136,7 @@ class _PaymentBodyState extends State<PaymentBody> {
             // const Field(hidden: false, editable: true, key: 'purchase'),
             // const Field(hidden: false, editable: true, key: 'product'),
             Field(hidden: false, editable: true, title: 'Count'.inRu, key: 'count'),
+            Field(hidden: false, editable: true, title: 'Cost'.inRu, key: 'cost'),
             Field(hidden: false, editable: true, title: 'Paid'.inRu, key: 'paid'),
             Field(hidden: false, editable: true, title: 'Distributed'.inRu, key: 'distributed'),
             Field(hidden: false, editable: true, title: 'to_refound'.inRu, key: 'to_refound'),
@@ -229,8 +228,12 @@ class _PaymentBodyState extends State<PaymentBody> {
               TextButton(
                 onPressed: () {
                   _log.debug('.build.IconButton.onPressed | Payment started');
-                  final description = 'Payment description';
-                  final customers = _areAllCustomers() ? 'array[]::int[]' : 'array[${_customers.values.map((c) => c.value('id').str)}]';
+                  final description = 'Оплата позиций:\n \t${_schema.entries.values.map((item) => '${item.value('purchase').value} - ${item.value('product').value}' ).join(';\n\t')}';
+                  final customers = _areAllCustomers() ? 'array[]::int[]' : 'array[${_customers.values.map((c) => c.value('id').str).join(', ')}]';
+                  final purchaseItems = 'array[${_schema.entries.values.where((item) {
+                    _log.debug('.build.Pay | item: ${item.value('purchase').value} - ${item.value('product').value},  pay: ${item.value('pay').value}');
+                    return item.value('pay').value;
+                  }).map((item) => item.value('id').value).join(', ')}]';
                   ApiRequest(
                     authToken: _authToken,
                     address: _apiAddress,
@@ -239,8 +242,8 @@ class _PaymentBodyState extends State<PaymentBody> {
                       sql: '''
                         select * from set_order_payment(
                             ${_user.id},      -- author
-                            $customers        -- array[]::int[],   -- customer's
-                            array[]::int[],   -- purchase_item's
+                            $customers,       -- array[]::int[],   -- customer's
+                            $purchaseItems,   -- array[]::int[],   -- purchase_item's
                             '$description',	  -- description
                             false		          -- allow_indebted
                         );
