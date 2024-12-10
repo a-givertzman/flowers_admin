@@ -139,7 +139,7 @@ class _ProductBodyState extends State<ProductBody> {
       ),
       editAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeUpdated = schema.entries.where((e) => e.isSelected).toList();
+          final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
           return showDialog<Result<EntryProduct, void>?>(
             context: context, 
             builder: (_) => EditProductForm(fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
@@ -156,7 +156,7 @@ class _ProductBodyState extends State<ProductBody> {
       ),      
       delAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeDeleted = schema.entries.firstWhere(
+          final toBeDeleted = schema.entries.values.firstWhere(
             (e) {
               return e.isSelected;
             },

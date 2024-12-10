@@ -64,32 +64,39 @@ class _TextEditWidgetState extends State<TextEditWidget> {
   //
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      enabled: _editable,
-      style: _isChanged 
-        ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
-        : null,
-      // textAlign: _textAlign,
-      decoration: InputDecoration(
-        // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withOpacity(0.5) : Colors.black.withOpacity(0.5))),
-        // border: const OutlineInputBorder(),
-        isDense: true,
-        labelText: _labelText,
-        errorText: _errorText,
-        contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+    return Focus(
+      onFocusChange: (hasFocuse) {
+        if (!hasFocuse) {
+          _onEditingComplete(_controller.text);
+        }
+      },
+      child: TextField(
+        controller: _controller,
+        enabled: _editable,
+        style: _isChanged 
+          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
+          : null,
+        // textAlign: _textAlign,
+        decoration: InputDecoration(
+          // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withOpacity(0.5) : Colors.black.withOpacity(0.5))),
+          // border: const OutlineInputBorder(),
+          isDense: true,
+          labelText: _labelText,
+          errorText: _errorText,
+          contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+        ),
+        onChanged: (value) {
+          setState(() {
+            _isChanged = value != _value;
+          });
+        },
+        onTapOutside: (_) {
+          _onEditingComplete(_controller.text);
+        },
+        onEditingComplete: () {
+          _onEditingComplete(_controller.text);
+        },
       ),
-      onChanged: (value) {
-        setState(() {
-          _isChanged = value != _value;
-        });
-      },
-      onTapOutside: (_) {
-        _onEditingComplete(_controller.text);
-      },
-      onEditingComplete: () {
-        _onEditingComplete(_controller.text);
-      },
     );
   }
   ///

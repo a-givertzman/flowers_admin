@@ -249,7 +249,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
     final rows = [TRow<T>(fields: schema.fields)];
     final showDeleted = _showDeleted ?? false;
     rows.addAll(
-      schema.entries
+      schema.entries.values
       .where((entry) {
         final deleted = entry.value('deleted').str;
         final isDeleted = deleted != null && deleted.isNotEmpty && deleted.toLowerCase() != 'null';

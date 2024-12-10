@@ -179,7 +179,7 @@ class _TransactionBodyState extends State<TransactionBody> {
       ),
       editAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeUpdated = schema.entries.where((e) => e.isSelected).toList();
+          final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
           return showDialog<Result<EntryTransaction, void>?>(
             context: context, 
             builder: (_) => EditTransactionForm(user: _user, fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
@@ -196,7 +196,7 @@ class _TransactionBodyState extends State<TransactionBody> {
       ),      
       delAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeDeleted = schema.entries.firstWhereOrNull((e) {
+          final toBeDeleted = schema.entries.values.firstWhereOrNull((e) {
             return e.isSelected;
           });
           if (toBeDeleted != null) {

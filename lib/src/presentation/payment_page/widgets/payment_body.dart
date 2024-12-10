@@ -11,7 +11,6 @@ import 'package:flowers_admin/src/infrostructure/payment/entry_payment.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
-import 'package:flowers_admin/src/presentation/payment_page/widgets/filter_schema.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_log.dart';
@@ -70,11 +69,21 @@ class _PaymentBodyState extends State<PaymentBody> {
     Future.delayed(Duration(milliseconds: 100), () => setState(() {return;}));
   }
   ///
+  /// Returns true if all customer's are checked
+  bool _areAllCustomers() {
+    return !_customers.entries.any((entry) => !entry.value.value('pay').value);
+  }
+  ///
+  /// Returns true if all purchase's are checked
+  bool _areAllPurchases() {
+    return !_purchases.entries.any((entry) => !entry.value.value('pay').value);
+  }
+  ///
   ///
   bool _filter(EntryPayment entry) {
-    final customersAllChecked = !_customers.entries.any((entry) => !entry.value.value('pay').value);
-    final purchasesAllChecked = !_purchases.entries.any((entry) => !entry.value.value('pay').value);
-    if (customersAllChecked && purchasesAllChecked) {
+    // final customersAllChecked = !_customers.entries.any((entry) => !entry.value.value('pay').value);
+    // final purchasesAllChecked = !_purchases.entries.any((entry) => !entry.value.value('pay').value);
+    if (_areAllCustomers() && _areAllPurchases()) {
       _log.warning('._filter | All checked');
       return true;
     }
@@ -92,7 +101,7 @@ class _PaymentBodyState extends State<PaymentBody> {
     final editableValue = [AppUserRole.admin].contains(_user.role);
     final editableDetails = [AppUserRole.admin].contains(_user.role);
     return RelationSchema<EntryPayment, void>(
-      schema: FilterSchema(
+      schema: TableSchemaFiltered(
         filter: _filter,
         schema: TableSchema<EntryPayment, void>(
           read: SqlRead<EntryPayment, void>.keep(
@@ -221,6 +230,7 @@ class _PaymentBodyState extends State<PaymentBody> {
                 onPressed: () {
                   _log.debug('.build.IconButton.onPressed | Payment started');
                   final description = 'Payment description';
+                  final customers = _areAllCustomers() ? 'array[]::int[]' : 'array[${_customers.values.map((c) => c.value('id').str)}]';
                   ApiRequest(
                     authToken: _authToken,
                     address: _apiAddress,
@@ -229,7 +239,7 @@ class _PaymentBodyState extends State<PaymentBody> {
                       sql: '''
                         select * from set_order_payment(
                             ${_user.id},      -- author
-                            array[]::int[],   -- customer's
+                            $customers        -- array[]::int[],   -- customer's
                             array[]::int[],   -- purchase_item's
                             '$description',	  -- description
                             false		          -- allow_indebted

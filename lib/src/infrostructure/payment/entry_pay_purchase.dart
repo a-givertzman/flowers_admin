@@ -4,7 +4,7 @@ import 'package:ext_rw/ext_rw.dart';
 /// Single row of table "Purchase"
 class EntryPayPurchase implements SchemaEntryAbstract {
   final SchemaEntry _entry;
-  final bool _isEmpty;
+  bool _isEmpty;
   ///
   ///
   static Map<String, FieldValue> get _initial {
@@ -68,7 +68,10 @@ class EntryPayPurchase implements SchemaEntryAbstract {
   //
   //  
   @override
-  void update(String key, dynamic value) => _entry.update(key, value);
+  void update(String key, dynamic value) {
+    _entry.update(key, value);
+    _isEmpty = false;
+  }
   //
   //
   @override

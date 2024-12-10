@@ -18,7 +18,7 @@ import 'package:ext_rw/ext_rw.dart';
 /// - Created timestamp
 class EntryTransaction implements SchemaEntryAbstract {
   final SchemaEntry _entry;
-  final bool _isEmpty;
+  bool _isEmpty;
   ///
   ///
   static Map<String, FieldValue> get _initial {
@@ -84,7 +84,10 @@ class EntryTransaction implements SchemaEntryAbstract {
   //
   //  
   @override
-  void update(String key, dynamic value) => _entry.update(key, value);
+  void update(String key, dynamic value) {
+    _entry.update(key, value);
+    _isEmpty = false;
+  }
   //
   //
   @override
@@ -193,7 +196,7 @@ class EntryTransaction implements SchemaEntryAbstract {
           ${entry.value('details').str},
           ${entry.value('order_id').str},
           ${entry.value('description').str},
-          ${entry.value('allow_indebted').str},
+          ${entry.value('allow_indebted').str}
         );
         """,
       );
@@ -211,7 +214,7 @@ class EntryTransaction implements SchemaEntryAbstract {
           ${entry.value('author_id').str},
           ${entry.value('customer_id').str},
           ${entry.value('description').str},
-          ${entry.value('allow_indebted').str},
+          ${entry.value('allow_indebted').str}
         );
         """,
       );

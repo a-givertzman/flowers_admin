@@ -46,5 +46,8 @@ insert into public.purchase_item (id, purchase_id, product_id, sale_price, sale_
     -- (1, 2, 1, 101.0, 'RUB', 11.1, 111, name, details, description, picture, created, updated, deleted);
     (1, 2, 1, 101.0, 'RUB', 11.1, 111, null, null, null, null, '2024-09-05 21:49:42.251', '2024-09-05 21:49:42.251', null),
     (2, 2, 2, 102.0, 'RUB', 11.2, 112, null, null, null, null, '2024-09-05 21:49:42.251', '2024-09-05 21:49:42.251', null),
-    (3, 2, 3, 103.0, 'RUB', 11.3, 113, null, null, null, null, '2024-09-05 21:49:42.251', '2024-09-05 21:49:42.251', null);
-alter sequence purchase_item_id_seq restart with 4;
+    (3, 2, 3, 103.0, 'RUB', 11.3, 113, null, null, null, null, '2024-09-05 21:49:42.251', '2024-09-05 21:49:42.251', null),
+    (4, 3, 1, 201.0, 'RUB', 11.1, 111, null, null, null, null, '2024-09-05 21:49:42.251', '2024-09-05 21:49:42.251', null),
+    (5, 3, 2, 202.0, 'RUB', 11.2, 112, null, null, null, null, '2024-09-05 21:49:42.251', '2024-09-05 21:49:42.251', null),
+    (6, 3, 3, 203.0, 'RUB', 11.3, 113, null, null, null, null, '2024-09-05 21:49:42.251', '2024-09-05 21:49:42.251', null);
+alter sequence purchase_item_id_seq restart with 7;

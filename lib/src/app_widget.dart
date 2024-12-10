@@ -2,8 +2,6 @@ import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/presentation/home_page/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 ///
 ///
@@ -54,21 +52,6 @@ class _AppWidgetState extends State<AppWidget> {
   void initState() {
     super.initState();
     // _themeSwitch.addListener(_themeSwitchListener);
-    if (!kIsWeb) {
-      Future.delayed(
-        Duration.zero,
-        () async {
-          await windowManager.ensureInitialized();
-          // windowManager.setFullScreen(true);
-          // windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-          // windowManager.setBackgroundColor(Colors.transparent);
-          // windowManager.setSize(const Size(1024, 768));
-          // windowManager.center();
-          windowManager.focus();
-          WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {true;}));
-        },
-      );
-    }
   }
   ///
   // void _themeSwitchListener() {

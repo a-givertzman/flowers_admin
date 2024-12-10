@@ -197,6 +197,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                   TextButton(
                     onPressed: _entry.isChanged 
                       ? () {
+                        _log.debug('.TextButton.Yes | _isEmpty: ${_entry.isEmpty}');
                         _log.debug('.TextButton.Yes | _isChanged: ${_entry.isChanged}');
                         _log.debug('.TextButton.Yes | enrty: $_entry');
                         Navigator.pop(context, Ok<EntryTransaction, void>(_entry));

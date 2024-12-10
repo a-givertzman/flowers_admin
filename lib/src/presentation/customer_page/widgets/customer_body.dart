@@ -137,7 +137,7 @@ class _CustomerBodyState extends State<CustomerBody> {
       ),
       editAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeUpdated = schema.entries.where(
+          final toBeUpdated = schema.entries.values.where(
             (e) {
               return e.isSelected;
             },
@@ -158,7 +158,7 @@ class _CustomerBodyState extends State<CustomerBody> {
       ),      
       delAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeDeleted = schema.entries.firstWhereOrNull((e) {
+          final toBeDeleted = schema.entries.values.firstWhereOrNull((e) {
               return e.isSelected;
           });
           if (toBeDeleted != null) {

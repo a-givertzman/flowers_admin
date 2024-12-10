@@ -1,9 +1,11 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
@@ -137,6 +139,12 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   Widget build(BuildContext context) {
     _log.debug('.build | ');
     return TableWidget(
+      fetchAction: TableWidgetAction(
+        onPressed: (schema) {
+          return Future.value(Ok(EntryPurchaseItem.empty()));
+        }, 
+        icon: const Icon(Icons.add),
+      ),
       schema: _schema,
     );
   }
