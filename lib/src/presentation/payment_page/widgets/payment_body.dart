@@ -166,11 +166,11 @@ class _PaymentBodyState extends State<PaymentBody> {
               return Sql(sql: 'select id, name from customer order by id;');
             },
             entryBuilder: (row) {
-              final payCustomer = EntryPayCustomer.from({
-                ...{'pay': true},
-                ...row,
-            });
-              _customers.putIfAbsent(payCustomer.value('id').value, () => payCustomer);
+              // final payCustomer = EntryPayCustomer.from({
+              //   ...{'pay': true},
+              //   ...row,
+              // });
+              // _customers.putIfAbsent(payCustomer.value('id').value, () => payCustomer);
               return EntryCustomer.from(row.cast());
             },
             debug: true,
@@ -193,12 +193,12 @@ class _PaymentBodyState extends State<PaymentBody> {
             },
             entryBuilder: (row) {
               // _log.warning('._buildRelations | row $row');
-              final payPurchase = EntryPayPurchase.from({
-                'pay': true,
-                'id': row['purchase_id'],
-                'name': row['purchase'],
-              });
-              _purchases.putIfAbsent(payPurchase.value('id').value, () => payPurchase);
+              // final payPurchase = EntryPayPurchase.from({
+              //   'pay': true,
+              //   'id': row['purchase_id'],
+              //   'name': row['purchase'],
+              // });
+              // _purchases.putIfAbsent(payPurchase.value('id').value, () => payPurchase);
               return EntryPurchaseItem.from(row);
             },
             debug: true,
@@ -257,136 +257,155 @@ class _PaymentBodyState extends State<PaymentBody> {
   //
   @override
   Widget build(BuildContext context) {
-    _log.trace('.build | Customers ${_customers.map((id, c) => MapEntry(id, c.value('name').value))}');
-    return IntrinsicHeight(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Tooltip(
-                message: 'Perform payments',
-                child: TextButton.icon(
-                  onPressed: _paymentRequest,
-                  label: Text('Payments'),
-                  icon: Icon(Icons.payments),
-                ),
+    _customers.clear();
+    _schema.relations['customer_id']?.forEach((item) {
+      _customers[item.value('id').value] = EntryPayCustomer.from({
+        'pay': true,
+        'id': item.value('id').value,
+        'name': item.value('name').value,
+      });
+    });
+    _purchases.clear();
+    _schema.relations['purchase_item_id']?.forEach((item) {
+      _purchases[item.value('id').value] = EntryPayPurchase.from({
+        'pay': true,
+        'id': item.value('purchase_id').value,
+        'name': item.value('purchase').value,
+      });
+    });
+    _log.trace('.build | Customer`s ${_customers.map((id, c) => MapEntry(id, c.value('name').value))}');
+    _log.trace('.build | Purchase`s ${_purchases.map((id, c) => MapEntry(id, c.value('name').value))}');
+    return Column(
+      // mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Tooltip(
+              message: 'Perform payments',
+              child: TextButton.icon(
+                onPressed: _paymentRequest,
+                label: Text('Payments'),
+                icon: Icon(Icons.payments),
               ),
-            ],
-          ),
-          Expanded(
-            child: ResizableWidget(
-              percentages: [0.50, 0.50],
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Purchases
-                Card(
-                  color: Colors.amber[50],
-                  margin: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Text('Purchase'.inRu, style: Theme.of(context).textTheme.titleMedium),
-                      ),
-                      Divider(),
-                      Expanded(
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: _purchases.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final id = _purchases.keys.elementAt(index);
-                              final item = _purchases[id];
-                              return Row(
-                                children: [
-                                  Checkbox(
-                                    value: item?.value('pay').value,
-                                    onChanged: (value) {
-                                      item?.update('pay', value);
-                                      setState(() {return;});
-                                    },
-                                  ),
-                                  Text('${item?.value('name').value}'),
-                                ],
-                              );
-                            },
-                          ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Divider(indent: 8,),
-                // Customers
-                Card(
-                  color: Colors.blue[50],
-                  margin: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Text('Customer'.inRu, style: Theme.of(context).textTheme.titleMedium),
-                      ),
-                      Divider(),
-                      ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: _customers.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final id = _customers.keys.elementAt(index);
-                              final item = _customers[id];
-                              return Row(
-                                children: [
-                                  Checkbox(
-                                    value: item?.value('pay').value,
-                                    onChanged: (value) {
-                                      item?.update('pay', value);
-                                      setState(() {return;});
-                                    },
-                                  ),
-                                  Text('${item?.value('name').value}'),
-                                ],
-                              );
-                            },
-                          ),
-                    ],
-                  ),
-                ),
-              ],
             ),
-          ),
-          // Orders
-          Expanded(
-            child: Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+          ],
+        ),
+        Expanded(
+          child: ResizableWidget(
+            isHorizontalSeparator: true,
+            percentages: [0.40, 0.60],
+            children: [
+              ResizableWidget(
+                isDisabledSmartHide: true,
+                percentages: [0.50, 0.50],
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: Text('Заказы'.inRu, style: Theme.of(context).textTheme.titleMedium),
+                  // Purchases
+                  Card(
+                    color: Colors.amber[50],
+                    margin: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: Text('${'Purchase'.inRu} (${_purchases.length})', style: Theme.of(context).textTheme.titleMedium),
+                        ),
+                        // Divider(),
+                        Container(
+                          color: Colors.red,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: _purchases.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final id = _purchases.keys.elementAt(index);
+                                final item = _purchases[id];
+                                return Row(
+                                  children: [
+                                    Checkbox(
+                                      value: item?.value('pay').value,
+                                      onChanged: (value) {
+                                        item?.update('pay', value);
+                                        setState(() {return;});
+                                      },
+                                    ),
+                                    Text('${item?.value('name').value}'),
+                                  ],
+                                );
+                              },
+                            ),
+                        ),
+                      ],
+                    ),
                   ),
-                  Divider(),
-                  Expanded(
-                    child: TableWidget<EntryPayment, void>(
-                      showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
-                      fetchAction: TableWidgetAction(
-                        onPressed: (schema) {
-                          return Future.value(Ok(EntryPayment.empty()));
-                        }, 
-                        icon: const Icon(Icons.add),
-                      ),
-                      schema: _schema,
+                  // Customers
+                  Card(
+                    color: Colors.blue[50],
+                    margin: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: Text('${'Customer'.inRu} (${_customers.length})', style: Theme.of(context).textTheme.titleMedium),
+                        ),
+                        Divider(),
+                        ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: _customers.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final id = _customers.keys.elementAt(index);
+                                final item = _customers[id];
+                                _log.trace('.build | Widget Customers | item: ${item?.value('name').value}');
+                                return Row(
+                                  children: [
+                                    Checkbox(
+                                      value: item?.value('pay').value,
+                                      onChanged: (value) {
+                                        item?.update('pay', value);
+                                        setState(() {return;});
+                                      },
+                                    ),
+                                    Text('${item?.value('name').value}'),
+                                  ],
+                                );
+                              },
+                            ),
+                      ],
                     ),
                   ),
                 ],
               ),
-            ),
+              // Orders
+              Card(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text('Заказы'.inRu, style: Theme.of(context).textTheme.titleMedium),
+                    ),
+                    Divider(),
+                    Expanded(
+                      child: TableWidget<EntryPayment, void>(
+                        showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
+                        fetchAction: TableWidgetAction(
+                          onPressed: (schema) {
+                            return Future.value(Ok(EntryPayment.empty()));
+                          }, 
+                          icon: const Icon(Icons.add),
+                        ),
+                        schema: _schema,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
   //

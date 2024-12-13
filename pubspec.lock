@@ -205,8 +205,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2.1.2"
-      resolved-ref: "30fcb8d57adba6843b8cf9c3a51f32f9014747d3"
+      ref: "2.1.4"
+      resolved-ref: "4a5ec70d88b44b7807cfa4b3ce4b6a7233c4a27e"
       url: "https://github.com/a-givertzman/hmi_core.git"
     source: git
     version: "2.1.2"
