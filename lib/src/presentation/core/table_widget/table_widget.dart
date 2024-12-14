@@ -49,6 +49,7 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
 //
 class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWidget<T, P>> {
   final _log = Log("$_TableWidgetState");
+  final ScrollController _controller = ScrollController();
   final TableSchemaAbstract<T, P> _schema;
   final TableWidgetAction<T, P> _addAction;
   final TableWidgetAction<T, P> _editAction;
@@ -213,16 +214,22 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                     if (entries.isNotEmpty) {
                       // final rows = entries;
                       return Expanded(
-                        child: ListView(
-                          shrinkWrap: true,
-                          // defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                          // border: TableBorder.all(),
-                          // columnWidths: { for (var i in [for (var i = 0; i <= 14; i++) i]) i : const IntrinsicColumnWidth() },
-                          // {
-                          //   0: IntrinsicColumnWidth(),
-                          //   1: FlexColumnWidth(),
-                          // },
-                          children: _buildRows(_schema),
+                        child: Scrollbar(
+                          thumbVisibility: true,
+                          trackVisibility: true,
+                          controller: _controller,
+                          child: ListView(
+                            shrinkWrap: true,
+                            controller: _controller,
+                            // defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                            // border: TableBorder.all(),
+                            // columnWidths: { for (var i in [for (var i = 0; i <= 14; i++) i]) i : const IntrinsicColumnWidth() },
+                            // {
+                            //   0: IntrinsicColumnWidth(),
+                            //   1: FlexColumnWidth(),
+                            // },
+                            children: _buildRows(_schema),
+                          ),
                         ),
                       );
                     } else {
