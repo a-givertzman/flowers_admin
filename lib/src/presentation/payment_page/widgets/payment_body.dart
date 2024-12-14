@@ -287,18 +287,16 @@ class _PaymentBodyState extends State<PaymentBody> {
           _log.debug('.build.IconButton.onPressed.then | Payment result $result');
           switch (result) {
             case Ok<ApiReply, Failure>():
-              showAdaptiveDialog(
+              await showInfoDialog(
                 context: context,
-                builder: (context) {
-                  return Text('Оплата завершена успешно');
-                }
+                title: Text('Оплата'),
+                content: Text('Оплата завершена успешно'),
               );
             case Err<ApiReply, Failure>(: final error):
-              showAdaptiveDialog(
+              await showInfoDialog(
                 context: context,
-                builder: (context) {
-                  return Text('Ошибка: \n\t$error');
-                }
+                title: Text('Оплата'),
+                content: Text('Ошибка: $error'),
               );
           }
         },
@@ -307,10 +305,10 @@ class _PaymentBodyState extends State<PaymentBody> {
         },
       )
       .whenComplete(() async {
-        await _fetch();
-        setState(() {
-          _isLoading = false;
-        });
+        _fetch();
+        // setState(() {
+        //   _isLoading = false;
+        // });
       });
   }
   //
@@ -457,7 +455,7 @@ class _PaymentBodyState extends State<PaymentBody> {
 }
 ///
 ///
-Future<Result<void, void>> showConfirmDialog(BuildContext context, title, content) {
+Future<Result<void, void>> showConfirmDialog(BuildContext context, Widget title, Widget content) {
   return showDialog<Result>(
     context: context,
     builder: (_) => AlertDialog(
@@ -474,6 +472,26 @@ Future<Result<void, void>> showConfirmDialog(BuildContext context, title, conten
           child: Text('Yes'.inRu),
           onPressed:  () {
             Navigator.pop(context, const Ok(null));
+          },
+        ),
+      ],              
+    ),
+  )
+  .then((value) => value ?? const Err(null));
+}
+///
+///
+Future<Result<void, void>> showInfoDialog({required BuildContext context, Widget? title, Widget? content}) {
+  return showDialog<Result>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: title,
+      content: content,
+      actions: [
+        TextButton(
+          child: Text('Ok'.inRu),
+          onPressed:  () {
+            Navigator.pop(context, const Err(null));
           },
         ),
       ],              
