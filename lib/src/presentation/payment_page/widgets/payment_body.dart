@@ -78,11 +78,11 @@ class _PaymentBodyState extends State<PaymentBody> {
   }
   ///
   ///
-  void _fetch() {
+  Future<void> _fetch() async {
     setState(() {
       _isLoading = true;
     });
-    _schema
+    await _schema
       .fetch(null)
       .whenComplete(() async {
         setState(() {
@@ -283,9 +283,9 @@ class _PaymentBodyState extends State<PaymentBody> {
     )
       .fetch()
       .then(
-        (result) {
+        (result) async {
           _log.debug('.build.IconButton.onPressed.then | Payment result $result');
-          _fetch();
+          await _fetch();
           switch (result) {
             case Ok<ApiReply, Failure>():
               showAdaptiveDialog(
