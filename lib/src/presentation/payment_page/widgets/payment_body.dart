@@ -285,7 +285,6 @@ class _PaymentBodyState extends State<PaymentBody> {
       .then(
         (result) async {
           _log.debug('.build.IconButton.onPressed.then | Payment result $result');
-          await _fetch();
           switch (result) {
             case Ok<ApiReply, Failure>():
               showAdaptiveDialog(
@@ -308,6 +307,7 @@ class _PaymentBodyState extends State<PaymentBody> {
         },
       )
       .whenComplete(() async {
+        await _fetch();
         setState(() {
           _isLoading = false;
         });
