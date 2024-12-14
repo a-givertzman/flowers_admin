@@ -143,7 +143,7 @@ class _TCellState extends State<TCell> {
                 ),
                 child: Text(
                   _controller.text,
-                  style: _style?.copyWith(color: _isChanged ? Colors.red : null),
+                  style: _style?.copyWith(color: _isChanged ? Colors.blue : null),
                   textAlign: _textAlign,
                 ),
               ),

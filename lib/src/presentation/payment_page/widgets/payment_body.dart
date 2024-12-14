@@ -10,11 +10,10 @@ import 'package:flowers_admin/src/infrostructure/payment/entry_pay_customer.dart
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_payment.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flowers_admin/src/presentation/payment_page/widgets/check_box_field.dart';
 import 'package:flowers_admin/src/presentation/payment_page/widgets/check_list_widget.dart';
-import 'package:flowers_admin/src/presentation/payment_page/widgets/list_widget.dart';
+import 'package:flowers_admin/src/presentation/payment_page/widgets/overlay_progress_indicator.dart';
+import 'package:flowers_admin/src/presentation/payment_page/widgets/pay_list_widget.dart';
 import 'package:flowers_admin/src/presentation/payment_page/widgets/table_schema_ready.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
@@ -58,6 +57,7 @@ class _PaymentBodyState extends State<PaymentBody> {
   final StreamController<int> _customersStream = StreamController();
   final Map<int, EntryPayPurchase> _purchases = {};
   final StreamController<int> _purchasesStream = StreamController();
+  bool _isLoading = false;
   ///
   ///
   _PaymentBodyState({
@@ -74,11 +74,22 @@ class _PaymentBodyState extends State<PaymentBody> {
   void initState() {
     _schema = _buildSchema();
     super.initState();
-    _schema.fetch(null)
-      .whenComplete(() {
+    _fetch();
+  }
+  ///
+  ///
+  void _fetch() {
+    setState(() {
+      _isLoading = true;
+    });
+    _schema
+      .fetch(null)
+      .whenComplete(() async {
+        setState(() {
+          _isLoading = false;
+        });
         _schemaStream.add(0);
       });
-    // Future.delayed(Duration(milliseconds: 100), () => setState(() {return;}));
   }
   ///
   /// Returns true if all customer's are checked
@@ -251,6 +262,9 @@ class _PaymentBodyState extends State<PaymentBody> {
       _log.debug('._paymentRequest | purchaseItem: ${item.value('purchase').value} - ${item.value('product').value},  pay: ${item.value('pay').value}');
       return item.value('pay').value;
     }).map((item) => item.value('purchase_item_id').value).join(', ')}]';
+    setState(() {
+      _isLoading = true;
+    });
     return ApiRequest(
       authToken: _authToken,
       address: _apiAddress,
@@ -266,106 +280,156 @@ class _PaymentBodyState extends State<PaymentBody> {
           );
         ''',
       ),
-    ).fetch().then(
-      (result) {
-        _log.debug('.build.IconButton.onPressed.then | Payment result $result');
-        switch (result) {
-          case Ok<ApiReply, Failure>():
-            // TODO: Handle this case.
-          case Err<ApiReply, Failure>():
-            // TODO: Handle this case.
-        }
-      },
-      onError: (error) {
-        _log.warning('.build.IconButton.onPressed.then | Payment error $error');
-      },
-    );
+    )
+      .fetch()
+      .then(
+        (result) {
+          _log.debug('.build.IconButton.onPressed.then | Payment result $result');
+          _fetch();
+          switch (result) {
+            case Ok<ApiReply, Failure>():
+              showAdaptiveDialog(
+                context: context,
+                builder: (context) {
+                  return Text('Оплата завершена успешно');
+                }
+              );
+            case Err<ApiReply, Failure>(: final error):
+              showAdaptiveDialog(
+                context: context,
+                builder: (context) {
+                  return Text('Ошибка: \n\t$error');
+                }
+              );
+          }
+        },
+        onError: (error) {
+          _log.warning('.build.IconButton.onPressed.then | Payment error $error');
+        },
+      )
+      .whenComplete(() async {
+        setState(() {
+          _isLoading = false;
+        });
+      });
   }
   //
   //
   @override
   Widget build(BuildContext context) {
-    return Column(
-      // mainAxisSize: MainAxisSize.min,
+    return Stack(
       children: [
-        Row(
+        Column(
+          // mainAxisSize: MainAxisSize.min,
           children: [
-            Tooltip(
-              message: 'Perform payments',
-              child: TextButton.icon(
-                onPressed: _paymentRequest,
-                label: Text('Payments'),
-                icon: Icon(Icons.payments),
-              ),
-            ),
-          ],
-        ),
-        Expanded(
-          child: ResizableWidget(
-            isHorizontalSeparator: true,
-            percentages: [0.40, 0.60],
-            children: [
-              ResizableWidget(
-                isDisabledSmartHide: true,
-                percentages: [0.50, 0.50],
-                children: [
-                  // Purchases
-                  Card(
-                    color: Colors.amber[50],
-                    margin: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Text('${'Purchase'.inRu} (${_purchases.length})', style: Theme.of(context).textTheme.titleMedium),
-                        ),
-                        Divider(),
-                        Expanded(
-                          child: StreamBuilder<int>(
-                            stream: _purchasesStream.stream,
-                            builder: (context, snapshot) {
-                              return CheckListWidget(
-                                items: _purchases,
-                                onChanged: (entries) {
-                                  _purchases.updateAll((key, value) {
-                                    return entries[key] as EntryPayPurchase;
-                                  });
-                                  _schemaStream.add(0);
-                                },
-                              );
-                            }
-                          ),
-                        ),
-                      ],
-                    ),
+            Row(
+              children: [
+                Tooltip(
+                  message: 'Perform payments',
+                  child: TextButton.icon(
+                    onPressed: _paymentRequest,
+                    label: Text('Payments'),
+                    icon: Icon(Icons.payments),
                   ),
-                  // Customers
+                ),
+              ],
+            ),
+            Expanded(
+              child: ResizableWidget(
+                isHorizontalSeparator: true,
+                percentages: [0.40, 0.60],
+                children: [
+                  ResizableWidget(
+                    isDisabledSmartHide: true,
+                    percentages: [0.50, 0.50],
+                    children: [
+                      // Purchases
+                      Card(
+                        color: Colors.amber[50],
+                        margin: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: Text('${'Purchase'.inRu} (${_purchases.length})', style: Theme.of(context).textTheme.titleMedium),
+                            ),
+                            Divider(),
+                            Expanded(
+                              child: StreamBuilder<int>(
+                                stream: _purchasesStream.stream,
+                                builder: (context, snapshot) {
+                                  return CheckListWidget(
+                                    items: _purchases,
+                                    onChanged: (entries) {
+                                      _purchases.updateAll((key, value) {
+                                        return entries[key] as EntryPayPurchase;
+                                      });
+                                      _schemaStream.add(0);
+                                    },
+                                  );
+                                }
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Customers
+                      Card(
+                        color: Colors.blue[50],
+                        margin: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: Text('${'Customer'.inRu} (${_customers.length})', style: Theme.of(context).textTheme.titleMedium),
+                            ),
+                            Divider(),
+                            Expanded(
+                              child: StreamBuilder<int>(
+                                stream: _customersStream.stream,
+                                builder: (context, snapshot) {
+                                  return CheckListWidget(
+                                    items: _customers,
+                                    onChanged: (entries) {
+                                      _customers.updateAll((key, value) {
+                                        return entries[key] as EntryPayCustomer;
+                                      });
+                                      _log.trace('.build.onChanged | Customer`s (${_customers.length}): ${_customers.map((id, c) => MapEntry(id, c.value('name').value))}');
+                                      _schemaStream.add(0);
+                                    },
+                                  );
+                                }
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Orders
                   Card(
-                    color: Colors.blue[50],
-                    margin: const EdgeInsets.all(8.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 16.0),
-                          child: Text('${'Customer'.inRu} (${_customers.length})', style: Theme.of(context).textTheme.titleMedium),
+                          child: Text('Заказы'.inRu, style: Theme.of(context).textTheme.titleMedium),
                         ),
                         Divider(),
                         Expanded(
                           child: StreamBuilder<int>(
-                            stream: _customersStream.stream,
+                            stream: _schemaStream.stream,
                             builder: (context, snapshot) {
-                              return CheckListWidget(
-                                items: _customers,
+                              return PayListWidget<EntryPayment>(
+                                header: _schema.fields,
+                                items: _schema.entries,
                                 onChanged: (entries) {
-                                  _customers.updateAll((key, value) {
-                                    return entries[key] as EntryPayCustomer;
-                                  });
-                                  _log.trace('.build.onChanged | Customer`s (${_customers.length}): ${_customers.map((id, c) => MapEntry(id, c.value('name').value))}');
-                                  _schemaStream.add(0);
+                                  
                                 },
                               );
                             }
@@ -376,37 +440,10 @@ class _PaymentBodyState extends State<PaymentBody> {
                   ),
                 ],
               ),
-              // Orders
-              Card(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: Text('Заказы'.inRu, style: Theme.of(context).textTheme.titleMedium),
-                    ),
-                    Divider(),
-                    Expanded(
-                      child: StreamBuilder<int>(
-                        stream: _schemaStream.stream,
-                        builder: (context, snapshot) {
-                          return ListWidget<EntryPayment>(
-                            header: _schema.fields.cast(),
-                            items: _schema.entries,
-                            onChanged: (p0) {
-                              
-                            },
-                          );
-                        }
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
+        if (_isLoading) OverlayProgressIndicator(),
       ],
     );
   }
@@ -428,18 +465,19 @@ Future<Result<void, void>> showConfirmDialog(BuildContext context, title, conten
       content: content,
       actions: [
         TextButton(
-          child: const Text("Cancel"),
+          child: Text('Cancel'.inRu),
           onPressed:  () {
             Navigator.pop(context, const Err(null));
           },
         ),
         TextButton(
-          child: const Text("Yes"),
+          child: Text('Yes'.inRu),
           onPressed:  () {
             Navigator.pop(context, const Ok(null));
           },
         ),
       ],              
     ),
-  ).then((value) => value ?? const Err(null));
+  )
+  .then((value) => value ?? const Err(null));
 }

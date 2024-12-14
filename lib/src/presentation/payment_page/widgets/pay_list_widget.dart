@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 ///
 /// Check list
-class ListWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
+class PayListWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
   late final Log _log;
   final List<Field<T>> _header;
   final Map<String, T> _items;
@@ -11,7 +11,7 @@ class ListWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
   final void Function(Map<String, T> entries)? _onChanged;
   ///
   ///
-  ListWidget({
+  PayListWidget({
     super.key,
     required List<Field<T>> header,
     required Map<String, T> items,
@@ -27,11 +27,11 @@ class ListWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
   //
   //
   @override
-  State<ListWidget> createState() => _CheckListWidgetState();
+  State<PayListWidget<T>> createState() => _CheckListWidgetState();
 }
 //
 //
-class _CheckListWidgetState extends State<ListWidget> {
+class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<PayListWidget<T>> {
   final ScrollController _controller = ScrollController();
   //
   //
@@ -47,27 +47,38 @@ class _CheckListWidgetState extends State<ListWidget> {
         child: Table(
             columnWidths: const <int, TableColumnWidth>{
               0: IntrinsicColumnWidth(),
-              1: FlexColumnWidth(),
-              2: FlexColumnWidth(2),
-              3: IntrinsicColumnWidth(),
-              4: IntrinsicColumnWidth(),
+              1: IntrinsicColumnWidth(),
+              2: FlexColumnWidth(),
+              3: FlexColumnWidth(),
+              4: FlexColumnWidth(),
               5: IntrinsicColumnWidth(),
               6: IntrinsicColumnWidth(),
               7: IntrinsicColumnWidth(),
               8: IntrinsicColumnWidth(),
-              9: FlexColumnWidth(4),
+              9: IntrinsicColumnWidth(),
+              10: IntrinsicColumnWidth(),
+              11: FlexColumnWidth(2),
             },
             border: TableBorder.all(),
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: [
               TableRow(
                 decoration: BoxDecoration(),
-                children: widget._header.map((item) {
-                  return Cell(child: Text(item.title.isEmpty ? item.key : item.title, softWrap: false));
-                }).toList(),
+                children: widget._header
+                  .where((item) => !item.isHidden)
+                  .map((item) {
+                    return Cell(child: Text(item.title.isEmpty ? item.key : item.title, softWrap: false));
+                  }).toList(),
               ),
               ...widget._items.values.map((item) {
-                final costColor = (double.tryParse(item.value('paid').value) ?? 0.0) < (double.tryParse(item.value('cost').value) ?? 0.0) ? Colors.red : Colors.black;
+                double asDouble(item, key) {
+                  return double.tryParse('${item.value(key).value}') ?? 0.0;
+                }
+                final costColor = Colors.black; //asDouble(item, 'paid') < asDouble(item, 'cost') ? Colors.red : Colors.black;
+                final paidColor = (asDouble(item, 'paid') < asDouble(item, 'cost')) || asDouble(item, 'paid') > asDouble(item, 'cost') && (asDouble(item, 'paid') - asDouble(item, 'cost') > asDouble(item, 'refounded')) ? Colors.red : Colors.black;
+                final distributedColor = asDouble(item, 'paid') >= asDouble(item, 'cost') && asDouble(item, 'distributed') < asDouble(item, 'count') ? Colors.red : Colors.black;
+                final toRefoundColor = asDouble(item, 'to_refound') > asDouble(item, 'refounded') ? Colors.red : Colors.black;
+                final refoundedColor = asDouble(item, 'refounded') > asDouble(item, 'to_refound') ? Colors.red : Colors.black;
                 return TableRow(
                   decoration: BoxDecoration(),
                   children: [
@@ -84,14 +95,16 @@ class _CheckListWidgetState extends State<ListWidget> {
                         },
                       ),
                     ),
+                    Cell(child: Text('${item.value('id').value}', softWrap: false)),
                     Cell(child: Text('[${item.value('customer_id').value}] ${item.value('customer').value}', softWrap: false)),
                     Cell(child: Text('[${item.value('purchase_item_id').value}] ${item.value('purchase').value}', softWrap: false)),
+                    Cell(child: Text('${item.value('product').value}}', softWrap: false)),
                     Cell(child: Text('${item.value('count').value}', softWrap: false, textAlign: TextAlign.right)),
                     Cell(child: Text('${item.value('cost').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: costColor))),
-                    Cell(child: Text('${item.value('paid').value}', softWrap: false, textAlign: TextAlign.right)),
-                    Cell(child: Text('${item.value('distributed').value}', softWrap: false, textAlign: TextAlign.right)),
-                    Cell(child: Text('${item.value('to_refound').value}', softWrap: false, textAlign: TextAlign.right)),
-                    Cell(child: Text('${item.value('refounded').value}', softWrap: false, textAlign: TextAlign.right)),
+                    Cell(child: Text('${item.value('paid').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: paidColor))),
+                    Cell(child: Text('${item.value('distributed').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: distributedColor))),
+                    Cell(child: Text('${item.value('to_refound').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: toRefoundColor))),
+                    Cell(child: Text('${item.value('refounded').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: refoundedColor))),
                     Cell(child: Text('${item.value('description').value}', softWrap: false, overflow: TextOverflow.fade)),
                   ],
                 );
