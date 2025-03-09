@@ -294,7 +294,7 @@ class _PaymentBodyState extends State<PaymentBody> {
                 content: Text('Завершена успешно'),
               );
             case Err<ApiReply, Failure>(: final error):
-              await showInfoDialog(
+              showInfoDialog(
                 context: context,
                 title: Text('Оплата'),
                 content: Text('Ошибка: $error'),
@@ -305,7 +305,7 @@ class _PaymentBodyState extends State<PaymentBody> {
           _log.warning('.build.IconButton.onPressed.then | Payment error $error');
         },
       )
-      .whenComplete(() async {
+      .whenComplete(() {
         _fetch();
       });
   }
