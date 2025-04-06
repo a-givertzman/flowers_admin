@@ -6,6 +6,7 @@ import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
+import 'package:flowers_admin/src/presentation/purchase_item_page/widgets/edit_purchase_item_form.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
@@ -138,7 +139,23 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   @override
   Widget build(BuildContext context) {
     _log.debug('.build | ');
-    return TableWidget(
+    return TableWidget<EntryPurchaseItem, void>(
+      addAction: TableWidgetAction(
+        onPressed: (schema) {
+          return showDialog<Result<EntryPurchaseItem, void>?>(
+            context: context, 
+            builder: (_) => EditPurchaseItemForm(fields: schema.fields, relations: schema.relations),
+          ).then((result) {
+            // _log.debug('.build | new entry: $result');
+            return switch (result) {
+              Ok(:final value) => Ok(value),
+              Err(:final error) => Err(error),
+              _ => const Err(null),
+            };
+          });
+        }, 
+        icon: const Icon(Icons.add),
+      ),
       fetchAction: TableWidgetAction(
         onPressed: (schema) {
           return Future.value(Ok(EntryPurchaseItem.empty()));

@@ -10,6 +10,7 @@ import 'package:flowers_admin/src/infrostructure/payment/entry_pay_customer.dart
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_payment.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
+import 'package:flowers_admin/src/presentation/dialogues/info_dialog.dart';
 import 'package:flowers_admin/src/presentation/payment_page/widgets/check_box_field.dart';
 import 'package:flowers_admin/src/presentation/payment_page/widgets/check_list_widget.dart';
 import 'package:flowers_admin/src/presentation/payment_page/widgets/overlay_progress_indicator.dart';
@@ -290,10 +291,10 @@ class _PaymentBodyState extends State<PaymentBody> {
               await showInfoDialog(
                 context: context,
                 title: Text('Оплата'),
-                content: Text('Оплата завершена успешно'),
+                content: Text('Завершена успешно'),
               );
             case Err<ApiReply, Failure>(: final error):
-              await showInfoDialog(
+              showInfoDialog(
                 context: context,
                 title: Text('Оплата'),
                 content: Text('Ошибка: $error'),
@@ -304,11 +305,8 @@ class _PaymentBodyState extends State<PaymentBody> {
           _log.warning('.build.IconButton.onPressed.then | Payment error $error');
         },
       )
-      .whenComplete(() async {
+      .whenComplete(() {
         _fetch();
-        // setState(() {
-        //   _isLoading = false;
-        // });
       });
   }
   //
@@ -452,50 +450,4 @@ class _PaymentBodyState extends State<PaymentBody> {
     _schema.close();
     super.dispose();
   }
-}
-///
-///
-Future<Result<void, void>> showConfirmDialog(BuildContext context, Widget title, Widget content) {
-  return showDialog<Result>(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: title,
-      content: content,
-      actions: [
-        TextButton(
-          child: Text('Cancel'.inRu),
-          onPressed:  () {
-            Navigator.pop(context, const Err(null));
-          },
-        ),
-        TextButton(
-          child: Text('Yes'.inRu),
-          onPressed:  () {
-            Navigator.pop(context, const Ok(null));
-          },
-        ),
-      ],              
-    ),
-  )
-  .then((value) => value ?? const Err(null));
-}
-///
-///
-Future<Result<void, void>> showInfoDialog({required BuildContext context, Widget? title, Widget? content}) {
-  return showDialog<Result>(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: title,
-      content: content,
-      actions: [
-        TextButton(
-          child: Text('Ok'.inRu),
-          onPressed:  () {
-            Navigator.pop(context, const Err(null));
-          },
-        ),
-      ],              
-    ),
-  )
-  .then((value) => value ?? const Err(null));
 }
