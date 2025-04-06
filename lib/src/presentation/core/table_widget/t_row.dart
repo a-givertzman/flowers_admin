@@ -94,7 +94,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     final textStile = !isDeleted
       ? Theme.of(context).textTheme.bodyMedium 
       : Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4),
+          color: Theme.of(context).textTheme.bodyMedium?.color?.withValue(alpha: 0.4),
         );
     return GestureDetector(
       // behavior: HitTestBehavior.deferToChild,
@@ -141,7 +141,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
                 child: Align(
                   alignment: Alignment.center,
                   child: Divider(
-                    color: Theme.of(context).colorScheme.error.withOpacity(0.5),
+                    color: Theme.of(context).colorScheme.error.withValue(alpha: 0.5),
                   ),
                 ),
               ),

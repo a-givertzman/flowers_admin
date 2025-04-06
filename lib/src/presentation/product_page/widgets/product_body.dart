@@ -1,4 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/core/error/failure.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product_category.dart';
@@ -70,7 +71,7 @@ class _ProductBodyState extends State<ProductBody> {
           authToken: _authToken, 
           database: _database, 
           updateSqlBuilder: EntryProduct.updateSqlBuilder,
-          // insertSqlBuilder: insertSqlBuilderProduct,
+          insertSqlBuilder: EntryProduct.insertSqlBuilder,
           emptyEntryBuilder: EntryProduct.empty, 
           debug: true,
         ),
@@ -140,17 +141,20 @@ class _ProductBodyState extends State<ProductBody> {
       editAction: TableWidgetAction(
         onPressed: (schema) {
           final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
-          return showDialog<Result<EntryProduct, void>?>(
-            context: context, 
-            builder: (_) => EditProductForm(fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
-          ).then((result) {
-            _log.debug('.build | edited entry: $result');
-            return switch (result) {
-              Ok(:final value) => Ok(value),
-              Err(:final error) => Err(error),
-              _ => const Err(null),
-            };
-          });
+          if (toBeUpdated.isNotEmpty) {
+            return showDialog<Result<EntryProduct, void>?>(
+              context: context, 
+              builder: (_) => EditProductForm(fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
+            ).then((result) {
+              _log.debug('.build | edited entry: $result');
+              return switch (result) {
+                Ok(:final value) => Ok(value),
+                Err(:final error) => Err(error),
+                _ => const Err(null),
+              };
+            });
+          }
+          return Future.value(Err(null));
         }, 
         icon: const Icon(Icons.add),
       ),      

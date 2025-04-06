@@ -64,9 +64,9 @@ class _AddProductFormState extends State<AddTransactionForm> {
     _relations = relations;
   ///
   ///
-  Field field(String key) {
+  Field _field(String key) {
     return _fields.firstWhere((element) => element.key == key, orElse: () {
-      return Field(key: key);
+      return Field(key: key) as Field<EntryTransaction>;
     },);
   }
   //
@@ -74,7 +74,8 @@ class _AddProductFormState extends State<AddTransactionForm> {
   @override
   Widget build(BuildContext context) {
     _entry.update('author_id', _user.id);
-    final customerField = field('customer_id');
+    _log.debug('.build | Fields: $_fields');
+    final customerField = _field('customer_id');
     _log.debug('.build | customerField: $customerField');
     _log.debug('.build | _relations: $_relations');
     EditListEntry customerRelation = EditListEntry(entries: _relations[customerField.relation.id] ?? [], field: customerField.relation.field);
@@ -104,7 +105,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           editable: false,
                         ),
                         TextEditWidget(
-                          labelText: field('value').title.inRu,
+                          labelText: _field('value').title.inRu,
                           value: '${_entry.value('value').value}',
                           onComplete: (value) {
                             _entry.update('value', value);
@@ -112,7 +113,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           },
                         ),
                         TextEditWidget(
-                          labelText: field('details').title.inRu,
+                          labelText: _field('details').title.inRu,
                           value: '${_entry.value('details').value}',
                           onComplete: (value) {
                             _entry.update('details', value);
@@ -134,7 +135,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                         ),
                         textWithLabel(
                           context: context,
-                          labelText: field('customer_account').title.inRu,
+                          labelText: _field('customer_account').title.inRu,
                           value:_customerAccount ?? '',
                           enable: false,
                         ),
@@ -147,7 +148,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                         //   },
                         // ),
                         TextEditWidget(
-                          labelText: field('description').title.inRu,
+                          labelText: _field('description').title.inRu,
                           value: '${_entry.value('description').value}',
                           onComplete: (value) {
                             _entry.update('description', value);

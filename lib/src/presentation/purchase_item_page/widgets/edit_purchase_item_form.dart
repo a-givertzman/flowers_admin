@@ -105,17 +105,18 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                                TCellList(
-                                  id: '${_entry.value('product_category_id').value}',
-                                  relation: relation,
-                                  editable: categoryField.isEditable,
-                                  // style: textStyle,
-                                  // labelText: field('category').title.inRu,
-                                  onComplete: (value) {
-                                    _entry.update('product_category_id', value);
-                                    setState(() {return;});
-                                  },
-                                ),
+                                // TODO! Was commented by AL on 6.04.25, to be fixed
+                                // TCellList(
+                                //   id: '${_entry.value('product_category_id').value}',
+                                //   relation: relation,
+                                //   editable: categoryField.isEditable,
+                                //   // style: textStyle,
+                                //   // labelText: field('category').title.inRu,
+                                //   onComplete: (value) {
+                                //     _entry.update('product_category_id', value);
+                                //     setState(() {return;});
+                                //   },
+                                // ),
                                 TextEditWidget(
                                   labelText: field('name').title.inRu,
                                   value: '${_entry.value('name').value}',

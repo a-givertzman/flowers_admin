@@ -85,7 +85,7 @@ class EntryProduct implements SchemaEntryAbstract {
   @override
   String toString() => _entry.toString();
   ///
-  ///
+  /// Update SQL
   static Sql updateSqlBuilder(Sql sql, EntryProduct entry) {
     final m = {
       if (entry.value('id').isChanged) ...{'id': entry.value('id').str},
@@ -102,54 +102,42 @@ class EntryProduct implements SchemaEntryAbstract {
     };
     final keys = m.keys.toList().join(',');
     final values = m.values.toList().join(',');
-    return Sql(sql: """UPDATE product SET (
-      $keys
-    ) = (
-      $values
-    )
-    WHERE id = ${entry.value('id').str};
-  """);
+    return Sql(sql: """UPDATE public.product SET (
+        $keys
+      ) = (
+        $values
+      )
+      WHERE id = ${entry.value('id').str};
+    """);
+  }
+  ///
+  /// Insert SQL
+  static Sql insertSqlBuilder(Sql sql, EntryProduct entry) {
+    return Sql(sql: """insert into public.product (
+        id,
+        product_category_id,
+        name,
+        details,
+        primary_price,
+        primary_currency,
+        primary_order_quantity,
+        order_quantity,
+        description,
+        picture,
+      ) values (
+        ${entry.value('id').str},
+        ${entry.value('product_category_id').str},
+        ${entry.value('name').str},
+        ${entry.value('details').str},
+        ${entry.value('primary_price').str},
+        ${entry.value('primary_currency').str},
+        ${entry.value('primary_order_quantity').str},
+        ${entry.value('order_quantity').str},
+        ${entry.value('description').str},
+        ${entry.value('picture').str},
+    )""");
   }
 }
-
-
-
-
-
-
-
-// ///
-// /// === ORIGINAL ===
-// Sql updateSqlBuilderProduct(Sql sql, EntryProduct entry) {
-//   return Sql(sql: """UPDATE product SET (
-//     id,
-//     product_category_id,
-//     name,
-//     details,
-//     primary_price,
-//     primary_currency,
-//     primary_order_quantity,
-//     order_quantity,
-//     description,
-//     picture,
-//     created,
-//     updated,
-//     deleted
-//   ) = (
-//     ${entry.value('id').str},
-//     ${entry.value('product_category_id').str},
-//     ${entry.value('name').str},
-//     ${entry.value('details').str},
-//     ${entry.value('primary_price').str},
-//     ${entry.value('primary_currency').str},
-//     ${entry.value('primary_order_quantity').str},
-//     ${entry.value('order_quantity').str},
-//     ${entry.value('description').str},
-//     ${entry.value('picture').str},
-//     ${entry.value('created').str},
-//     ${entry.value('updated').str},
-//     ${entry.value('deleted').str}
-//   )
-//   WHERE id = ${entry.value('id').str};
-// """);
-// }
+        // ${entry.value('created').str},
+        // ${entry.value('updated').str},
+        // ${entry.value('deleted').str},

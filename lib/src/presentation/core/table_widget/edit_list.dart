@@ -81,7 +81,7 @@ class _EditListState extends State<EditList> {
     final defaultStyle = Theme.of(context).textTheme.bodyLarge;
     final style = _editable
       ? _style ?? defaultStyle
-      : (_style ?? defaultStyle)?.copyWith(color: (_style ?? defaultStyle)?.color?.withOpacity(0.5));
+      : (_style ?? defaultStyle)?.copyWith(color: (_style ?? defaultStyle)?.color?.withValue(alpha: 0.5));
     if (_isEditing) {
       return DropdownButtonFormField(
             value: _id,

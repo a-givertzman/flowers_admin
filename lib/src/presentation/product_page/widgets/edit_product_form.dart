@@ -55,16 +55,16 @@ class _EditProductFormState extends State<EditProductForm> {
     _relations = relations;
   ///
   ///
-  Field field(String key) {
+  Field _field(String key) {
     return _fields.firstWhere((element) => element.key == key, orElse: () {
-      return Field(key: key);
+      return Field(key: key) as Field<EntryProduct>;
     },);
   }
   //
   //
   @override
   Widget build(BuildContext context) {
-    final categoryField = field('product_category_id');
+    final categoryField = _field('product_category_id');
     _log.debug('.build | categoryField: $categoryField');
     _log.debug('.build | _relations: $_relations');
     EditListEntry relation = EditListEntry(entries: [], field: categoryField.relation.field);
@@ -81,7 +81,7 @@ class _EditProductFormState extends State<EditProductForm> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${InRu('Edit customer')} ${_entry.value('name')}', style: Theme.of(context).textTheme.titleLarge,),
+              Text('${InRu('Edit product')} ${_entry.value('name').str}', style: Theme.of(context).textTheme.titleLarge,),
               Row(
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -90,7 +90,7 @@ class _EditProductFormState extends State<EditProductForm> {
                       shrinkWrap: true,
                       children: [
                                 LoadImageWidget(
-                                  labelText: field('picture').title.inRu,
+                                  labelText: _field('picture').title.inRu,
                                   src: '${_entry.value('picture').value}',
                                   onComplete: (value) {
                                     _entry.update('picture', value);
@@ -117,7 +117,7 @@ class _EditProductFormState extends State<EditProductForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('name').title.inRu,
+                                  labelText: _field('name').title.inRu,
                                   value: '${_entry.value('name').value}',
                                   onComplete: (value) {
                                     _entry.update('name', value);
@@ -125,7 +125,7 @@ class _EditProductFormState extends State<EditProductForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('details').title.inRu,
+                                  labelText: _field('details').title.inRu,
                                   value: '${_entry.value('details').value}',
                                   onComplete: (value) {
                                     _entry.update('details', value);
@@ -133,7 +133,7 @@ class _EditProductFormState extends State<EditProductForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('primary_price').title.inRu,
+                                  labelText: _field('primary_price').title.inRu,
                                   value: '${_entry.value('primary_price').value}',
                                   onComplete: (value) {
                                     _entry.update('primary_price', value);
@@ -141,7 +141,7 @@ class _EditProductFormState extends State<EditProductForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('primary_currency').title.inRu,
+                                  labelText: _field('primary_currency').title.inRu,
                                   value: '${_entry.value('primary_currency').value}',
                                   onComplete: (value) {
                                     _entry.update('primary_currency', value);
@@ -149,7 +149,7 @@ class _EditProductFormState extends State<EditProductForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('primary_order_quantity').title.inRu,
+                                  labelText: _field('primary_order_quantity').title.inRu,
                                   value: '${_entry.value('primary_order_quantity').value}',
                                   onComplete: (value) {
                                     _entry.update('primary_order_quantity', value);
@@ -157,7 +157,7 @@ class _EditProductFormState extends State<EditProductForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('order_quantity').title.inRu,
+                                  labelText: _field('order_quantity').title.inRu,
                                   value: '${_entry.value('order_quantity').value}',
                                   onComplete: (value) {
                                     _entry.update('order_quantity', value);
@@ -165,7 +165,7 @@ class _EditProductFormState extends State<EditProductForm> {
                                   },
                                 ),
                                 TextEditWidget(
-                                  labelText: field('description').title.inRu,
+                                  labelText: _field('description').title.inRu,
                                   value: '${_entry.value('description').value}',
                                   onComplete: (value) {
                                     _entry.update('description', value);
