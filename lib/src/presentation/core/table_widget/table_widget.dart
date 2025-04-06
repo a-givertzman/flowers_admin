@@ -268,6 +268,11 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
           entry: entry,
           fields: schema.fields,
           relations: schema.relations,
+          onSelectionChange: (entry) {
+            // setState(() {
+              
+            // });
+          },
           onEditingComplete: _updateEntry,
           onDoubleTap: () async {
             final onPressed = _editAction.onPressed;

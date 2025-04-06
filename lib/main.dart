@@ -18,7 +18,7 @@ void main() async {
   const apiAuthToken = '';
   runZonedGuarded(
     () async {
-      Log.initialize(level: LogLevel.trace);
+      Log.initialize(level: LogLevel.debug);
       WidgetsFlutterBinding.ensureInitialized();
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
           setWindowTitle('Flowers | Admin');

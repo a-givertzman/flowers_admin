@@ -12,7 +12,7 @@ class OverlayProgressIndicator extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      color: Colors.black.withValue(alpha: 0.3),
+      color: Colors.black.withValues(alpha: 0.3),
       child: Center(
         child: CircularProgressIndicator.adaptive(),
       ),

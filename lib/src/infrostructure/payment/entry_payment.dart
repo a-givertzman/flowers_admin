@@ -80,6 +80,12 @@ class EntryPayment implements SchemaEntryAbstract {
   //
   //
   @override
+  void selectionChanged(Function(bool isSelected) onChanged) {
+    _entry.selectionChanged(onChanged);
+  }
+  //
+  //
+  @override
   void saved() => _entry.saved();
   //
   //

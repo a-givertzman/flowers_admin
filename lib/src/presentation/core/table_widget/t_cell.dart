@@ -139,7 +139,7 @@ class _TCellState extends State<TCell> {
               child: Container(
                 decoration: BoxDecoration(
                   // border: _onEnter ? Border.all() : Border.all(color: Colors.transparent),
-                  boxShadow: _onEnter ? [BoxShadow(color: Colors.grey.withValue(alpha: 0.2), spreadRadius: 1, blurRadius: 4)]  : null,
+                  boxShadow: _onEnter ? [BoxShadow(color: Colors.grey.withValues(alpha: 0.2), spreadRadius: 1, blurRadius: 4)]  : null,
                 ),
                 child: Text(
                   _controller.text,

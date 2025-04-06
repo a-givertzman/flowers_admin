@@ -4,7 +4,7 @@ import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry
 import 'package:flowers_admin/src/presentation/core/table_widget/t_cell.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
 import 'package:flutter/material.dart';
-// import 'package:hmi_core/hmi_core_log.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 
 ///
 ///
@@ -54,7 +54,7 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
 //
 //
 class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
-  // late final Log _log;
+  late final Log _log;
   final T? _entry;
   final Map<String, List<SchemaEntryAbstract>> _relations;
   final List<Field> _fields;
@@ -62,8 +62,17 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   final void Function()? _onDoubleTap;
   final void Function(T? entry)? _onSelectionChange;
   final void Function(T entry)? _onEditingComplete;
-  bool _isSelected;
   bool _onEnter = false;
+  //
+  //
+  @override
+  void initState() {
+    _entry?.selectionChanged((bool isSelected) {
+      _log.trace('.initState | selectionChanged: ${_entry?.value('name').str} - ${isSelected ? 'isSelected' : 'isNotSelected'} ${_entry?.isSelected}');
+      if (mounted) setState(() {return;});
+    });
+    super.initState();
+  }
   ///
   ///
   _TRowState({
@@ -78,13 +87,12 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     _entry = entry,
     _relations = relations,
     _fields = fields,
-    _isSelected = entry?.isSelected ?? false,
     _onTap = onTap,
     _onDoubleTap = onDoubleTap,
     _onSelectionChange = onSelectionChange,
-    _onEditingComplete = onEditingComplete; //{
-    // _log = Log('$runtimeType');
-    // }
+    _onEditingComplete = onEditingComplete {
+    _log = Log('$runtimeType');
+    }
   //
   //
   @override
@@ -94,7 +102,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     final textStile = !isDeleted
       ? Theme.of(context).textTheme.bodyMedium 
       : Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Theme.of(context).textTheme.bodyMedium?.color?.withValue(alpha: 0.4),
+          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
         );
     return GestureDetector(
       // behavior: HitTestBehavior.deferToChild,
@@ -103,19 +111,16 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
       // canRequestFocus: false,
       onTap: () {
         if (!isDeleted) {
-          _isSelected = ! _isSelected;
-          _entry?.select(_isSelected);
+          _entry?.select(!(_entry?.isSelected ?? true));
           final onSelectionChange = _onSelectionChange;
           if (onSelectionChange != null) onSelectionChange(_entry);
-          setState(() {return;});
           final onTap = _onTap;
           if (onTap != null) onTap();
         }
       },
       onDoubleTap: () {
         if (!isDeleted) {
-          _isSelected = true;
-          _entry?.select(_isSelected);
+          _entry?.select(true);
           final onSelectionChange = _onSelectionChange;
           if (onSelectionChange != null) onSelectionChange(_entry);
           setState(() {return;});
@@ -141,14 +146,14 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
                 child: Align(
                   alignment: Alignment.center,
                   child: Divider(
-                    color: Theme.of(context).colorScheme.error.withValue(alpha: 0.5),
+                    color: Theme.of(context).colorScheme.error.withValues(alpha: 0.5),
                   ),
                 ),
               ),
             Container(
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                color: _isSelected ? Colors.blue.withAlpha(128) : null,
+                color: _entry?.isSelected ?? false ? Colors.blue.withAlpha(128) : null,
                 border: _onEnter ? Border.all(color: Theme.of(context).primaryColor) : Border.all(color: Colors.transparent),
               ),
               child: IntrinsicHeight(
