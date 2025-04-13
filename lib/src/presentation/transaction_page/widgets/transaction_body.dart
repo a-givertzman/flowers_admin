@@ -102,6 +102,7 @@ class _TransactionBodyState extends State<TransactionBody> {
           Field(hidden: false, editable: false, title: '${InRu('Customer')}', key: 'customer_id', relation: const Relation(id: 'customer_id', field: 'name')),
           Field(hidden: false, editable: false, title: '${InRu('CustomerAccountBefore')}', key: 'customer_account'),
           Field(hidden: false, editable: true, title: '${InRu('Description')}', key: 'description'),
+          Field(hidden: false, editable: false, title: '${InRu('Allow indebted')}', key: 'allow_indebted'),
           Field(hidden: false, editable: false, title: '${InRu('Created')}', key: 'created'),
           const Field(hidden: true, editable: false, key: 'updated'),
           const Field(hidden: true, editable: false, key: 'deleted'),
@@ -207,7 +208,7 @@ class _TransactionBodyState extends State<TransactionBody> {
               context, 
               const Text('Delete Product'), 
               Text('Are you sure want to delete transaction:\n${'amount'.inRu}: ${toBeDeleted.value('value').str}\n${'of'.inRu}: ${toBeDeleted.value('updated').str}'),
-              _user.role == AppUserRole.admin,
+              [AppUserRole.admin].contains(_user.role),
             ).then((value) {
               return switch (value) {
                 Ok(value :final allowIndebted) => Ok((bool allowIndebted, EntryTransaction toBeDeleted) {
@@ -247,7 +248,7 @@ Future<Result<bool?, void>> showConfirmDialog(BuildContext context, title, conte
         TextButton(
           child: const Text("Cancel"),
           onPressed:  () {
-            Navigator.pop(context, const Err(null));
+            Navigator.pop(context, const Err<bool?, void>(null));
           },
         ),
         TextButton(
@@ -265,5 +266,5 @@ Future<Result<bool?, void>> showConfirmDialog(BuildContext context, title, conte
         ),
       ],
     ),
-  ).then((value) => value ?? const Err(null));
+  ).then((value) => value ?? const Err<bool?, void>(null));
 }

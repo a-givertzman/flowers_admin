@@ -136,8 +136,9 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         setState(() {return;});
                       },
                     ),
-                    Checkbox(
-                      semanticLabel: 'Blocked'.inRu,
+                    CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text('Blocked'.inRu),
                       value: _entry.value('blocked').value ?? false, 
                       onChanged: (value) {
                         _entry.update('blocked', value ?? false);
@@ -170,6 +171,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     ),
                     TextEditWidget(
                       labelText: 'deleted'.inRu,
+                      editable: [AppUserRole.admin].contains(_user.role),
                       value: '${_entry.value('deleted').value}',
                       onComplete: (value) {
                         _entry.update('deleted', value);

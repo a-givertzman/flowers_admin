@@ -183,6 +183,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
                           ),
                         if ([AppUserRole.admin].contains(_user.role))
                           CheckboxListTile(
+                            enabled: _field('allow_indebted').isEditable,
                             contentPadding: EdgeInsets.zero,
                             title: Text('Allow indebted'.inRu),
                             value: _entry.value('allow_indebted').value ?? false, 
