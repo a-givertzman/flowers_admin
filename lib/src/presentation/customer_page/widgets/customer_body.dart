@@ -137,22 +137,23 @@ class _CustomerBodyState extends State<CustomerBody> {
       ),
       editAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeUpdated = schema.entries.values.where(
-            (e) {
-              return e.isSelected;
-            },
-          ).toList();
-          return showDialog<Result<EntryCustomer, void>?>(
-            context: context, 
-            builder: (_) => EditCustomerForm(user: _user, entry: toBeUpdated.lastOrNull),
-          ).then((result) {
-            _log.debug('.build | edited entry: $result');
-            return switch (result) {
-              Ok(:final value) => Ok(value),
-              Err(:final error) => Err(error),
-              _ => const Err(null),
-            };
-          });
+          final toBeUpdated = schema.entries.values.where((e) {
+            return e.isSelected;
+          }).toList();
+          if (toBeUpdated.isNotEmpty) {
+            return showDialog<Result<EntryCustomer, void>?>(
+              context: context, 
+              builder: (_) => EditCustomerForm(user: _user, entry: toBeUpdated.lastOrNull),
+            ).then((result) {
+              _log.debug('.build | edited entry: $result');
+              return switch (result) {
+                Ok(:final value) => Ok(value),
+                Err(:final error) => Err(error),
+                _ => const Err(null),
+              };
+            });
+          }
+          return Future.value(Err(null));
         }, 
         icon: const Icon(Icons.add),
       ),      

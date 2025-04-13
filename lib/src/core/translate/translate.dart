@@ -24,7 +24,9 @@ enum Lang {
 const tr = {
   'name': {Lang.en: 'name', Lang.ru: 'имя'},
   'Edit customer': {Lang.en: 'Edit customer', Lang.ru: 'Редактировать пользователя'},
+  'Create customer': {Lang.en: 'Create customer', Lang.ru: 'Создать пользователя'},
   'Edit transaction': {Lang.en: 'Edit transaction', Lang.ru: 'Редактировать транзакцию'},
+  'Create transaction': {Lang.en: 'Create transaction', Lang.ru: 'Создать транзакцию'},
   'Edit product': {Lang.en: 'Edit product', Lang.ru: 'Редактировать товар'},
   'New transaction': {Lang.en: 'New transaction', Lang.ru: 'Новая транзакция'},
   'from': {Lang.en: 'from', Lang.ru: 'от'},

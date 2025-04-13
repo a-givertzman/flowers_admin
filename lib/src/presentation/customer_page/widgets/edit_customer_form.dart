@@ -48,6 +48,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
   //
   @override
   Widget build(BuildContext context) {
+    final title = _entry.isEmpty ? InRu('Create customer') : InRu('Edit customer');
     final editableRole = [AppUserRole.admin].contains(_user.role);
     final editableLogin = [AppUserRole.admin].contains(_user.role);
     final editablePass = [AppUserRole.admin].contains(_user.role);
@@ -55,153 +56,151 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Scaffold(
-        body: Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('${InRu('Edit customer')} ${_entry.value('name')}', style: Theme.of(context).textTheme.titleLarge,),
-                Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      const LoadImageWidget(src: 'https://drive.google.com/uc?export=view&id=19gswvDI6xJod7kWm4cgRpqYbb2duiKB4',),
-                      TextEditWidget(
-                        editable: editableRole,
-                        labelText: 'role'.inRu,
-                        value: '${_entry.value('role').value}',
-                        onComplete: (value) {
-                          _entry.update('role', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: 'email'.inRu,
-                        value: '${_entry.value('email').value}',
-                        onComplete: (value) {
-                          _entry.update('email', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: 'phone'.inRu,
-                        value: '${_entry.value('phone').value}',
-                        onComplete: (value) {
-                          _entry.update('phone', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: 'name'.inRu,
-                        value: '${_entry.value('name').value}',
-                        onComplete: (value) {
-                          _entry.update('name', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: 'location'.inRu,
-                        value: '${_entry.value('location').value}',
-                        onComplete: (value) {
-                          _entry.update('location', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        editable: editableLogin,
-                        labelText: 'login'.inRu,
-                        value: '${_entry.value('login').value}',
-                        onComplete: (value) {
-                          _entry.update('login', value);
-                          _log.debug('.TextEditWidget.onComplete | enrty: $_entry');
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        editable: editablePass,
-                        labelText: 'pass'.inRu,
-                        value: '${_entry.value('pass').value}',
-                        onComplete: (value) {
-                          _entry.update('pass', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        editable: editableAccount,
-                        labelText: 'account'.inRu,
-                        value: '${_entry.value('account').value}',
-                        onComplete: (value) {
-                          _entry.update('account', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      Checkbox(
-                        semanticLabel: 'Blocked'.inRu,
-                        value: _entry.value('blocked').value ?? false, 
-                        onChanged: (value) {
-                          _entry.update('blocked', value ?? false);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: 'last_act'.inRu,
-                        value: '${_entry.value('last_act').value}',
-                        onComplete: (value) {
-                          _entry.update('last_act', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: 'created'.inRu,
-                        value: '${_entry.value('created').value}',
-                        onComplete: (value) {
-                          _entry.update('created', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: 'updated'.inRu,
-                        value: '${_entry.value('updated').value}',
-                        onComplete: (value) {
-                          _entry.update('updated', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: 'deleted'.inRu,
-                        value: '${_entry.value('deleted').value}',
-                        onComplete: (value) {
-                          _entry.update('deleted', value);
-                          setState(() {return;});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('$title ${_entry.value('name').str}', style: Theme.of(context).textTheme.titleLarge,),
+              Expanded(
+                child: ListView(
+                  shrinkWrap: true,
                   children: [
-                    TextButton(
-                      onPressed:  () {
-                        Navigator.pop(context, const Err<EntryCustomer, void>(null));
+                    const LoadImageWidget(src: 'https://drive.google.com/uc?export=view&id=19gswvDI6xJod7kWm4cgRpqYbb2duiKB4',),
+                    TextEditWidget(
+                      editable: editableRole,
+                      labelText: 'role'.inRu,
+                      value: '${_entry.value('role').value}',
+                      onComplete: (value) {
+                        _entry.update('role', value);
+                        setState(() {return;});
                       },
-                      child: const Text("Cancel"),
                     ),
-                    TextButton(
-                      onPressed: _entry.isChanged 
-                        ? () {
-                          _log.debug('.TextButton.Yes | _isChanged: ${_entry.isChanged}');
-                          _log.debug('.TextButton.Yes | enrty: $_entry');
-                          Navigator.pop(context, Ok<EntryCustomer, void>(_entry));
-                        } 
-                        : null,
-                      child: const Text("Yes"),
+                    TextEditWidget(
+                      labelText: 'email'.inRu,
+                      value: '${_entry.value('email').value}',
+                      onComplete: (value) {
+                        _entry.update('email', value);
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      labelText: 'phone'.inRu,
+                      value: '${_entry.value('phone').value}',
+                      onComplete: (value) {
+                        _entry.update('phone', value);
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      labelText: 'name'.inRu,
+                      value: '${_entry.value('name').value}',
+                      onComplete: (value) {
+                        _entry.update('name', value);
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      labelText: 'location'.inRu,
+                      value: '${_entry.value('location').value}',
+                      onComplete: (value) {
+                        _entry.update('location', value);
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      editable: editableLogin,
+                      labelText: 'login'.inRu,
+                      value: '${_entry.value('login').value}',
+                      onComplete: (value) {
+                        _entry.update('login', value);
+                        _log.debug('.TextEditWidget.onComplete | enrty: $_entry');
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      editable: editablePass,
+                      labelText: 'pass'.inRu,
+                      value: '${_entry.value('pass').value}',
+                      onComplete: (value) {
+                        _entry.update('pass', value);
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      editable: editableAccount,
+                      labelText: 'account'.inRu,
+                      value: '${_entry.value('account').value}',
+                      onComplete: (value) {
+                        _entry.update('account', value);
+                        setState(() {return;});
+                      },
+                    ),
+                    Checkbox(
+                      semanticLabel: 'Blocked'.inRu,
+                      value: _entry.value('blocked').value ?? false, 
+                      onChanged: (value) {
+                        _entry.update('blocked', value ?? false);
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      labelText: 'last_act'.inRu,
+                      value: '${_entry.value('last_act').value}',
+                      onComplete: (value) {
+                        _entry.update('last_act', value);
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      labelText: 'created'.inRu,
+                      value: '${_entry.value('created').value}',
+                      onComplete: (value) {
+                        _entry.update('created', value);
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      labelText: 'updated'.inRu,
+                      value: '${_entry.value('updated').value}',
+                      onComplete: (value) {
+                        _entry.update('updated', value);
+                        setState(() {return;});
+                      },
+                    ),
+                    TextEditWidget(
+                      labelText: 'deleted'.inRu,
+                      value: '${_entry.value('deleted').value}',
+                      onComplete: (value) {
+                        _entry.update('deleted', value);
+                        setState(() {return;});
+                      },
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed:  () {
+                      Navigator.pop(context, const Err<EntryCustomer, void>(null));
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: _entry.isChanged 
+                      ? () {
+                        _log.debug('.TextButton.Yes | _isChanged: ${_entry.isChanged}');
+                        _log.debug('.TextButton.Yes | enrty: $_entry');
+                        Navigator.pop(context, Ok<EntryCustomer, void>(_entry));
+                      } 
+                      : null,
+                    child: const Text("Yes"),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
