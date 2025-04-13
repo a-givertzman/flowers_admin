@@ -180,17 +180,20 @@ class _TransactionBodyState extends State<TransactionBody> {
       editAction: TableWidgetAction(
         onPressed: (schema) {
           final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
-          return showDialog<Result<EntryTransaction, void>?>(
-            context: context, 
-            builder: (_) => EditTransactionForm(user: _user, fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
-          ).then((result) {
-            _log.debug('.build | edited entry: $result');
-            return switch (result) {
-              Ok(:final value) => Ok(value),
-              Err(:final error) => Err(error),
-              _ => const Err(null),
-            };
-          });
+          if (toBeUpdated.isNotEmpty) {
+            return showDialog<Result<EntryTransaction, void>?>(
+              context: context, 
+              builder: (_) => EditTransactionForm(user: _user, fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
+            ).then((result) {
+              _log.debug('.build | edited entry: $result');
+              return switch (result) {
+                Ok(:final value) => Ok(value),
+                Err(:final error) => Err(error),
+                _ => const Err(null),
+              };
+            });
+          }
+          return Future.value(Err(null));
         }, 
         icon: const Icon(Icons.add),
       ),      
@@ -204,9 +207,15 @@ class _TransactionBodyState extends State<TransactionBody> {
               context, 
               const Text('Delete Product'), 
               Text('Are you sure want to delete transaction:\n${'amount'.inRu}: ${toBeDeleted.value('value').str}\n${'of'.inRu}: ${toBeDeleted.value('updated').str}'),
+              _user.role == AppUserRole.admin,
             ).then((value) {
               return switch (value) {
-                Ok() => Ok(toBeDeleted),
+                Ok(value :final allowIndebted) => Ok((bool allowIndebted, EntryTransaction toBeDeleted) {
+                  if (allowIndebted) {
+                    toBeDeleted.update('allow_indebted', true);
+                  }
+                  return toBeDeleted;
+                }(allowIndebted ?? false, toBeDeleted)),
                 Err(:final error) => Err(error),
               };
             });
@@ -228,8 +237,8 @@ class _TransactionBodyState extends State<TransactionBody> {
 }
 ///
 ///
-Future<Result<void, void>> showConfirmDialog(BuildContext context, title, content) {
-  return showDialog<Result>(
+Future<Result<bool?, void>> showConfirmDialog(BuildContext context, title, content, bool isAdmin) {
+  return showDialog<Result<bool?, void>>(
     context: context,
     builder: (_) => AlertDialog(
       title: title,
@@ -247,7 +256,14 @@ Future<Result<void, void>> showConfirmDialog(BuildContext context, title, conten
             Navigator.pop(context, const Ok(null));
           },
         ),
-      ],              
+
+        TextButton(
+          child: Text('Yes (${InRu('Allow indebted')})'),
+          onPressed:  () {
+            Navigator.pop(context, const Ok(true));
+          },
+        ),
+      ],
     ),
   ).then((value) => value ?? const Err(null));
 }

@@ -1,5 +1,6 @@
 
 import 'package:flowers_admin/src/core/translate/translate.dart';
+import 'package:flowers_admin/src/presentation/core/hover_builder.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flutter/material.dart';
 ///
@@ -103,6 +104,10 @@ class _EditListState extends State<EditList> {
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV),
               labelText: _labelText,
+              filled: true,
+              fillColor: Colors.transparent,
+              hoverColor: Theme.of(context).hoverColor,
+
             ),
           );
     }
@@ -118,12 +123,19 @@ class _EditListState extends State<EditList> {
                   '$_labelText',
                   style: Theme.of(context).inputDecorationTheme.labelStyle ?? Theme.of(context).textTheme.bodySmall,
                 ),
-              Text(
-                _id != null ? _relation.value(_id) : '${InRu('NotSampled')}',
-                style: _isChanged 
-                  ? style?.copyWith(color: Theme.of(context).colorScheme.error)
-                  : style,
-                textAlign: _textAlign,
+              HoverBuilder(
+                builder: (BuildContext context, bool isHovered) {
+                  return Text(
+                    _id != null ? _relation.value(_id) : '${InRu('NotSampled')}',
+                    style: _isChanged 
+                      ? style?.copyWith(
+                        backgroundColor: isHovered ? Theme.of(context).hoverColor : null,
+                        color: Theme.of(context).colorScheme.error,
+                      )
+                      : style,
+                    textAlign: _textAlign,
+                  );
+                }
               ),
             ],
           ),

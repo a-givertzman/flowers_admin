@@ -27,7 +27,7 @@ begin
 	call log_info(format('del_transaction | 	name_         : ' || name_));	
 	call log_info(format('del_transaction | 	account_before: ' || account_before));	
 	call log_info(format('del_transaction | 	account_      : ' || account_));	
-    if (not allow_indebted and account_before > 0.0) or (allow_indebted) THEN
+    if (not allow_indebted and account_before >= 0.0) or (allow_indebted) THEN
 		-- revert customer account 
 		execute 'update public.customer SET account = ' || account_before 
 			|| ' where id = ' || customer_id_;

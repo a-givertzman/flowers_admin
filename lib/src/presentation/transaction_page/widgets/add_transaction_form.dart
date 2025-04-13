@@ -156,8 +156,9 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           },
                         ),
                         if ([AppUserRole.admin].contains(_user.role))
-                          Checkbox(
-                            semanticLabel: 'Allow indebted'.inRu,
+                          CheckboxListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text('Allow indebted'.inRu),
                             value: _entry.value('allow_indebted').value ?? false, 
                             onChanged: (value) {
                               _entry.update('allow_indebted', value ?? false);

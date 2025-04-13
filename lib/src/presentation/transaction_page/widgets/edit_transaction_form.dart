@@ -87,6 +87,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
     if (customerRelEntries != null) {
       customerRelation = EditListEntry(entries: customerRelEntries, field: customerField.relation.field);
     }
+    final created = DateTime.tryParse(_entry.value('created').value?.toString() ?? '') ?? 'No date'.inRu;
     _log.debug('.build | customerRelation: $customerRelation');
     return Padding(
       padding: const EdgeInsets.all(64.0),
@@ -96,7 +97,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${InRu('Edit transaction')} [${_entry.value('id').str}] ${InRu('from')} ${_entry.value('created').str}', style: Theme.of(context).textTheme.titleLarge,),
+              Text('${InRu('Edit transaction')} [${_entry.value('id').str}] ${InRu('from')} $created', style: Theme.of(context).textTheme.titleLarge,),
               Row(
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -181,8 +182,9 @@ class _EditProductFormState extends State<EditTransactionForm> {
                             editable: _field('deleted').isEditable,
                           ),
                         if ([AppUserRole.admin].contains(_user.role))
-                          Checkbox(
-                            semanticLabel: 'Allow indebted'.inRu,
+                          CheckboxListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text('Allow indebted'.inRu),
                             value: _entry.value('allow_indebted').value ?? false, 
                             onChanged: (value) {
                               _entry.update('allow_indebted', value ?? false);

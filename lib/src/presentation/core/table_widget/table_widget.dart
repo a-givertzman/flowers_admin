@@ -90,6 +90,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
             Tooltip(
               message: 'Show deleted'.inRu,
               child: Checkbox(
+                // title: Text(InRu('Show deleted').toString()),
                 value: showDeleted,
                 onChanged: (value) {
                   setState(() {

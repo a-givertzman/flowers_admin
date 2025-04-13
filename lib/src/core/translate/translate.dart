@@ -57,6 +57,8 @@ const tr = {
   'Paid': {Lang.en: 'Paid', Lang.ru: 'Оплачено'},
   'Cost': {Lang.en: 'Cost', Lang.ru: 'Стоимость'},
   'Distributed': {Lang.en: 'Distributed', Lang.ru: 'Выдано'},
+  'No date': {Lang.en: 'No date', Lang.ru: 'Нет даты'},
+  'Allow indebted': {Lang.en: 'Allow indebted', Lang.ru: 'Разрешить долг'},
 };
 ///
 /// Simple translate

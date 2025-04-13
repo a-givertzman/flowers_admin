@@ -26,3 +26,8 @@ enum AppUserRole {
     }
   }
 }
+extension ParseToString on AppUserRole {
+  String get str {
+    return toString().split('.').last;
+  }
+}

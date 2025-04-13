@@ -1,5 +1,6 @@
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/presentation/customer_order_page/customer_order_page.dart';
 import 'package:flowers_admin/src/presentation/customer_page/customer_page.dart';
 import 'package:flowers_admin/src/presentation/payment_page/payment_page.dart';
@@ -75,89 +76,105 @@ class _HomeBodyState extends State<HomeBody> {
           // ),
           tabs: tabs,
         ),
-        body: TabBarView(
+        body: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            //
-            // Customer Page
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: _paddingV,
-                horizontal: _paddingH,
-              ),
-              child: CustomerPage(
-                authToken: _authToken,
-                user: _user,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("${_user.name} | ${_user.role.str}"),
+                )
+              ],
             ),
-            //
-            // Transaction Page
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: _paddingV,
-                horizontal: _paddingH,
-              ),
-              child: TransactionPage(
-                authToken: _authToken,
-                user: _user,
-              ),
-            ),
-            //
-            // Product category Page
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: _paddingV,
-                horizontal: _paddingH,
-              ),
-              child: ProductCategoryPage(authToken: _authToken),
-            ),
-            //
-            // - Page
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: _paddingV,
-                horizontal: _paddingH,
-              ),
-              child: ProductPage(
-                authToken: _authToken,
-              ),
-            ),
-            //
-            // - Page
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: _paddingV,
-                horizontal: _paddingH,
-              ),
-              child: PurchasePage(authToken: _authToken),
-            ),
-            //
-            // PurchaseItem Page
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: _paddingV,
-                horizontal: _paddingH,
-              ),
-              child: PurchaseItemPage(authToken: _authToken),
-            ),
-            //
-            // CustomerOrder Page
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: _paddingV,
-                horizontal: _paddingH,
-              ),
-              child: CustomerOrderPage(authToken: _authToken),
-            ),
-            //
-            // Payment Page
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: _paddingV,
-                horizontal: _paddingH,
-              ),
-              child: PaymentPage(
-                authToken: _authToken,
-                user: _user,
+            Expanded(
+              child: TabBarView(
+                children: [
+                  //
+                  // Customer Page
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: _paddingV,
+                      horizontal: _paddingH,
+                    ),
+                    child: CustomerPage(
+                      authToken: _authToken,
+                      user: _user,
+                    ),
+                  ),
+                  //
+                  // Transaction Page
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: _paddingV,
+                      horizontal: _paddingH,
+                    ),
+                    child: TransactionPage(
+                      authToken: _authToken,
+                      user: _user,
+                    ),
+                  ),
+                  //
+                  // Product category Page
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: _paddingV,
+                      horizontal: _paddingH,
+                    ),
+                    child: ProductCategoryPage(authToken: _authToken),
+                  ),
+                  //
+                  // - Page
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: _paddingV,
+                      horizontal: _paddingH,
+                    ),
+                    child: ProductPage(
+                      authToken: _authToken,
+                    ),
+                  ),
+                  //
+                  // - Page
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: _paddingV,
+                      horizontal: _paddingH,
+                    ),
+                    child: PurchasePage(authToken: _authToken),
+                  ),
+                  //
+                  // PurchaseItem Page
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: _paddingV,
+                      horizontal: _paddingH,
+                    ),
+                    child: PurchaseItemPage(authToken: _authToken),
+                  ),
+                  //
+                  // CustomerOrder Page
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: _paddingV,
+                      horizontal: _paddingH,
+                    ),
+                    child: CustomerOrderPage(authToken: _authToken),
+                  ),
+                  //
+                  // Payment Page
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: _paddingV,
+                      horizontal: _paddingH,
+                    ),
+                    child: PaymentPage(
+                      authToken: _authToken,
+                      user: _user,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

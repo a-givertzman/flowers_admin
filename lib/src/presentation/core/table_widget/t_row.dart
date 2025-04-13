@@ -68,7 +68,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   @override
   void initState() {
     _entry?.selectionChanged((bool isSelected) {
-      _log.trace('.initState | selectionChanged: ${_entry?.value('name').str} - ${isSelected ? 'isSelected' : 'isNotSelected'} ${_entry?.isSelected}');
+      _log.trace('.initState | selectionChanged: $_entry - ${isSelected ? 'isSelected' : 'isNotSelected'} ${_entry?.isSelected}');
       if (mounted) setState(() {return;});
     });
     super.initState();
