@@ -59,6 +59,7 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Row(
           children: [
@@ -107,10 +108,11 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
             },
             errorBuilder: (context, error, stackTrace) {
               return Center(
-                child: Text(
-                  'Invalid link'.inRu,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.error),
-                ),
+                child: Image.asset('assets/images/indoor-plants.png'),
+                // Text(
+                //   'Invalid link'.inRu,
+                //   style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.error),
+                // ),
               );
             },
           ),

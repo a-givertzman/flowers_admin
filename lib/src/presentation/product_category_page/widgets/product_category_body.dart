@@ -120,11 +120,7 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
         onPressed: (schema) {
           return showDialog<Result<EntryProductCategory, void>?>(
             context: context, 
-            builder: (_) => EditProductCategoryForm(
-              user: widget.user,
-              fields: schema.fields,
-              relations: schema.relations,
-            ),
+            builder: (_) => EditProductCategoryForm(user: widget.user, fields: schema.fields, relations: schema.relations),
           ).then((result) {
             // _log.debug('.build | new entry: $result');
             return switch (result) {
@@ -136,28 +132,28 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
         }, 
         icon: const Icon(Icons.add),
       ),
-      // editAction: TableWidgetAction(
-      //   onPressed: (schema) {
-      //     final toBeUpdated = schema.entries.values.where((e) {
-      //       return e.isSelected;
-      //     }).toList();
-      //     if (toBeUpdated.isNotEmpty) {
-      //       return showDialog<Result<EntryCustomer, void>?>(
-      //         context: context, 
-      //         builder: (_) => EditCustomerForm(user: _user, entry: toBeUpdated.lastOrNull),
-      //       ).then((result) {
-      //         _log.debug('.build | edited entry: $result');
-      //         return switch (result) {
-      //           Ok(:final value) => Ok(value),
-      //           Err(:final error) => Err(error),
-      //           _ => const Err(null),
-      //         };
-      //       });
-      //     }
-      //     return Future.value(Err(null));
-      //   }, 
-      //   icon: const Icon(Icons.add),
-      // ),      
+      editAction: TableWidgetAction(
+        onPressed: (schema) {
+          final toBeUpdated = schema.entries.values.where((e) {
+            return e.isSelected;
+          }).toList();
+          if (toBeUpdated.isNotEmpty) {
+            return showDialog<Result<EntryProductCategory, void>?>(
+              context: context, 
+              builder: (_) => EditProductCategoryForm(user: widget.user, fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
+            ).then((result) {
+              _log.debug('.build | edited entry: $result');
+              return switch (result) {
+                Ok(:final value) => Ok(value),
+                Err(:final error) => Err(error),
+                _ => const Err(null),
+              };
+            });
+          }
+          return Future.value(Err(null));
+        }, 
+        icon: const Icon(Icons.add),
+      ),      
       // delAction: TableWidgetAction(
       //   onPressed: (schema) {
       //     final toBeDeleted = schema.entries.values.firstWhereOrNull((e) {

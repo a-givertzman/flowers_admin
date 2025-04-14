@@ -48,7 +48,7 @@ class EditList extends StatefulWidget {
 //
 class _EditListState extends State<EditList> {
   // final _log = Log("$_EditListState._");
-  String? _id;
+  String _id;
   final EditListEntry _relation;
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
@@ -69,7 +69,7 @@ class _EditListState extends State<EditList> {
     required String? labelText,
     required bool editable,
   }) :
-    _id = id,
+    _id = id ?? '',
     _relation = relation,
     _style = style,
     _onComplete = onComplete,
@@ -85,8 +85,8 @@ class _EditListState extends State<EditList> {
       : (_style ?? defaultStyle)?.copyWith(color: (_style ?? defaultStyle)?.color?.withValues(alpha: 0.5));
     if (_isEditing) {
       return DropdownButtonFormField(
-            value: _id,
-            items: _relation.entry.entries.map((entry) {
+            value: _relation.value(_id).isNotEmpty ? _id : '',
+            items: {...{'': '---'}, ..._relation.entry}.entries.map((entry) {
               return DropdownMenuItem(
                 value: entry.key,
                 child: Text(
@@ -125,8 +125,9 @@ class _EditListState extends State<EditList> {
                 ),
               HoverBuilder(
                 builder: (BuildContext context, bool isHovered) {
+                  final rel = _relation.value(_id);
                   return Text(
-                    _id != null ? _relation.value(_id) : '${InRu('NotSampled')}',
+                    _id.isNotEmpty ? (rel.isNotEmpty ? rel : '${InRu('Not sampled')}') : '${InRu('Not sampled')}',
                     style: _isChanged 
                       ? style?.copyWith(
                         backgroundColor: isHovered ? Theme.of(context).hoverColor : null,

@@ -35,15 +35,13 @@ class TCellList extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: EditList(
-        id: _id,
-        relation: _relation,
-        onComplete: _onComplete,
-        labelText: _labelText,
-        editable: _editable,
-        style: _style,
-      ),
+    return EditList(
+      id: _id,
+      relation: _relation,
+      onComplete: _onComplete,
+      labelText: _labelText,
+      editable: _editable,
+      style: _style,
     );
   }
 }

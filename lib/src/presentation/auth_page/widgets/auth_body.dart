@@ -91,11 +91,14 @@ class AuthBodyState extends State<AuthBody> {
                     if (snapshot.connectionState == ConnectionState.done) {
                       switch (snapshot.data) {
                         case Ok(value :final users):
+                          final oddItemColor = Theme.of(context).colorScheme.primary.withValues(alpha: 0.04);
+                          final evenItemColor = Theme.of(context).colorScheme.primary.withValues(alpha: 0.08);
                           return SizedBox(
                             width: 300.0,
-                            child: ListView.builder(
+                            child: ListView.separated(
                               shrinkWrap: true,
                               itemCount: users.length,
+                              separatorBuilder: (context, index) => const Divider(color: Colors.transparent,),
                               itemBuilder: (BuildContext context, int index) {
                                 final user = users[index];
                                 final userId = user.value('id').value;
@@ -118,6 +121,7 @@ class AuthBodyState extends State<AuthBody> {
                                       )),
                                     );
                                   },
+                                  tileColor: index.isOdd ? oddItemColor : evenItemColor,
                                   leading: Text('$userId'),
                                   title: Text(userName),
                                   subtitle: Text(userPhone),
