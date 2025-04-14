@@ -225,7 +225,7 @@ class _TransactionBodyState extends State<TransactionBody> {
         },
         icon: const Icon(Icons.add),
       ),
-        schema: _schema,
+      schema: _schema,
     );
   }
   //

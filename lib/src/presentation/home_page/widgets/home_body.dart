@@ -122,7 +122,10 @@ class _HomeBodyState extends State<HomeBody> {
                       vertical: _paddingV,
                       horizontal: _paddingH,
                     ),
-                    child: ProductCategoryPage(authToken: _authToken),
+                    child: ProductCategoryPage(
+                      authToken: _authToken,
+                      user: _user,
+                    ),
                   ),
                   //
                   // - Page

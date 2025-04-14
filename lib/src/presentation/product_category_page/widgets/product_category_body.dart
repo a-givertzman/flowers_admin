@@ -1,49 +1,41 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product_category.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 ///
-///
+/// View/Edit the categories of the `Product`
 class ProductCategoryBody extends StatefulWidget {
-  final String _authToken;
+  final String authToken;
+  final AppUser user;
   ///
   ///
   const ProductCategoryBody({
     super.key,
-    required String authToken,
-  }):
-    _authToken = authToken;
+    required this.authToken,
+    required this.user,
+  });
   //
   //
   @override
-  // ignore: no_logic_in_create_state
-  State<ProductCategoryBody> createState() => _ProductCategoryBodyState(
-    authToken: _authToken,
-  );
+  State<ProductCategoryBody> createState() => _ProductCategoryBodyState();
 }
 //
 //
 class _ProductCategoryBodyState extends State<ProductCategoryBody> {
   late final Log _log;
-  final String _authToken;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   late final RelationSchema<EntryProductCategory, void> _schema;
   //
   //
-  _ProductCategoryBodyState({
-    required String authToken,
-  }):
-    _authToken = authToken {
-      _log = Log("$runtimeType");
-    }
-  //
-  //
   @override
   void initState() {
+    _log = Log("$runtimeType");
     _schema = _buildSchema();
     super.initState();
   }
@@ -54,7 +46,7 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
       schema: TableSchema<EntryProductCategory, void>(
         read: SqlRead<EntryProductCategory, void>.keep(
           address: _apiAddress,
-          authToken: _authToken,
+          authToken: widget.authToken,
           database: _database,
           sqlBuilder: (sql, params) {
             return Sql(sql: 'select * from product_category order by id;');
@@ -65,7 +57,7 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
         ),
         write: SqlWrite<EntryProductCategory>.keep(
           address: _apiAddress,
-          authToken: _authToken,
+          authToken: widget.authToken,
           database: _database,
           updateSqlBuilder: EntryProductCategory.updateSqlBuilder,
           // insertSqlBuilder: EntryProductCategory.insertSqlBuilder,
@@ -94,7 +86,7 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
       'category_id': TableSchema<EntryProductCategory, void>(
         read: SqlRead<EntryProductCategory, void>(
           address: _apiAddress,
-          authToken: _authToken,
+          authToken: widget.authToken,
           database: _database,
           sqlBuilder: (sql, params) {
             return Sql(sql: 'select id, name from product_category order by id;');
@@ -115,7 +107,9 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
   Widget build(BuildContext context) {
     _log.debug('.build | ');
     return TableWidget(
+      showDeleted: [AppUserRole.admin].contains(widget.user.role) ? false : null,
       schema: _schema,
+
     );
   }
   //
