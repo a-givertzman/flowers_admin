@@ -14,45 +14,33 @@ import 'package:hmi_core/hmi_core_log.dart';
 ///
 ///
 class HomeBody extends StatefulWidget {
-  final String _authToken;
-  final AppUser _user;
+  final String authToken;
+  final AppUser user;
   ///
   ///
   const HomeBody({
     super.key,
-    required String authToken,
-    required AppUser user,
-  })  : _authToken = authToken,
-        _user = user;
+    required this.authToken,
+    required this.user,
+  });
   //
   //
   @override
-  // ignore: no_logic_in_create_state
-  State<HomeBody> createState() => _HomeBodyState(
-        authToken: _authToken,
-        user: _user,
-      );
+  State<HomeBody> createState() => _HomeBodyState();
 }
 //
 //
 class _HomeBodyState extends State<HomeBody> {
   final _log = Log("$_HomeBodyState._");
-  final String _authToken;
-  final AppUser _user;
   final _paddingH = 8.0;
   final _paddingV = 8.0;
-  //
-  //
-  _HomeBodyState({
-    required String authToken,
-    required AppUser user,
-  })  : _authToken = authToken,
-        _user = user;
   //
   //
   @override
   Widget build(BuildContext context) {
     _log.debug('.build | ');
+    final user = widget.user;
+    final authToken = widget.authToken;
     final tabHeadesStyle = Theme.of(context).textTheme.headlineSmall;
     final tabs = [
       Tab(child: Text("Customers".inRu, style: tabHeadesStyle)),
@@ -84,7 +72,7 @@ class _HomeBodyState extends State<HomeBody> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("${_user.name} | ${_user.role.str}"),
+                  child: Text("${user.name} | ${user.role.str}"),
                 )
               ],
             ),
@@ -99,8 +87,8 @@ class _HomeBodyState extends State<HomeBody> {
                       horizontal: _paddingH,
                     ),
                     child: CustomerPage(
-                      authToken: _authToken,
-                      user: _user,
+                      authToken: authToken,
+                      user: user,
                     ),
                   ),
                   //
@@ -111,8 +99,8 @@ class _HomeBodyState extends State<HomeBody> {
                       horizontal: _paddingH,
                     ),
                     child: TransactionPage(
-                      authToken: _authToken,
-                      user: _user,
+                      authToken: authToken,
+                      user: user,
                     ),
                   ),
                   //
@@ -123,8 +111,8 @@ class _HomeBodyState extends State<HomeBody> {
                       horizontal: _paddingH,
                     ),
                     child: ProductCategoryPage(
-                      authToken: _authToken,
-                      user: _user,
+                      authToken: authToken,
+                      user: user,
                     ),
                   ),
                   //
@@ -135,7 +123,7 @@ class _HomeBodyState extends State<HomeBody> {
                       horizontal: _paddingH,
                     ),
                     child: ProductPage(
-                      authToken: _authToken,
+                      authToken: authToken,
                     ),
                   ),
                   //
@@ -145,7 +133,7 @@ class _HomeBodyState extends State<HomeBody> {
                       vertical: _paddingV,
                       horizontal: _paddingH,
                     ),
-                    child: PurchasePage(authToken: _authToken),
+                    child: PurchasePage(authToken: authToken),
                   ),
                   //
                   // PurchaseItem Page
@@ -154,7 +142,7 @@ class _HomeBodyState extends State<HomeBody> {
                       vertical: _paddingV,
                       horizontal: _paddingH,
                     ),
-                    child: PurchaseItemPage(authToken: _authToken),
+                    child: PurchaseItemPage(authToken: authToken),
                   ),
                   //
                   // CustomerOrder Page
@@ -163,7 +151,7 @@ class _HomeBodyState extends State<HomeBody> {
                       vertical: _paddingV,
                       horizontal: _paddingH,
                     ),
-                    child: CustomerOrderPage(authToken: _authToken),
+                    child: CustomerOrderPage(authToken: authToken),
                   ),
                   //
                   // Payment Page
@@ -173,8 +161,8 @@ class _HomeBodyState extends State<HomeBody> {
                       horizontal: _paddingH,
                     ),
                     child: PaymentPage(
-                      authToken: _authToken,
-                      user: _user,
+                      authToken: authToken,
+                      user: user,
                     ),
                   ),
                 ],
