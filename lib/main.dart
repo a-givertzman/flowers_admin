@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flowers_admin/src/app_widget.dart';
 import 'package:flowers_admin/src/core/log/log.dart';
 import 'package:flowers_admin/src/core/log/log_level.dart';
+import 'package:flowers_admin/src/core/settings/settings.dart';
 import 'package:hmi_core/hmi_core_json.dart';
 import 'package:hmi_core/hmi_core_text_file.dart';
 import 'package:flowers_admin/src/core/settings/app_settings.dart';
@@ -15,7 +16,6 @@ import 'package:window_size/window_size.dart';
 ///
 ///
 void main() async {
-  const apiAuthToken = '';
   runZonedGuarded(
     () async {
       Log.initialize(level: LogLevel.debug);
@@ -57,8 +57,9 @@ void main() async {
         ),
       );
       // final appThemeSwitch = AppThemeSwitch();
+      final apiAuthToken = Setting('api-auth-token').toString();
       runApp(
-        const AppWidget(
+        AppWidget(
           // themeSwitch: appThemeSwitch,
           authToken: apiAuthToken,
         ),

@@ -1,4 +1,5 @@
 {
+    "api-auth-token": "---",
     "api-database": "flowers_app",
     "api-host": "0.0.0.0",
     "api-host_": "127.0.0.1",
