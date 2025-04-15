@@ -33,7 +33,7 @@ class EditCustomerForm extends StatefulWidget {
 //
 //
 class _EditCustomerFormState extends State<EditCustomerForm> {
-  final _log = Log("$_EditCustomerFormState._");
+  final _log = Log("$_EditCustomerFormState");
   //
   //
   ///
@@ -56,7 +56,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
     final editablePass = [AppUserRole.admin].contains(user.role);
     final editableAccount = [AppUserRole.admin].contains(user.role);
     final roleEntries = AppUserRole.values.asMap().map((i, role) {
-      return MapEntry('$i', EntryCustomer(map: {'id': FieldValue('$i'), 'role': FieldValue(role.str)}));
+      return MapEntry(role.str, EntryCustomer(map: {'id': FieldValue(role.str), 'role': FieldValue(role.str)}));
     },);
     return Padding(
       padding: const EdgeInsets.all(64.0),
@@ -78,8 +78,9 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       editable: editableRole,
                       // style: textStyle,
                       labelText: _field('role', fields).title.inRu,
-                      onComplete: (value) {
-                        final role = roleEntries[value];
+                      onComplete: (id) {
+                        final role = roleEntries[id]?.value('role').value;
+                        _log.debug('build.onComplete | role: $role');
                         if (role != null) {
                           entry.update('role', role);
                           setState(() {return;});
