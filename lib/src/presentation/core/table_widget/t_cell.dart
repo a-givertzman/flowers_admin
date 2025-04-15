@@ -139,6 +139,8 @@ class _TCellState extends State<TCell> {
                   _controller.text,
                   style: style?.copyWith(color: _isChanged ? Colors.blue : null),
                   textAlign: _textAlign,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),

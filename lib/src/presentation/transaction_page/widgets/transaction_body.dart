@@ -94,22 +94,40 @@ class _TransactionBodyState extends State<TransactionBody> {
           // deleteSqlBuilder: 
         ),
         fields: [
-          const Field(hidden: false, editable: false, key: 'id'),
-          Field(hidden: false, editable: editableAuthor, title: '${InRu('Author')}', key: 'author_id', relation: const Relation(id: 'author_id', field: 'name')),
-          Field(hidden: false, editable: editableValue, title: '${InRu('Value')}', key: 'value'),
-          Field(hidden: false, editable: editableDetails, title: '${InRu('TransactionDetails')}', key: 'details'),
-          const Field(hidden: true, editable: true, key: 'order_id'),
-          Field(hidden: false, editable: false, title: '${InRu('Customer')}', key: 'customer_id', relation: const Relation(id: 'customer_id', field: 'name')),
-          Field(hidden: false, editable: false, title: '${InRu('CustomerAccountBefore')}', key: 'customer_account'),
-          Field(hidden: false, editable: true, title: '${InRu('Description')}', key: 'description'),
-          Field(hidden: false, editable: false, title: '${InRu('Allow indebted')}', key: 'allow_indebted'),
-          Field(hidden: false, editable: false, title: '${InRu('Created')}', key: 'created'),
-          const Field(hidden: true, editable: false, key: 'updated'),
-          const Field(hidden: true, editable: false, key: 'deleted'),
+          const Field(flex: 03, hidden: false, editable: false, key: 'id'),
+                Field(flex: 07, hidden: false, editable: editableAuthor, title: '${InRu('Author')}', key: 'author_id', relation: const Relation(id: 'author_id', field: 'name')),
+                Field(flex: 05, hidden: false, editable: editableValue, title: '${InRu('Value')}', key: 'value'),
+                Field(flex: 20, hidden: false, editable: editableDetails, title: '${InRu('TransactionDetails')}', key: 'details'),
+          const Field(flex: 10, hidden: true, editable: true, key: 'order_id'),
+                Field(flex: 07, hidden: false, editable: false, title: '${InRu('Customer')}', key: 'customer_id', relation: const Relation(id: 'customer_id', field: 'name')),
+                Field(flex: 05, hidden: false, editable: false, title: '${InRu('CustomerAccountBefore')}', key: 'customer_account'),
+                Field(flex: 05, hidden: false, editable: true, title: '${InRu('Description')}', key: 'description'),
+                Field(flex: 05, hidden: false, editable: false, title: '${InRu('Allow indebted')}', key: 'allow_indebted'),
+                Field(flex: 05, hidden: false, editable: false, title: '${InRu('Created')}', key: 'created', builder: _cratedBuilder),
+          const Field(flex: 05, hidden: true, editable: false, key: 'updated'),
+          const Field(flex: 05, hidden: true, editable: false, key: 'deleted'),
         ],
       ),
       relations: _relations(),                  
     );    
+  }
+  ///
+  ///
+  Widget _cratedBuilder(BuildContext context, SchemaEntryAbstract entry) {
+    final dt = DateTime.tryParse('${entry.value('created').value}');
+    if (dt != null) {
+      return Text('${dt.day}.${dt.month}.${dt.year} | ${dt.hour}:${dt.minute}:${dt.second}');
+      // return Column(
+      //   children: [
+      //     Text('${dt.day}.${dt.month}.${dt.year}'),
+      //     Text(
+      //       '${dt.hour}:${dt.minute}:${dt.second}',
+      //       style: Theme.of(context).textTheme.labelSmall,
+      //     ),
+      //   ]
+      // );
+    }
+    return Text('');
   }
   ///
   /// Builds Table schema relations
