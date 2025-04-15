@@ -6,7 +6,8 @@
 create type public."customer_role_enum" as enum (
     'admin',
     'operator',
-    'customer'
+    'customer',
+    'guest'
 );
 -- 
 -- Create public.customer table

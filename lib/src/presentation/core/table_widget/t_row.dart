@@ -156,11 +156,9 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
                 color: _entry?.isSelected ?? false ? Colors.blue.withAlpha(128) : null,
                 border: _onEnter ? Border.all(color: Theme.of(context).primaryColor) : Border.all(color: Colors.transparent),
               ),
-              child: IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _buildRow(context, _fields, _entry, textStile),
-                ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: _buildRow(context, _fields, _entry, textStile),
               ),
             ),
           ],
@@ -202,6 +200,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             editable: field.isEditable,
             style: textStyle,
             onComplete: (value) => _onComplete(value, field),
+            flex: field.flex,
           );
         }
         if (field.relation.isEmpty) {
@@ -210,6 +209,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             editable: field.isEditable,
             style: textStyle,
             onComplete: (value) => _onComplete(value, field),
+            flex: field.flex,
           );
         } else {
           final List<SchemaEntryAbstract>? relEntries = _relations[field.relation.id];
@@ -224,12 +224,14 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
               editable: field.isEditable,
               style: textStyle,
               onComplete: (value) => _onComplete(value, field),
+              flex: field.flex,
             );
           }
           return TCell(
             value: field.title.isNotEmpty ? field.title : field.key,
             editable: false,
             style: textStyle,
+            flex: field.flex,
           );
         }
   }

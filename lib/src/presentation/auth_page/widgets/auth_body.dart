@@ -51,7 +51,7 @@ class AuthBodyState extends State<AuthBody> {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        backgroundColor: Colors.blueGrey  ,
+        backgroundColor: Colors.blueGrey,
         body: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,

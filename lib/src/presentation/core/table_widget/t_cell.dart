@@ -5,95 +5,86 @@ import 'package:flutter/material.dart';
 ///
 ///
 class TCell extends StatefulWidget {
-  final String _value;
-  final TextStyle? _style;
-  final void Function(String value)? _onComplete;
+  final String value;
+  final TextStyle? style;
+  final void Function(String value)? onComplete;
   final Widget Function(BuildContext, SchemaEntryAbstract)? _builder;
-  final SchemaEntryAbstract? _entry;
-  final bool _editable;
+  final SchemaEntryAbstract? entry;
+  final bool editable;
+  final int flex;
   ///
   ///
   const TCell({
     super.key,
-    String value = '',
-    TextStyle? style,
-    void Function(String value)? onComplete,
-    bool editable = true,
+    this.value = '',
+    this.style,
+    this.onComplete,
+    this.editable = true,
+    this.flex = 1,
   }) :
-    _value = value,
-    _style = style,
-    _onComplete = onComplete,
     _builder = null,
-    _entry = null,
-    _editable = editable;
+    entry = null;
   ///
   ///
   const TCell.builder({
     super.key,
-    String value = '',
-    TextStyle? style,
-    void Function(String value)? onComplete,
+    this.value = '',
+    this.style,
+    this.onComplete,
     required Widget Function(BuildContext, SchemaEntryAbstract)? builder,
-    required SchemaEntryAbstract entry,
-    bool editable = true,
+    required SchemaEntryAbstract this.entry,
+    this.editable = true,
+    this.flex = 1,
   }) :
-    _value = value,
-    _style = style,
-    _onComplete = onComplete,
-    _builder = builder,
-    _entry = entry,
-    _editable = editable;
+    _builder = builder;
   //
   //
   @override
-  // ignore: no_logic_in_create_state
-  State<TCell> createState() => _TCellState(
-    value: _value,
-    style: _style,
-    onComplete: _onComplete,
-    editable: _editable,
-  );
+  State<TCell> createState() => _TCellState();
 }
 //
 //
 class _TCellState extends State<TCell> {
   // final _log = Log("$_TCellState._");
-  final TextEditingController _controller;
-  final TextStyle? _style;
-  final void Function(String value)? _onComplete;
-  final bool _editable;
+  late final TextEditingController _controller;
   final _textPaddingV = 8.0;
   final _textPaddingH = 16.0;
   final _textAlign = TextAlign.left;
-  final String _value;
   bool _isEditing = false;
   bool _isChanged = false;
   bool _onEnter = false;
-  _TCellState({
-    required String value,
-    required TextStyle? style,
-    required void Function(String value)? onComplete,
-    required bool editable,
-  }) :
-    _value = value,
-    _controller = TextEditingController.fromValue(TextEditingValue(text: value)),
-    _style = style,
-    _onComplete = onComplete,
-    _editable = editable;
+  //
+  //
+  @override
+  void initState() {
+    _controller = TextEditingController.fromValue(TextEditingValue(text: widget.value));
+    super.initState();
+  }
+  //
+  //
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
   //
   //
   @override
   Widget build(BuildContext context) {
+    final TextStyle? style = widget.style;
+    final flex = widget.flex;
+    final bool editable = widget.editable;
     final builder = widget._builder;
-    final entry = widget._entry;
+    final entry = widget.entry;
     if (builder != null && entry != null) {
       return Expanded(child: builder(context, entry));
     }
     return Expanded(
+      flex: flex,
       child: _isEditing
         ? TextField(
           controller: _controller,
-          style: _style,
+          style: style,
           textAlign: _textAlign,
            decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
@@ -104,7 +95,7 @@ class _TCellState extends State<TCell> {
           ),
           onChanged: (value) {
             setState(() {
-              _isChanged = value != _value;
+              _isChanged = value != widget.value;
             });
           },
           onTapOutside: (_) {
@@ -130,7 +121,7 @@ class _TCellState extends State<TCell> {
             child: GestureDetector(
               // behavior: HitTestBehavior.translucent,
               onTap: () {
-                if (_editable) {
+                if (editable) {
                   setState(() {
                     _isEditing = true;
                   });
@@ -143,7 +134,7 @@ class _TCellState extends State<TCell> {
                 ),
                 child: Text(
                   _controller.text,
-                  style: _style?.copyWith(color: _isChanged ? Colors.blue : null),
+                  style: style?.copyWith(color: _isChanged ? Colors.blue : null),
                   textAlign: _textAlign,
                 ),
               ),
@@ -159,8 +150,8 @@ class _TCellState extends State<TCell> {
       _isEditing = false;
       _onEnter = false;
     });
-    if (value != _value) {
-      final onComplete = _onComplete;
+    if (value != widget.value) {
+      final onComplete = widget.onComplete;
       if (onComplete != null) onComplete(value);
     }
   }

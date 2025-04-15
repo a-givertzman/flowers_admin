@@ -12,6 +12,7 @@ class TCellListWidget extends StatelessWidget {
   // final void Function(String value)? _onSelectionChange;
   final String? _labelText;
   final bool _editable;
+  final int flex;
   ///
   ///
   TCellListWidget({
@@ -23,6 +24,7 @@ class TCellListWidget extends StatelessWidget {
     // void Function(String value)? onSelectionChange,
     String? labelText,
     bool editable = true,
+    this.flex = 1,
   }) :
     _id = id,
     _relation = relation ?? EditListEntry.empty(),
@@ -35,13 +37,16 @@ class TCellListWidget extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    return TEditListWidget(
-      id: _id,
-      relation: _relation,
-      onComplete: _onComplete,
-      labelText: _labelText,
-      editable: _editable,
-      style: _style,
+    return Expanded(
+      flex: flex,
+      child: TEditListWidget(
+        id: _id,
+        relation: _relation,
+        onComplete: _onComplete,
+        labelText: _labelText,
+        editable: _editable,
+        style: _style,
+      ),
     );
   }
 }

@@ -31,7 +31,7 @@ class HomeBody extends StatefulWidget {
 //
 //
 class _HomeBodyState extends State<HomeBody> {
-  final _log = Log("$_HomeBodyState._");
+  final _log = Log("$_HomeBodyState");
   final _paddingH = 8.0;
   final _paddingV = 8.0;
   //
@@ -55,27 +55,36 @@ class _HomeBodyState extends State<HomeBody> {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        appBar: TabBar(
-          indicatorColor: Colors.amber,
-          indicatorSize: TabBarIndicatorSize.tab,
-          isScrollable: true,
-          // indicator: BoxDecoration(
-          //   color: Theme.of(context).cardColor,
-          // ),
-          tabs: tabs,
+        appBar: AppBar(
+          backgroundColor: Colors.blueGrey,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("${user.name} | ${user.role.str}"),
+            )
+          ],
+          bottom: TabBar(
+            indicatorColor: Colors.amber,
+            indicatorSize: TabBarIndicatorSize.tab,
+            isScrollable: true,
+            // indicator: BoxDecoration(
+            //   color: Theme.of(context).cardColor,
+            // ),
+            tabs: tabs,
+          ),
         ),
         body: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("${user.name} | ${user.role.str}"),
-                )
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: Divider(),
+            //     )
+            //   ],
+            // ),
             Expanded(
               child: TabBarView(
                 children: [
