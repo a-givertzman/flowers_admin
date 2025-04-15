@@ -77,7 +77,10 @@ class _TCellState extends State<TCell> {
     final builder = widget._builder;
     final entry = widget.entry;
     if (builder != null && entry != null) {
-      return Expanded(child: builder(context, entry));
+      return Expanded(
+        flex: flex,
+        child: builder(context, entry),
+      );
     }
     return Expanded(
       flex: flex,

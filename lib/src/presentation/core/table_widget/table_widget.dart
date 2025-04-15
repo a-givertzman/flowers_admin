@@ -269,11 +269,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
           entry: entry,
           fields: schema.fields,
           relations: schema.relations,
-          onSelectionChange: (entry) {
-            // setState(() {
-              
-            // });
-          },
+          onSelectionChange: (entry) {},
           onEditingComplete: _updateEntry,
           onDoubleTap: () async {
             final onPressed = _editAction.onPressed;
@@ -323,31 +319,3 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ///
-  // ///
-  // List<Widget> _buildHead(List<Field> fields, textStyle) {
-  //   final cells = fields
-  //     .where((field) => !field.hidden)
-  //     .map((field) {
-  //       return TCell(
-  //         value: field.name,
-  //         style: textStyle,
-  //         editable: false,
-  //       );
-  //     }).toList();
-  //   return cells;
-  // }
