@@ -1,5 +1,5 @@
 
-import 'package:flowers_admin/src/presentation/core/table_widget/edit_list.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flutter/material.dart';
 ///
@@ -35,7 +35,7 @@ class TCellList extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    return EditList(
+    return TEditListWidget(
       id: _id,
       relation: _relation,
       onComplete: _onComplete,

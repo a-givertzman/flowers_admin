@@ -4,8 +4,8 @@ import 'package:flowers_admin/src/presentation/core/hover_builder.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flutter/material.dart';
 ///
-///
-class EditList extends StatefulWidget {
+/// Drop-downd editable list used in the form
+class TEditListWidget extends StatefulWidget {
   final String? _id;
   final EditListEntry _relation;
   final TextStyle? _style;
@@ -15,7 +15,7 @@ class EditList extends StatefulWidget {
   final bool _editable;
   ///
   ///
-  EditList({
+  TEditListWidget({
     super.key,
     required String? id,
     EditListEntry? relation,
@@ -35,7 +35,7 @@ class EditList extends StatefulWidget {
 
   @override
   // ignore: no_logic_in_create_state
-  State<EditList> createState() => _EditListState(
+  State<TEditListWidget> createState() => _TEditListWidgetState(
     id: _id,
     relation: _relation,
     style: _style,
@@ -46,7 +46,7 @@ class EditList extends StatefulWidget {
 }
 //
 //
-class _EditListState extends State<EditList> {
+class _TEditListWidgetState extends State<TEditListWidget> {
   // final _log = Log("$_EditListState._");
   String _id;
   final EditListEntry _relation;
@@ -61,7 +61,7 @@ class _EditListState extends State<EditList> {
   bool _isChanged = false;
   //
   //
-  _EditListState({
+  _TEditListWidgetState({
     required String? id,
     required EditListEntry relation,
     required TextStyle? style,

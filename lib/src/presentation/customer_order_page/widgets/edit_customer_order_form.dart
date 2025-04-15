@@ -2,9 +2,9 @@ import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
+import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/image_widget/load_image_widget/load_image_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
@@ -105,7 +105,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                                TCellList(
+                                EditListWidget(
                                   id: '${_entry.value('product_category_id').value}',
                                   relation: relation,
                                   editable: categoryField.isEditable,

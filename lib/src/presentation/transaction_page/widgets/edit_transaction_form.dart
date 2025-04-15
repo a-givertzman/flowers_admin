@@ -4,8 +4,8 @@ import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/entry_transaction.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
+import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
@@ -105,7 +105,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                        TCellList(
+                        EditListWidget(
                           labelText: '${InRu('Author')}',
                           id: '${_entry.value('author_id').value}',
                           relation: authorRelation,
@@ -133,7 +133,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
                             setState(() {return;});
                           },
                         ),
-                        TCellList(
+                        EditListWidget(
                           labelText: '${InRu('Customer')}',
                           id: '${_entry.value('customer_id').value}',
                           relation: customerRelation,

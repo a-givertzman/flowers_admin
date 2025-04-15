@@ -3,10 +3,9 @@ import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product_category.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
+import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/image_widget/load_image_widget/load_image_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
@@ -92,7 +91,7 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
                 child: ListView(
                   shrinkWrap: true,
                   children: [
-                    TCellList(
+                    EditListWidget(
                       id: '${entry.value('category_id').value}',
                       relation: relation,
                       editable: categoryField.isEditable,
