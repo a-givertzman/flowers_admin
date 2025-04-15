@@ -58,7 +58,6 @@ class _CustomerBodyState extends State<CustomerBody> {
   @override
   void initState() {
   _log.debug('.build | Create schema...');
-    final editableRole = [AppUserRole.admin].contains(_user.role);
     final editableLogin = [AppUserRole.admin].contains(_user.role);
     final editablePass = [AppUserRole.admin].contains(_user.role);
     final editableAccount = [AppUserRole.admin].contains(_user.role);
@@ -90,19 +89,19 @@ class _CustomerBodyState extends State<CustomerBody> {
       ),
       fields: [
         const Field(hidden: false, editable: false, key: 'id'),
-        Field(hidden: false, editable: editableRole, key: 'role'),
-        const Field(hidden: false, editable: true, key: 'email'),
-        const Field(hidden: false, editable: true, key: 'phone'),
-        const Field(hidden: false, editable: true, key: 'name'),
-        const Field(hidden: false, editable: true, key: 'location'),
-        Field(hidden: false, editable: editableLogin, key: 'login'),
-        Field(hidden: false, editable: editablePass, key: 'pass'),
-        Field(hidden: false, editable: editableAccount, key: 'account'),
-        const Field(hidden: false, editable: true, key: 'last_act'),
-        const Field(hidden: false, editable: true, key: 'blocked'),
-        const Field(hidden: true, editable: true, key: 'created'),
-        const Field(hidden: true, editable: true, key: 'updated'),
-        const Field(hidden: true, editable: true, key: 'deleted'),
+        const Field(hidden: false, editable: false, key: 'role', title: 'Role'),
+        const Field(hidden: false, editable: true, key: 'email', title: 'Email'),
+        const Field(hidden: false, editable: true, key: 'phone', title: 'Phone'),
+        const Field(hidden: false, editable: true, key: 'name', title: 'Name'),
+        const Field(hidden: false, editable: true, key: 'location', title: 'Location'),
+        Field(hidden: false, editable: editableLogin, key: 'login', title: 'Login'),
+        Field(hidden: false, editable: editablePass, key: 'pass', title: 'Pass'),
+        Field(hidden: false, editable: editableAccount, key: 'account', title: 'Account'),
+        const Field(hidden: false, editable: true, key: 'last_act', title: 'Last action'),
+        const Field(hidden: false, editable: true, key: 'blocked', title: 'Blocked'),
+        const Field(hidden: true, editable: true, key: 'created', title: 'Created'),
+        const Field(hidden: true, editable: true, key: 'updated', title: 'Updated'),
+        const Field(hidden: true, editable: true, key: 'deleted', title: 'Deleted'),
       ],
     );
     super.initState();
@@ -123,7 +122,7 @@ class _CustomerBodyState extends State<CustomerBody> {
         onPressed: (schema) {
           return showDialog<Result<EntryCustomer, void>?>(
             context: context, 
-            builder: (_) => EditCustomerForm(user: _user),
+            builder: (_) => EditCustomerForm(user: _user, fields: schema.fields),
           ).then((result) {
             // _log.debug('.build | new entry: $result');
             return switch (result) {
@@ -143,7 +142,7 @@ class _CustomerBodyState extends State<CustomerBody> {
           if (toBeUpdated.isNotEmpty) {
             return showDialog<Result<EntryCustomer, void>?>(
               context: context, 
-              builder: (_) => EditCustomerForm(user: _user, entry: toBeUpdated.lastOrNull),
+              builder: (_) => EditCustomerForm(user: _user, fields: schema.fields, entry: toBeUpdated.lastOrNull),
             ).then((result) {
               _log.debug('.build | edited entry: $result');
               return switch (result) {

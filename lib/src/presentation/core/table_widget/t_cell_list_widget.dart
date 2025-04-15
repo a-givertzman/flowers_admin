@@ -4,7 +4,7 @@ import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry
 import 'package:flutter/material.dart';
 ///
 ///
-class TCellList extends StatelessWidget {
+class TCellListWidget extends StatelessWidget {
   final String? _id;
   final EditListEntry _relation;
   final TextStyle? _style;
@@ -14,7 +14,7 @@ class TCellList extends StatelessWidget {
   final bool _editable;
   ///
   ///
-  TCellList({
+  TCellListWidget({
     super.key,
     required String? id,
     EditListEntry? relation,

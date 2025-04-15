@@ -34,6 +34,7 @@ const tr = {
   'Create product category': {Lang.en: 'Create product category', Lang.ru: 'Создать категорию товаров'},
   'from': {Lang.en: 'from', Lang.ru: 'от'},
   'Author': {Lang.en: 'Author', Lang.ru: 'Автор'},
+  'Role': {Lang.en: 'Role', Lang.ru: 'Роль'},
   'Customer': {Lang.en: 'Customer', Lang.ru: 'Пользователь'},
   'Value': {Lang.en: 'Value', Lang.ru: 'Сумма'},
   'Created': {Lang.en: 'Created', Lang.ru: 'Создано'},

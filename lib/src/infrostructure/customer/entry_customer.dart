@@ -11,7 +11,7 @@ class EntryCustomer implements SchemaEntryAbstract {
   static Map<String, FieldValue> get _initial {
     final initial = <String, FieldValue>{
       'id': FieldValue(0),
-      'role': FieldValue('customer'),
+      'role': FieldValue('guest'),
       'email': FieldValue('@'),
       'phone': FieldValue('+7'),
       'name': FieldValue(''),

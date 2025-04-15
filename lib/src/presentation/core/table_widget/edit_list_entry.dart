@@ -1,6 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 ///
-///
+/// Represents a `Map<String, String>` of key-value of specified field in the entries
 class EditListEntry {
   late final Map<String, String> _entry;
   ///

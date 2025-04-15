@@ -2,7 +2,7 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_cell.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 
@@ -218,7 +218,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             // _log.debug("._buildRow | \t fieldValue '$fieldValue");
             // _log.debug("._buildRow | \t relation '${field.relation.id}': $relation");
             // _log.debug("._buildRow | \t relEntries '$relEntries");
-            return TCellList(
+            return TCellListWidget(
               id: '${fieldValue?.value}',
               relation: relation,
               editable: field.isEditable,

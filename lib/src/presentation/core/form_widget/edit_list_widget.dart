@@ -1,6 +1,4 @@
 
-import 'package:flowers_admin/src/core/translate/translate.dart';
-import 'package:flowers_admin/src/presentation/core/hover_builder.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flutter/material.dart';
 ///
@@ -53,12 +51,10 @@ class _EditListWidgetState extends State<EditListWidget> {
   final TextStyle? _style;
   final void Function(String value)? _onComplete;
   final bool _editable;
-  final _textPaddingH = 0.0;
+  // final _textPaddingH = 0.0;
   final _textPaddingV = 8.0;
-  final _textAlign = TextAlign.left;
+  // final _textAlign = TextAlign.left;
   final String? _labelText;
-  bool _isEditing = false;
-  bool _isChanged = false;
   //
   //
   _EditListWidgetState({
@@ -79,52 +75,38 @@ class _EditListWidgetState extends State<EditListWidget> {
   //
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField(
-      value: _relation.value(_id).isNotEmpty ? _id : '',
-      items: {...{'': '---'}, ..._relation.entry}.entries.map((entry) {
-        return DropdownMenuItem(
-          value: entry.key,
-          child: Text(
-            entry.value,
-            style: _style,
-          ),
-        );
-      }).toList(),
-      onChanged: (value) {
-        _applyNewValue(value);
-      },
-      style: _style,
-      iconSize: 0.0,
-      isDense: true,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV),
-        labelText: _labelText,
-        filled: true,
-        fillColor: Colors.transparent,
-        hoverColor: Theme.of(context).hoverColor,
+    final defaultStyle = Theme.of(context).textTheme.bodyLarge;
+    final style = _editable
+      ? _style ?? defaultStyle
+      : (_style ?? defaultStyle)?.copyWith(color: (_style ?? defaultStyle)?.color?.withValues(alpha: 0.5));
+    return AbsorbPointer(
+      absorbing: !_editable,
+      child: DropdownButtonFormField(
+        value: _relation.value(_id).isNotEmpty ? _id : '',
+        items: {...{'': '---'}, ..._relation.entry}.entries.map((entry) {
+          return DropdownMenuItem(
+            value: entry.key,
+            child: Text(
+              entry.value,
+              style: _style,
+            ),
+          );
+        }).toList(),
+        onChanged: (id) {
+          final onComplete = _onComplete;
+          if (onComplete != null) onComplete('$id');
+        },
+        style: style,
+        iconSize: 0.0,
+        isDense: true,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV),
+          labelText: _labelText,
+          filled: true,
+          fillColor: Colors.transparent,
+          hoverColor: Theme.of(context).hoverColor,
+        ),
       ),
     );
-  }
-  ///
-  ///
-  void switchToEditing() {
-    if (_editable) {
-      setState(() {
-        _isEditing = true;
-      });
-    }
-  }
-  ///
-  ///
-  _applyNewValue(id) {
-    setState(() {
-      _isEditing = false;
-      if (id != _id) {
-        _isChanged = true;
-        _id = id;
-      }
-    });
-    final onComplete = _onComplete;
-    if (onComplete != null) onComplete('$id');
   }
 }
