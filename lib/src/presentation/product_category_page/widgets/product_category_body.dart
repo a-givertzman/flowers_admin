@@ -9,6 +9,8 @@ import 'package:flowers_admin/src/presentation/product_category_page/widgets/edi
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 ///
 /// View/Edit the categories of the `Product`
 class ProductCategoryBody extends StatefulWidget {
@@ -155,27 +157,27 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
         }, 
         icon: const Icon(Icons.add),
       ),      
-      // delAction: TableWidgetAction(
-      //   onPressed: (schema) {
-      //     final toBeDeleted = schema.entries.values.firstWhereOrNull((e) {
-      //         return e.isSelected;
-      //     });
-      //     if (toBeDeleted != null) {
-      //       return showConfirmDialog(
-      //         context, 
-      //         const Text('Delete Customer'), 
-      //         Text('Are you sure want to delete following:\n${toBeDeleted.value('name').str}'),
-      //       ).then((value) {
-      //         return switch (value) {
-      //           Ok() => Ok(toBeDeleted),
-      //           Err(:final error) => Err(error),
-      //         };
-      //       });
-      //     }
-      //     return Future.value(const Err(null));
-      //   },
-      //   icon: const Icon(Icons.add),
-      // ),
+      delAction: TableWidgetAction(
+        onPressed: (schema) {
+          final toBeDeleted = schema.entries.values.firstWhereOrNull((e) {
+              return e.isSelected;
+          });
+          if (toBeDeleted != null) {
+            return showConfirmDialog(
+              context, 
+              const Text('Delete Product category'), 
+              Text('Are you sure want to delete following:\n${toBeDeleted.value('name').str}'),
+            ).then((value) {
+              return switch (value) {
+                Ok() => Ok(toBeDeleted),
+                Err(:final error) => Err(error),
+              };
+            });
+          }
+          return Future.value(const Err(null));
+        },
+        icon: const Icon(Icons.add),
+      ),
       schema: _schema,
 
     );
