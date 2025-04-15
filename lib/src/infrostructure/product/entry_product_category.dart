@@ -133,14 +133,7 @@ class EntryProductCategory implements SchemaEntryAbstract {
     if (entry.isEmpty) {
       return Sql(sql: "select ;");
     } else {
-      return Sql(sql: """UPDATE product_category SET (
-          deleted
-        ) = (
-          CURRENT_TIMESTAMP()
-        )
-        WHERE id = ${entry.value('id').str};
-        """,
-      );
+      return Sql(sql: "update product_category set deleted = CURRENT_TIMESTAMP WHERE id = ${entry.value('id').str};");
     }
   }
 }

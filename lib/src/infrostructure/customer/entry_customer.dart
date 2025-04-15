@@ -173,14 +173,7 @@ class EntryCustomer implements SchemaEntryAbstract {
     if (entry.isEmpty) {
       return Sql(sql: "select ;");
     } else {
-      return Sql(sql: """UPDATE customer SET (
-          deleted
-        ) = (
-          CURRENT_TIMESTAMP()
-        )
-        WHERE id = ${entry.value('id').str};
-        """,
-      );
+      return Sql(sql: "update public.customer set deleted = CURRENT_TIMESTAMP WHERE id = ${entry.value('id').str};",);
     }
   }
 }
