@@ -107,7 +107,40 @@ class EntryProductCategory implements SchemaEntryAbstract {
       ${entry.value('deleted').str}
     )
     WHERE id = ${entry.value('id').str};
-  """);
+    """);
   }
-
+  ///
+  ///
+  static Sql insertSqlBuilder(Sql sql, EntryProductCategory entry) {
+    return Sql(sql: """insert into product_category (
+      category_id,
+      name,
+      details,
+      description,
+      picture
+    ) values (
+      ${entry.value('category_id').str},
+      ${entry.value('name').str},
+      ${entry.value('details').str},
+      ${entry.value('description').str},
+      ${entry.value('picture').str}
+    );
+    """);
+  }
+  ///
+  /// Returns delete CUSTOMER Sql 
+  static Sql deleteSqlBuilder(Sql sql, EntryProductCategory entry) {
+    if (entry.isEmpty) {
+      return Sql(sql: "select ;");
+    } else {
+      return Sql(sql: """UPDATE customer SET (
+          deleted
+        ) = (
+          CURRENT_TIMESTAMP()
+        )
+        WHERE id = ${entry.value('id').str};
+        """,
+      );
+    }
+  }
 }

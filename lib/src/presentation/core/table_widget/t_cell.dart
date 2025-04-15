@@ -97,9 +97,7 @@ class _TCellState extends State<TCell> {
             // labelText: 'Password',
           ),
           onChanged: (value) {
-            setState(() {
-              _isChanged = value != widget.value;
-            });
+            _isChanged = value != widget.value;
           },
           onTapOutside: (_) {
             _applyNewValue(_controller.text);

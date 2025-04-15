@@ -33,10 +33,16 @@ class EditProductCategoryForm extends StatefulWidget {
 //
 //
 class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
-  final _log = Log("$_EditProductCategoryFormState");
-  // final List<Field> _fields;
-  // final EntryProduct _entry;
-  // final Map<String, List<SchemaEntryAbstract>> _relations;
+  late final Log _log;
+  late EntryProductCategory _entry;
+  //
+  //
+  @override
+  void initState() {
+    _log = Log("$runtimeType");
+    _entry = widget.entry ?? EntryProductCategory.empty();
+    super.initState();
+  }
   ///
   ///
   Field<EntryProductCategory> _field(String key, List<Field<EntryProductCategory>> fields) {
@@ -49,7 +55,6 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
   @override
   Widget build(BuildContext context) {
     final fields = widget.fields;
-    final EntryProductCategory entry = widget.entry ?? EntryProductCategory.empty();
     final relations = widget.relations;
     final categoryField = _field('category_id', fields);
     _log.debug('.build | categoryField: $categoryField');
@@ -66,7 +71,7 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
         appBar: AppBar(
           centerTitle: true,
           // title: Text('${InRu('Edit product category')}', style: Theme.of(context).textTheme.titleLarge,),
-          title: Text('${entry.value('name').value}', style: Theme.of(context).textTheme.titleLarge,),
+          title: Text('${_entry.value('name').value}', style: Theme.of(context).textTheme.titleLarge,),
         ),
         body: Card(
           margin: const EdgeInsets.all(16.0),
@@ -78,9 +83,9 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
                   children: [
                     LoadImageWidget(
                       labelText: _field('picture', fields).title.inRu,
-                      src: '${entry.value('picture').value ?? ''}',
+                      src: '${_entry.value('picture').value ?? ''}',
                       onComplete: (value) {
-                        entry.update('picture', value);
+                        _entry.update('picture', value);
                         setState(() {return;});
                       },
                     ),
@@ -92,37 +97,37 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
                   shrinkWrap: true,
                   children: [
                     EditListWidget(
-                      id: '${entry.value('category_id').value}',
+                      id: '${_entry.value('category_id').value}',
                       relation: relation,
                       editable: categoryField.isEditable,
                       // style: textStyle,
                       labelText: _field('category', fields).title.inRu,
                       onComplete: (value) {
-                        entry.update('category_id', value);
+                        _entry.update('category_id', value);
                         setState(() {return;});
                       },
                     ),
                     TextEditWidget(
                       labelText: _field('name', fields).title.inRu,
-                      value: '${entry.value('name').value}',
+                      value: '${_entry.value('name').value}',
                       onComplete: (value) {
-                        entry.update('name', value);
+                        _entry.update('name', value);
                         setState(() {return;});
                       },
                     ),
                     TextEditWidget(
                       labelText: _field('details', fields).title.inRu,
-                      value: '${entry.value('details').value}',
+                      value: '${_entry.value('details').value}',
                       onComplete: (value) {
-                        entry.update('details', value);
+                        _entry.update('details', value);
                         setState(() {return;});
                       },
                     ),
                     TextEditWidget(
                       labelText: _field('description', fields).title.inRu,
-                      value: '${entry.value('description').value}',
+                      value: '${_entry.value('description').value}',
                       onComplete: (value) {
-                        entry.update('description', value);
+                        _entry.update('description', value);
                         setState(() {return;});
                       },
                     ),                      
@@ -140,11 +145,11 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
                 child: const Text("Cancel"),
               ),
               TextButton(
-                onPressed: entry.isChanged 
+                onPressed: _entry.isChanged 
                   ? () {
-                    _log.debug('.TextButton.Yes | _isChanged: ${entry.isChanged}');
-                    _log.debug('.TextButton.Yes | enrty: $entry');
-                    Navigator.pop(context, Ok<EntryProductCategory, void>(entry));
+                    _log.debug('.TextButton.Yes | _isChanged: ${_entry.isChanged}');
+                    _log.debug('.TextButton.Yes | enrty: $_entry');
+                    Navigator.pop(context, Ok<EntryProductCategory, void>(_entry));
                   } 
                   : null,
                 child: const Text("Yes"),
