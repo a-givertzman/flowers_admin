@@ -1,5 +1,4 @@
 
-import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/presentation/core/hover_builder.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +54,7 @@ class _TEditListWidgetState extends State<TEditListWidget> {
   final bool _editable;
   final _textPaddingH = 0.0;
   final _textPaddingV = 8.0;
-  final _textAlign = TextAlign.left;
+  final _textAlign = TextAlign.justify;
   final String? _labelText;
   bool _isEditing = false;
   bool _isChanged = false;
@@ -86,7 +85,7 @@ class _TEditListWidgetState extends State<TEditListWidget> {
     if (_isEditing) {
       return DropdownButtonFormField(
             value: _relation.value(_id).isNotEmpty ? _id : '',
-            items: {...{'': '---'}, ..._relation.entry}.entries.map((entry) {
+            items: {...{'': ''}, ..._relation.entry}.entries.map((entry) {
               return DropdownMenuItem(
                 value: entry.key,
                 child: Text(
@@ -116,7 +115,7 @@ class _TEditListWidgetState extends State<TEditListWidget> {
       child: Padding(
           padding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (!_isEditing && _labelText != null)
                 Text(
@@ -127,7 +126,8 @@ class _TEditListWidgetState extends State<TEditListWidget> {
                 builder: (BuildContext context, bool isHovered) {
                   final rel = _relation.value(_id);
                   return Text(
-                    _id.isNotEmpty ? (rel.isNotEmpty ? rel : '${InRu('Not sampled')}') : '${InRu('Not sampled')}',
+                    _id.isNotEmpty ? (rel.isNotEmpty ? rel : '') : '',
+                    // _id.isNotEmpty ? (rel.isNotEmpty ? rel : '${InRu('Not sampled')}') : '${InRu('Not sampled')}',
                     style: _isChanged 
                       ? style?.copyWith(
                         backgroundColor: isHovered ? Theme.of(context).hoverColor : null,
