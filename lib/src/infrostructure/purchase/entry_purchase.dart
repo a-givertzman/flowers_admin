@@ -92,7 +92,7 @@ class EntryPurchase implements SchemaEntryAbstract {
   ///
   ///
   static Sql updateSqlBuilder(Sql sql, EntryPurchase entry) {
-    return Sql(sql: """UPDATE purchase SET (
+    return Sql(sql: """UPDATE public.purchase SET (
         id,
         name,
         details,
@@ -119,5 +119,37 @@ class EntryPurchase implements SchemaEntryAbstract {
       )
       WHERE id = ${entry.value('id').str};
     """);
+  }
+  ///
+  /// Insert SQL
+  static Sql insertSqlBuilder(Sql sql, EntryPurchase entry) {
+    return Sql(sql: """insert into public.purchase (
+        id,
+        name,
+        details,
+        status,
+        date_of_start,
+        date_of_end,
+        description,
+        picture
+      ) values (
+        ${entry.value('id').str},
+        ${entry.value('name').str},
+        ${entry.value('details').str},
+        ${entry.value('status').str},
+        ${entry.value('date_of_start').str},
+        ${entry.value('date_of_end').str},
+        ${entry.value('description').str},
+        ${entry.value('picture').str}
+    );""");
+  }
+  ///
+  /// Returns delete CUSTOMER Sql 
+  static Sql deleteSqlBuilder(Sql sql, EntryPurchase entry) {
+    if (entry.isEmpty) {
+      return Sql(sql: "select ;");
+    } else {
+      return Sql(sql: "update public.purchase set deleted = CURRENT_TIMESTAMP WHERE id = ${entry.value('id').str};");
+    }
   }
 }

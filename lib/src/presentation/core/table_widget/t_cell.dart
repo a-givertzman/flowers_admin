@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 
 ///
 ///
-class TCell extends StatefulWidget {
+class TCell<T extends SchemaEntryAbstract> extends StatefulWidget {
   final String value;
   final TextStyle? style;
   final void Function(String value)? onComplete;
-  final Widget Function(BuildContext, SchemaEntryAbstract)? _builder;
-  final SchemaEntryAbstract? entry;
+  final Widget Function(BuildContext, T)? _builder;
+  final T? entry;
   final bool editable;
   final int flex;
   ///
@@ -31,8 +31,8 @@ class TCell extends StatefulWidget {
     this.value = '',
     this.style,
     this.onComplete,
-    required Widget Function(BuildContext, SchemaEntryAbstract)? builder,
-    required SchemaEntryAbstract this.entry,
+    required Widget Function(BuildContext, T)? builder,
+    required T this.entry,
     this.editable = true,
     this.flex = 1,
   }) :
@@ -40,12 +40,12 @@ class TCell extends StatefulWidget {
   //
   //
   @override
-  State<TCell> createState() => _TCellState();
+  State<TCell<T>> createState() => _TCellState();
 }
 //
 //
-class _TCellState extends State<TCell> {
-  // final _log = Log("$_TCellState._");
+class _TCellState<T extends SchemaEntryAbstract> extends State<TCell<T>> {
+  // late final _log = Log;
   late final TextEditingController _controller;
   final _textPaddingV = 8.0;
   final _textPaddingH = 16.0;
@@ -57,6 +57,7 @@ class _TCellState extends State<TCell> {
   //
   @override
   void initState() {
+    // _log = Log("$_TCellState._");
     _controller = TextEditingController.fromValue(TextEditingValue(text: widget.value));
     super.initState();
   }
@@ -85,26 +86,33 @@ class _TCellState extends State<TCell> {
     return Expanded(
       flex: flex,
       child: _isEditing
-        ? TextField(
-          controller: _controller,
-          style: style,
-          textAlign: _textAlign,
-           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
-            // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red : Colors.black)),
-            // border: const OutlineInputBorder(),
-            isDense: true,
-            // labelText: 'Password',
+        ? TapRegion(
+          onTapOutside: (PointerDownEvent _) {
+            if (_isEditing) {
+              _applyNewValue(_controller.text);
+              setState(() {
+                _isEditing = false;
+              });
+            }
+          },
+          child: TextField(
+            controller: _controller,
+            style: style,
+            textAlign: _textAlign,
+             decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH - 10.0),
+              // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red : Colors.black)),
+              // border: const OutlineInputBorder(),
+              isDense: true,
+              // labelText: 'Password',
+            ),
+            onChanged: (value) {
+              _isChanged = value != widget.value;
+            },
+            onEditingComplete: () {
+              _applyNewValue(_controller.text);
+            },
           ),
-          onChanged: (value) {
-            _isChanged = value != widget.value;
-          },
-          onTapOutside: (_) {
-            _applyNewValue(_controller.text);
-          },
-          onEditingComplete: () {
-            _applyNewValue(_controller.text);
-          },
         )
         : Padding(
           padding: EdgeInsets.symmetric(vertical: _textPaddingV, horizontal: _textPaddingH),

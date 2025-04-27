@@ -129,7 +129,7 @@ class EntryProduct implements SchemaEntryAbstract {
         primary_order_quantity,
         order_quantity,
         description,
-        picture,
+        picture
       ) values (
         ${entry.value('id').str},
         ${entry.value('product_category_id').str},
@@ -140,10 +140,16 @@ class EntryProduct implements SchemaEntryAbstract {
         ${entry.value('primary_order_quantity').str},
         ${entry.value('order_quantity').str},
         ${entry.value('description').str},
-        ${entry.value('picture').str},
-    )""");
+        ${entry.value('picture').str}
+    );""");
+  }
+  ///
+  /// Returns delete CUSTOMER Sql 
+  static Sql deleteSqlBuilder(Sql sql, EntryProduct entry) {
+    if (entry.isEmpty) {
+      return Sql(sql: "select ;");
+    } else {
+      return Sql(sql: "update public.product set deleted = CURRENT_TIMESTAMP WHERE id = ${entry.value('id').str};");
+    }
   }
 }
-        // ${entry.value('created').str},
-        // ${entry.value('updated').str},
-        // ${entry.value('deleted').str},

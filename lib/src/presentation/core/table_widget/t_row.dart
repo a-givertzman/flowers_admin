@@ -158,7 +158,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: _buildRow(context, _fields, _entry, textStile),
+                children: _buildRow(context, _fields as List<Field<T>>, _entry, textStile),
               ),
             ),
           ],
@@ -178,7 +178,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   }
   ///
   ///
-  List<Widget> _buildRow(BuildContext context, List<Field> fields, T? entry, textStyle) {
+  List<Widget> _buildRow(BuildContext context, List<Field<T>> fields, T? entry, textStyle) {
     // _log.debug("._buildRow | entry: $entry");
     final cells = fields
       .where((field) => !field.isHidden)
@@ -189,50 +189,40 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   }
   ///
   /// Returns built cell widget
-  Widget _cell(BuildContext context, Field<SchemaEntryAbstract> field, T? entry, textStyle) {
-        final fieldValue = entry?.value(field.key);
-        // _log.debug("._buildRow | \t value: $fieldValue");
-        final builder = field.builder;
-        if (builder != null && entry != null) {
-          return TCell.builder(
-            builder: builder,
-            entry: entry,
-            editable: field.isEditable,
-            style: textStyle,
-            onComplete: (value) => _onComplete(value, field),
-            flex: field.flex,
-          );
-        }
-        if (field.relation.isEmpty) {
-          return TCell(
-            value: fieldValue?.value.toString() ?? (field.title.isNotEmpty ? field.title : field.key),
-            editable: field.isEditable,
-            style: textStyle,
-            onComplete: (value) => _onComplete(value, field),
-            flex: field.flex,
-          );
-        } else {
-          final List<SchemaEntryAbstract>? relEntries = _relations[field.relation.id];
-          if (relEntries != null) {
-            final relation = EditListEntry(entries: relEntries, field: field.relation.field);
-            // _log.debug("._buildRow | \t fieldValue '$fieldValue");
-            // _log.debug("._buildRow | \t relation '${field.relation.id}': $relation");
-            // _log.debug("._buildRow | \t relEntries '$relEntries");
-            return TCellListWidget(
-              id: '${fieldValue?.value}',
-              relation: relation,
-              editable: field.isEditable,
-              style: textStyle,
-              onComplete: (value) => _onComplete(value, field),
-              flex: field.flex,
-            );
-          }
-          return TCell(
-            value: field.title.isNotEmpty ? field.title : field.key,
-            editable: false,
-            style: textStyle,
-            flex: field.flex,
-          );
-        }
+  Widget _cell(BuildContext context, Field<T> field, T? entry, textStyle) {
+    final fieldValue = entry?.value(field.key);
+    // _log.debug("._buildRow | \t value: $fieldValue");
+    final builder = field.builder;
+    if (builder != null && entry != null) {
+      return TCell<T>.builder(
+        builder: builder,
+        entry: entry,
+        editable: field.isEditable,
+        style: textStyle,
+        onComplete: (value) => _onComplete(value, field),
+        flex: field.flex,
+      );
+    }
+    if (field.relation.isNotEmpty) {
+      final relation = EditListEntry(entries: _relations[field.relation.id] ?? [], field: field.relation.field);
+      // _log.debug("._buildRow | \t fieldValue '$fieldValue");
+      // _log.debug("._buildRow | \t relation '${field.relation.id}': $relation");
+      return TCellListWidget(
+        id: '${fieldValue?.value}',
+        relation: relation,
+        editable: field.isEditable,
+        style: textStyle,
+        onComplete: (value) => _onComplete(value, field),
+        flex: field.flex,
+      );
+    } else {
+      return TCell<T>(
+        value: fieldValue?.value.toString() ?? (field.title.isNotEmpty ? field.title : field.key),
+        editable: field.isEditable,
+        style: textStyle,
+        onComplete: (value) => _onComplete(value, field),
+        flex: field.flex,
+      );
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
@@ -65,20 +66,21 @@ class _ProductBodyState extends State<ProductBody> {
           database: _database, 
           updateSqlBuilder: EntryProduct.updateSqlBuilder,
           insertSqlBuilder: EntryProduct.insertSqlBuilder,
+          deleteSqlBuilder: EntryProduct.deleteSqlBuilder,
           emptyEntryBuilder: EntryProduct.empty, 
           debug: true,
         ),
         fields: [
           const Field(flex: 03, hidden: false, editable: false, key: 'id'),
-          const Field(flex: 10, hidden: false, editable: true, title: 'Category', key: 'product_category_id', relation: Relation(id: 'product_category_id', field: 'name')),
-          const Field(flex: 10, hidden: false, editable: true, title: 'Name', key: 'name'),
-          const Field(flex: 20, hidden: false, editable: true, key: 'details'),
-          const Field(flex: 05, hidden: false, editable: true, key: 'primary_price'),
-          const Field(flex: 05, hidden: false, editable: true, key: 'primary_currency'),
-          const Field(flex: 05, hidden: false, editable: true, key: 'primary_order_quantity'),
-          const Field(flex: 05, hidden: false, editable: true, key: 'order_quantity'),
-          const Field(flex: 10, hidden: false, editable: true, key: 'description'),
-          const Field(flex: 10, hidden: false, editable: true, key: 'picture'),
+                Field(flex: 10, hidden: false, editable: true, title: 'Category'.inRu,                key: 'product_category_id', relation: Relation(id: 'product_category_id', field: 'name')),
+                Field(flex: 10, hidden: false, editable: true, title: 'Name'.inRu,                    key: 'name'),
+                Field(flex: 20, hidden: false, editable: true, title: 'Details'.inRu,                 key: 'details'),
+                Field(flex: 05, hidden: false, editable: true, title: 'Primary price'.inRu,           key: 'primary_price'),
+                Field(flex: 05, hidden: false, editable: true, title: 'Primary currency'.inRu,        key: 'primary_currency'),
+                Field(flex: 05, hidden: false, editable: true, title: 'Primary order quantity'.inRu,  key: 'primary_order_quantity'),
+                Field(flex: 05, hidden: false, editable: true, title: 'Order quantity'.inRu,          key: 'order_quantity'),
+                Field(flex: 10, hidden: false, editable: true, title: 'Description'.inRu,             key: 'description'),
+                Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu,                 key: 'picture'),
           const Field(flex: 05, hidden: true, editable: true, key: 'created'),
           const Field(flex: 05, hidden: true, editable: true, key: 'updated'),
           const Field(flex: 05, hidden: true, editable: true, key: 'deleted'),
@@ -115,12 +117,13 @@ class _ProductBodyState extends State<ProductBody> {
   Widget build(BuildContext context) {
     _log.debug('.build | ');
     return TableWidget<EntryProduct, void>(
+      schema: _schema,
       showDeleted: [AppUserRole.admin].contains(widget.user.role) ? false : null,
       addAction: TableWidgetAction(
         onPressed: (schema) {
           return showDialog<Result<EntryProduct, void>?>(
             context: context, 
-            builder: (_) => EditProductForm(fields: schema.fields,),
+            builder: (_) => EditProductForm(fields: schema.fields, relations: schema.relations),
           ).then((result) {
             _log.debug('.build | new entry: $result');
             return switch (result) {
@@ -173,7 +176,6 @@ class _ProductBodyState extends State<ProductBody> {
         },
         icon: const Icon(Icons.add),
       ),
-      schema: _schema,
     );
   }
   //

@@ -83,32 +83,41 @@ class _TEditListWidgetState extends State<TEditListWidget> {
       ? _style ?? defaultStyle
       : (_style ?? defaultStyle)?.copyWith(color: (_style ?? defaultStyle)?.color?.withValues(alpha: 0.5));
     if (_isEditing) {
-      return DropdownButtonFormField(
-            value: _relation.value(_id).isNotEmpty ? _id : '',
-            items: {...{'': ''}, ..._relation.entry}.entries.map((entry) {
-              return DropdownMenuItem(
-                value: entry.key,
-                child: Text(
-                  entry.value,
-                  style: _style,
-                ),
-              );
-            }).toList(),
-            onChanged: (value) {
-              _applyNewValue(value);
-            },
-            style: _style,
-            iconSize: 0.0,
-            isDense: true,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV),
-              labelText: _labelText,
-              filled: true,
-              fillColor: Colors.transparent,
-              hoverColor: Theme.of(context).hoverColor,
-
+      return TapRegion(
+        onTapOutside: (PointerDownEvent _) {
+          if (_isEditing) {
+            setState(() {
+              _isEditing = false;
+            });
+          }
+        },
+        child: DropdownButtonFormField(
+              value: _relation.value(_id).isNotEmpty ? _id : '',
+              items: {...{'': ''}, ..._relation.entry}.entries.map((entry) {
+                return DropdownMenuItem(
+                  value: entry.key,
+                  child: Text(
+                    entry.value,
+                    style: _style,
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                _applyNewValue(value);
+              },
+              style: _style,
+              iconSize: 0.0,
+              isDense: true,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV),
+                labelText: _labelText,
+                filled: true,
+                fillColor: Colors.transparent,
+                hoverColor: Theme.of(context).hoverColor,
+        
+              ),
             ),
-          );
+      );
     }
     return GestureDetector(
       onTap: switchToEditing,

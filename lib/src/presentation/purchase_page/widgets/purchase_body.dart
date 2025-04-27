@@ -1,8 +1,15 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
+import 'package:flowers_admin/src/infrostructure/purchase/purchase_status.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/t_edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
+import 'package:flowers_admin/src/presentation/purchase_page/widgets/edit_purchase_form.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
@@ -22,40 +29,33 @@ class PurchaseBody extends StatefulWidget {
   //
   @override
   // ignore: no_logic_in_create_state
-  State<PurchaseBody> createState() => _PurchaseBodyState(
-    authToken: authToken,
-  );
+  State<PurchaseBody> createState() => _PurchaseBodyState();
 }
 //
 //
 class _PurchaseBodyState extends State<PurchaseBody> {
   late final Log _log;
-  final String _authToken;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   late final TableSchema<EntryPurchase, void> _schema;
   //
   //
-  _PurchaseBodyState({
-    required String authToken,
-  }):
-    _authToken = authToken {
-      _log = Log("$runtimeType");
-    }
-  //
-  //
   @override
   void initState() {
+    _log = Log("$runtimeType");
     _schema = _buildSchema();
     super.initState();
   }
   ///
   /// Returns TableSchema
   TableSchema<EntryPurchase, void> _buildSchema() {
+    final statusRelation = PurchaseStatus.values.asMap().map((i, status) {
+      return MapEntry(status.str, EntryPurchase(map: {'id': FieldValue(status.str), 'status': FieldValue(status.str)}));
+    },);
     return TableSchema<EntryPurchase, void>(
       read: SqlRead<EntryPurchase, void>.keep(
         address: _apiAddress,
-        authToken: _authToken,
+        authToken: widget.authToken,
         database: _database,
         sqlBuilder: (sql, params) {
           return Sql(sql: 'select * from purchase order by id;');
@@ -65,25 +65,44 @@ class _PurchaseBodyState extends State<PurchaseBody> {
       ),
       write: SqlWrite<EntryPurchase>.keep(
         address: _apiAddress,
-        authToken: _authToken,
+        authToken: widget.authToken,
         database: _database,
         updateSqlBuilder: EntryPurchase.updateSqlBuilder,
-        // insertSqlBuilder: insertSqlBuilderPurchase,
+        insertSqlBuilder: EntryPurchase.insertSqlBuilder,
+        deleteSqlBuilder: EntryPurchase.deleteSqlBuilder,
         emptyEntryBuilder: EntryPurchase.empty,
         debug: true,
       ),
       fields: [
-        const Field(hidden: false, editable: false, key: 'id'),
-        const Field(hidden: false, editable: true, key: 'name'),
-        const Field(hidden: false, editable: true, key: 'details'),
-        const Field(hidden: false, editable: true, key: 'status'),
-        const Field(hidden: false, editable: true, key: 'date_of_start'),
-        const Field(hidden: false, editable: true, key: 'date_of_end'),
-        const Field(hidden: false, editable: true, key: 'description'),
-        const Field(hidden: false, editable: true, key: 'picture'),
-        const Field(hidden: true, editable: true, key: 'created'),
-        const Field(hidden: true, editable: true, key: 'updated'),
-        const Field(hidden: true, editable: true, key: 'deleted'),
+        const Field(flex: 03, hidden: false, editable: false,                             key: 'id'),
+              Field(flex: 10, hidden: false, editable: true, title: 'Name'.inRu,          key: 'name'),
+              Field(flex: 20, hidden: false, editable: true, title: 'Details'.inRu,       key: 'details'),
+              Field(flex: 05, hidden: false, editable: true, title: 'Status'.inRu,        key: 'status',
+                builder: (BuildContext ctx, EntryPurchase entry) {
+                  return TEditListWidget(
+                    id: '${entry.value('status').value}',
+                    relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
+                    editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
+                    // style: textStyle,
+                    // labelText: 'Status'.inRu,
+                    onComplete: (id) {
+                      final status = statusRelation[id]?.value('status').value;
+                      _log.debug('build.onComplete | status: $status');
+                      if (status != null) {
+                        entry.update('status', status);
+                        setState(() {return;});
+                      }
+                    },
+                  );
+                },
+              ),
+              Field(flex: 10, hidden: false, editable: true, title: 'Date of start'.inRu, key: 'date_of_start'),
+              Field(flex: 10, hidden: false, editable: true, title: 'Date of end'.inRu,   key: 'date_of_end'),
+              Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu,   key: 'description'),
+              Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu,       key: 'picture'),
+        const Field(flex: 05, hidden: true, editable: true, title: 'created',             key: 'created'),
+        const Field(flex: 05, hidden: true, editable: true, title: 'updated',             key: 'updated'),
+        const Field(flex: 05, hidden: true, editable: true, title: 'deleted',             key: 'deleted'),
       ],
     );
   }
@@ -92,8 +111,66 @@ class _PurchaseBodyState extends State<PurchaseBody> {
   @override
   Widget build(BuildContext context) {
     _log.debug('.build | ');
-    return TableWidget(
+    return TableWidget<EntryPurchase, void>(
       schema: _schema,
+      showDeleted: [AppUserRole.admin].contains(widget.user.role) ? false : null,
+      addAction: TableWidgetAction(
+        onPressed: (schema) {
+          return showDialog<Result<EntryPurchase, void>?>(
+            context: context, 
+            builder: (_) => EditPurchaseForm(user: widget.user, fields: schema.fields, relations: schema.relations),
+          ).then((result) {
+            _log.debug('.build | new entry: $result');
+            return switch (result) {
+              Ok(:final value) => Ok(value),
+              Err(:final error) => Err(error),
+              _ => const Err(null),
+            };
+          });
+        }, 
+        icon: const Icon(Icons.add),
+      ),
+      editAction: TableWidgetAction(
+        onPressed: (schema) {
+          final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
+          if (toBeUpdated.isNotEmpty) {
+            return showDialog<Result<EntryPurchase, void>?>(
+              context: context, 
+              builder: (_) => EditPurchaseForm(user: widget.user, fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
+            ).then((result) {
+              _log.debug('.build | edited entry: $result');
+              return switch (result) {
+                Ok(:final value) => Ok(value),
+                Err(:final error) => Err(error),
+                _ => const Err(null),
+              };
+            });
+          }
+          return Future.value(Err(null));
+        }, 
+        icon: const Icon(Icons.add),
+      ),      
+      delAction: TableWidgetAction(
+        onPressed: (schema) {
+          final toBeDeleted = schema.entries.values.firstWhere(
+            (e) {
+              return e.isSelected;
+            },
+            orElse: () => EntryPurchase.empty(),
+          );
+          return showConfirmDialog(
+            context, 
+            const Text('Delete Product'), 
+            Text('Are you sure want to delete following:\n${toBeDeleted.value('name').str}'),
+          ).then((value) {
+            return switch (value) {
+              Ok() => Ok(toBeDeleted),
+              Err(:final error) => Err(error),
+            };
+          });
+        },
+        icon: const Icon(Icons.add),
+      ),
     );
   }
   //

@@ -68,36 +68,40 @@ class _TextEditWidgetState extends State<TextEditWidget> {
       onTapOutside: (PointerDownEvent _) {
         _onEditingComplete(_controller.text);
       },
-      child: TextField(
-        controller: _controller,
-        enabled: _editable,
-        style: _isChanged 
-          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
-          : null,
-        // textAlign: _textAlign,
-        decoration: InputDecoration(
-          // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withValue(alpha: 0.5) : Colors.black.withValue(alpha: 0.5))),
-          // border: const OutlineInputBorder(),
-          isDense: true,
-          labelText: _labelText,
-          filled: true,
-          fillColor: Colors.transparent,
-          hoverColor: Theme.of(context).hoverColor,
-          errorText: _errorText,
-          contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-        ),
-        onChanged: (value) {
-          setState(() {
-            _isChanged = value != _value;
-          });
-        },
-        onTapOutside: (_) {
-          _onEditingComplete(_controller.text);
-        },
-        onEditingComplete: () {
-          _onEditingComplete(_controller.text);
-        },
-      ),
+      child: InputDatePickerFormField(
+        firstDate: DateTime.now(),
+        lastDate: DateTime.now(),
+      )
+      // TextField(
+      //   controller: _controller,
+      //   enabled: _editable,
+      //   style: _isChanged 
+      //     ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
+      //     : null,
+      //   // textAlign: _textAlign,
+      //   decoration: InputDecoration(
+      //     // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withValue(alpha: 0.5) : Colors.black.withValue(alpha: 0.5))),
+      //     // border: const OutlineInputBorder(),
+      //     isDense: true,
+      //     labelText: _labelText,
+      //     filled: true,
+      //     fillColor: Colors.transparent,
+      //     hoverColor: Theme.of(context).hoverColor,
+      //     errorText: _errorText,
+      //     contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+      //   ),
+      //   onChanged: (value) {
+      //     setState(() {
+      //       _isChanged = value != _value;
+      //     });
+      //   },
+      //   onTapOutside: (_) {
+      //     _onEditingComplete(_controller.text);
+      //   },
+      //   onEditingComplete: () {
+      //     _onEditingComplete(_controller.text);
+      //   },
+      // ),
     );
   }
   ///

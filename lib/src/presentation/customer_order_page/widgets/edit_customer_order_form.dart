@@ -66,12 +66,11 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
   Widget build(BuildContext context) {
     final categoryField = field('product_category_id');
     _log.debug('.build | categoryField: $categoryField');
-    _log.debug('.build | _relations: $_relations');
-    EditListEntry relation = EditListEntry(entries: [], field: categoryField.relation.field);
-    final List<SchemaEntryAbstract>? relEntries = _relations[categoryField.relation.id];
-    if (relEntries != null) {
-      relation = EditListEntry(entries: relEntries, field: categoryField.relation.field);
-    }
+    _log.trace('.build | _relations: $_relations');
+    final relation = EditListEntry(
+      entries: _relations[categoryField.relation.id] ?? [],
+      field: categoryField.relation.field,
+    );
     _log.debug('.build | relation: $relation');
     return Padding(
       padding: const EdgeInsets.all(64.0),

@@ -14,6 +14,7 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
   final TableWidgetAction<T, P> _editAction;
   final TableWidgetAction<T, P> _delAction;
   final TableWidgetAction<T, P> _fetchAction;
+  final void Function(bool? value)? _onShowDeletedChanged;
   final bool? _showDeleted;
   ///
   ///
@@ -24,6 +25,7 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
     TableWidgetAction<T, P>? editAction,
     TableWidgetAction<T, P>? delAction,
     TableWidgetAction<T, P>? fetchAction,
+    void Function(bool? value)? onShowDeletedChanged,
     bool? showDeleted,
   }) :
     _schema = schema,
@@ -31,6 +33,7 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
     _editAction = editAction ?? const TableWidgetAction.empty(),
     _delAction = delAction ?? const TableWidgetAction.empty(),
     _fetchAction = fetchAction ?? const TableWidgetAction.empty(),
+    _onShowDeletedChanged = onShowDeletedChanged,
     _showDeleted = showDeleted;
   //
   //
@@ -38,6 +41,7 @@ class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
   // ignore: no_logic_in_create_state
   State<TableWidget<T, P>> createState() => _TableWidgetState(
     schema: _schema,
+    onShowDeletedChanged: _onShowDeletedChanged,
     addAction: _addAction,
     editAction: _editAction,
     delAction: _delAction,
@@ -55,6 +59,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
   final TableWidgetAction<T, P> _editAction;
   final TableWidgetAction<T, P> _delAction;
   final TableWidgetAction<T, P> _fetchAction;
+  final void Function(bool? value)? _onShowDeletedChanged;
   bool? _showDeleted;
   ///
   ///
@@ -64,9 +69,11 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
     required TableWidgetAction<T, P> editAction,
     required TableWidgetAction<T, P> delAction,
     required TableWidgetAction<T, P> fetchAction,
+    required void Function(bool? value)? onShowDeletedChanged,
     required bool? showDeleted,
   }) :
     _schema = schema,
+    _onShowDeletedChanged = onShowDeletedChanged,
     _addAction = addAction,
     _editAction = editAction,
     _delAction = delAction,
@@ -76,23 +83,27 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
   //
   @override
   Widget build(BuildContext context) {
+    final onShowDeletedChanged = _onShowDeletedChanged;
     final editOnPressed = _editAction.onPressed;
     final addOnPressed = _addAction.onPressed;
     final delOnPressed = _delAction.onPressed;
     final fetchOnPressed = _fetchAction.onPressed;
-    final showDeleted = _showDeleted;
+    final showDeleted = _showDeleted ?? false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(children: [
           const Expanded(child: SizedBox.shrink()),
-          if (showDeleted != null)
+          if (_showDeleted != null)
             Tooltip(
               message: 'Show deleted'.inRu,
               child: Checkbox(
                 // title: Text(InRu('Show deleted').toString()),
                 value: showDeleted,
-                onChanged: (value) {
+                onChanged: (value) async {
+                  if (onShowDeletedChanged != null) {
+                    onShowDeletedChanged(value);
+                  }
                   setState(() {
                     _showDeleted = value;
                   });
@@ -229,7 +240,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                             //   0: IntrinsicColumnWidth(),
                             //   1: FlexColumnWidth(),
                             // },
-                            children: _buildRows(_schema),
+                            children: _buildRows(_schema, showDeleted),
                           ),
                         ),
                       );
@@ -252,15 +263,14 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
   }
   ///
   ///
-  List<Widget> _buildRows(TableSchemaAbstract<T, void> schema) {
+  List<Widget> _buildRows(TableSchemaAbstract<T, void> schema, bool showDeleted) {
     // final textStile = Theme.of(context).textTheme.bodyMedium;
     final rows = [TRow<T>(fields: schema.fields)];
-    final showDeleted = _showDeleted ?? false;
     rows.addAll(
       schema.entries.values
       .where((entry) {
-        final deleted = entry.value('deleted').str;
-        final isDeleted = deleted != null && deleted.isNotEmpty && deleted.toLowerCase() != 'null';
+        final deleted = '${entry.value('deleted').value ?? ''}'.toLowerCase();
+        final isDeleted = deleted.isNotEmpty && deleted != 'null';
         return showDeleted || (!showDeleted && !isDeleted);
       })
       .map((entry) {

@@ -1,6 +1,7 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product_category.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
 import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
@@ -59,14 +60,13 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
     final categoryField = _field('category_id', fields);
     _log.debug('.build | categoryField: $categoryField');
     _log.trace('.build | relations: $relations');
-    // EditListEntry relation = EditListEntry(entries: [], field: categoryField.relation.field);
     final id = _entry.value('id').value;
-    final List<SchemaEntryAbstract>? relEntries = relations[categoryField.relation.id]?.where((e) {
-      return e.value('id').value != id;
-    }).toList();
-    final relation = (relEntries != null) 
-      ? EditListEntry(entries: relEntries, field: categoryField.relation.field)
-      : EditListEntry(entries: [], field: categoryField.relation.field);
+    final relation = EditListEntry(
+      entries: relations[categoryField.relation.id]?.where((e) {
+        return e.value('id').value != id;
+      }).toList() ?? [],
+      field: categoryField.relation.field,
+    );
     _log.debug('.build | relation: $relation');
     return Padding(
       padding: const EdgeInsets.all(64.0),
@@ -86,7 +86,7 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
                   children: [
                     LoadImageWidget(
                       labelText: _field('picture', fields).title.inRu,
-                      src: '${_entry.value('picture').value ?? ''}',
+                      src: '${_entry.value('picture').value}',
                       onComplete: (value) {
                         _entry.update('picture', value);
                         setState(() {return;});
@@ -102,7 +102,7 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
                     EditListWidget(
                       id: '${_entry.value('category_id').value}',
                       relation: relation,
-                      editable: true,
+                      editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
                       // style: textStyle,
                       labelText: _field('category', fields).title.inRu,
                       onComplete: (value) {

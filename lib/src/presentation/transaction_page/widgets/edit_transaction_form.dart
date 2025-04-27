@@ -76,17 +76,15 @@ class _EditProductFormState extends State<EditTransactionForm> {
     _log.debug('.build | authorField: $authorField');
     _log.debug('.build | customerField: $customerField');
     _log.debug('.build | _relations: $_relations');
-    EditListEntry authorRelation = EditListEntry(entries: [], field: authorField.relation.field);
-    final List<SchemaEntryAbstract>? authorRelEntries = _relations[authorField.relation.id];
-    if (authorRelEntries != null) {
-      authorRelation = EditListEntry(entries: authorRelEntries, field: authorField.relation.field);
-    }
+    final authorRelation = EditListEntry(
+      entries: _relations[authorField.relation.id] ?? [],
+      field: authorField.relation.field,
+    );
     _log.debug('.build | authorRelation: $authorRelation');
-    EditListEntry customerRelation = EditListEntry(entries: [], field: customerField.relation.field);
-    final List<SchemaEntryAbstract>? customerRelEntries = _relations[customerField.relation.id];
-    if (customerRelEntries != null) {
-      customerRelation = EditListEntry(entries: customerRelEntries, field: customerField.relation.field);
-    }
+    final customerRelation = EditListEntry(
+      entries: _relations[customerField.relation.id] ?? [],
+      field: customerField.relation.field,
+    );
     final created = DateTime.tryParse(_entry.value('created').value?.toString() ?? '') ?? 'No date'.inRu;
     _log.debug('.build | customerRelation: $customerRelation');
     return Padding(
