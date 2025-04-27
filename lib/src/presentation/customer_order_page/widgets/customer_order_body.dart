@@ -1,5 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer_order.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
@@ -10,20 +11,21 @@ import 'package:hmi_core/hmi_core_result.dart';
 ///
 ///
 class CustomerOrderBody extends StatefulWidget {
-  final String _authToken;
+  final String authToken;
+  final AppUser user;
   ///
   ///
   const CustomerOrderBody({
     super.key,
-    required String authToken,
-  }):
-    _authToken = authToken;
+    required this.authToken,
+    required this.user,
+  });
   //
   //
   @override
   // ignore: no_logic_in_create_state
   State<CustomerOrderBody> createState() => _CustomerOrderBodyState(
-    authToken: _authToken,
+    authToken: authToken,
   );
 }
 //

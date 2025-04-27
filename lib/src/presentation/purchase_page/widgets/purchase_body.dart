@@ -1,5 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flutter/material.dart';
@@ -8,20 +9,21 @@ import 'package:hmi_core/hmi_core_result.dart';
 ///
 ///
 class PurchaseBody extends StatefulWidget {
-  final String _authToken;
+  final String authToken;
+  final AppUser user;
   ///
   ///
   const PurchaseBody({
     super.key,
-    required String authToken,
-  }):
-    _authToken = authToken;
+    required this.authToken,
+    required this.user,
+  });
   //
   //
   @override
   // ignore: no_logic_in_create_state
   State<PurchaseBody> createState() => _PurchaseBodyState(
-    authToken: _authToken,
+    authToken: authToken,
   );
 }
 //

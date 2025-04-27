@@ -133,6 +133,7 @@ class _HomeBodyState extends State<HomeBody> {
                     ),
                     child: ProductPage(
                       authToken: authToken,
+                      user: user,
                     ),
                   ),
                   //
@@ -142,7 +143,10 @@ class _HomeBodyState extends State<HomeBody> {
                       vertical: _paddingV,
                       horizontal: _paddingH,
                     ),
-                    child: PurchasePage(authToken: authToken),
+                    child: PurchasePage(
+                      authToken: authToken,
+                      user: user,
+                    ),
                   ),
                   //
                   // PurchaseItem Page
@@ -151,7 +155,10 @@ class _HomeBodyState extends State<HomeBody> {
                       vertical: _paddingV,
                       horizontal: _paddingH,
                     ),
-                    child: PurchaseItemPage(authToken: authToken),
+                    child: PurchaseItemPage(
+                      authToken: authToken,
+                      user: user,
+                    ),
                   ),
                   //
                   // CustomerOrder Page
@@ -160,7 +167,10 @@ class _HomeBodyState extends State<HomeBody> {
                       vertical: _paddingV,
                       horizontal: _paddingH,
                     ),
-                    child: CustomerOrderPage(authToken: authToken),
+                    child: CustomerOrderPage(
+                      authToken: authToken,
+                      user: user,
+                    ),
                   ),
                   //
                   // Payment Page

@@ -1,6 +1,7 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/core/error/failure.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product_category.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
@@ -10,44 +11,36 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 ///
-///
+/// View / Edit the dictionary of `Product`'s
 class ProductBody extends StatefulWidget {
-  final String _authToken;
+  final String authToken;
+  final AppUser user;
   ///
   ///
+  /// View / Edit the dictionary of `Product`'s
   const ProductBody({
     super.key,
-    required String authToken,
-  }):
-    _authToken = authToken;
+    required this.authToken,
+    required this.user,
+  });
   //
   //
   @override
   // ignore: no_logic_in_create_state
-  State<ProductBody> createState() => _ProductBodyState(
-    authToken: _authToken,
-  );
+  State<ProductBody> createState() => _ProductBodyState();
 }
 //
 //
 class _ProductBodyState extends State<ProductBody> {
   late final Log _log;
-  final String _authToken;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   late final RelationSchema<EntryProduct, void> _schema;
   //
   //
-  _ProductBodyState({
-    required String authToken,
-  }):
-    _authToken = authToken {
-      _log = Log("$runtimeType");
-    }
-  //
-  //
   @override
   void initState() {
+    _log = Log("$runtimeType");
     _schema = _buildSchema();
     super.initState();
   }
@@ -58,7 +51,7 @@ class _ProductBodyState extends State<ProductBody> {
       schema: TableSchema<EntryProduct, void>(
         read: SqlRead<EntryProduct, void>.keep(
           address: _apiAddress, 
-          authToken: _authToken, 
+          authToken: widget.authToken, 
           database: _database, 
           sqlBuilder: (sql, params) {
             return Sql(sql: 'select * from product_view order by id;');
@@ -68,7 +61,7 @@ class _ProductBodyState extends State<ProductBody> {
         ),
         write: SqlWrite<EntryProduct>.keep(
           address: _apiAddress, 
-          authToken: _authToken, 
+          authToken: widget.authToken, 
           database: _database, 
           updateSqlBuilder: EntryProduct.updateSqlBuilder,
           insertSqlBuilder: EntryProduct.insertSqlBuilder,
@@ -76,19 +69,19 @@ class _ProductBodyState extends State<ProductBody> {
           debug: true,
         ),
         fields: [
-          const Field(hidden: false, editable: false, key: 'id'),
-          const Field(hidden: false, editable: true, title: 'Category', key: 'product_category_id', relation: Relation(id: 'product_category_id', field: 'name')),
-          const Field(hidden: false, editable: true, title: 'Name', key: 'name'),
-          const Field(hidden: false, editable: true, key: 'details'),
-          const Field(hidden: false, editable: true, key: 'primary_price'),
-          const Field(hidden: false, editable: true, key: 'primary_currency'),
-          const Field(hidden: false, editable: true, key: 'primary_order_quantity'),
-          const Field(hidden: false, editable: true, key: 'order_quantity'),
-          const Field(hidden: false, editable: true, key: 'description'),
-          const Field(hidden: false, editable: true, key: 'picture'),
-          const Field(hidden: true, editable: true, key: 'created'),
-          const Field(hidden: true, editable: true, key: 'updated'),
-          const Field(hidden: true, editable: true, key: 'deleted'),
+          const Field(flex: 03, hidden: false, editable: false, key: 'id'),
+          const Field(flex: 10, hidden: false, editable: true, title: 'Category', key: 'product_category_id', relation: Relation(id: 'product_category_id', field: 'name')),
+          const Field(flex: 10, hidden: false, editable: true, title: 'Name', key: 'name'),
+          const Field(flex: 20, hidden: false, editable: true, key: 'details'),
+          const Field(flex: 05, hidden: false, editable: true, key: 'primary_price'),
+          const Field(flex: 05, hidden: false, editable: true, key: 'primary_currency'),
+          const Field(flex: 05, hidden: false, editable: true, key: 'primary_order_quantity'),
+          const Field(flex: 05, hidden: false, editable: true, key: 'order_quantity'),
+          const Field(flex: 10, hidden: false, editable: true, key: 'description'),
+          const Field(flex: 10, hidden: false, editable: true, key: 'picture'),
+          const Field(flex: 05, hidden: true, editable: true, key: 'created'),
+          const Field(flex: 05, hidden: true, editable: true, key: 'updated'),
+          const Field(flex: 05, hidden: true, editable: true, key: 'deleted'),
         ],
       ),
       relations: _buildRelations(),
@@ -101,7 +94,7 @@ class _ProductBodyState extends State<ProductBody> {
       'product_category_id': TableSchema<EntryProductCategory, void>(
         read: SqlRead<EntryProductCategory, void>.keep(
           address: _apiAddress, 
-          authToken: _authToken, 
+          authToken: widget.authToken, 
           database: _database, 
           sqlBuilder: (sql, params) {
             return Sql(sql: 'select id, name from product_category order by id;');
@@ -122,6 +115,7 @@ class _ProductBodyState extends State<ProductBody> {
   Widget build(BuildContext context) {
     _log.debug('.build | ');
     return TableWidget<EntryProduct, void>(
+      showDeleted: [AppUserRole.admin].contains(widget.user.role) ? false : null,
       addAction: TableWidgetAction(
         onPressed: (schema) {
           return showDialog<Result<EntryProduct, void>?>(
