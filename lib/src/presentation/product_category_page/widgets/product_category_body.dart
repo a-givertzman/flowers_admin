@@ -71,7 +71,7 @@ class _ProductCategoryBodyState extends State<ProductCategoryBody> {
         ),
         fields: [
           const Field(flex: 3, hidden: false, editable: false, key: 'id'),
-          const Field(flex: 10, hidden: false, editable: true, key: 'category_id', relation: Relation(id: 'category_id', field: 'name')),
+          const Field(flex: 10, hidden: false, editable: false, key: 'category_id', relation: Relation(id: 'category_id', field: 'name')),
           const Field(flex: 10, hidden: false, editable: true, key: 'name'),
           const Field(flex: 20, hidden: false, editable: true, key: 'details'),
           const Field(flex: 20, hidden: false, editable: true, key: 'description'),

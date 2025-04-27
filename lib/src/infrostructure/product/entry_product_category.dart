@@ -85,6 +85,7 @@ class EntryProductCategory implements SchemaEntryAbstract {
   ///
   ///
   static Sql updateSqlBuilder(Sql sql, EntryProductCategory entry) {
+    final categoryId = [null, ''].contains(entry.value('category_id').str) ? 'null' : entry.value('category_id').str;
     return Sql(sql: """UPDATE product_category SET (
       id,
       category_id,
@@ -97,7 +98,7 @@ class EntryProductCategory implements SchemaEntryAbstract {
       deleted
     ) = (
       ${entry.value('id').str},
-      ${entry.value('category_id').str},
+      $categoryId,
       ${entry.value('name').str},
       ${entry.value('details').str},
       ${entry.value('description').str},
@@ -112,6 +113,7 @@ class EntryProductCategory implements SchemaEntryAbstract {
   ///
   ///
   static Sql insertSqlBuilder(Sql sql, EntryProductCategory entry) {
+    final categoryId = [null, ''].contains(entry.value('category_id').str) ? 'null' : entry.value('category_id').str;
     return Sql(sql: """insert into product_category (
       category_id,
       name,
@@ -119,7 +121,7 @@ class EntryProductCategory implements SchemaEntryAbstract {
       description,
       picture
     ) values (
-      ${entry.value('category_id').str},
+      $categoryId,
       ${entry.value('name').str},
       ${entry.value('details').str},
       ${entry.value('description').str},

@@ -60,9 +60,9 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
     _log.debug('.build | categoryField: $categoryField');
     _log.trace('.build | relations: $relations');
     // EditListEntry relation = EditListEntry(entries: [], field: categoryField.relation.field);
-    final id = _entry.value('id');
+    final id = _entry.value('id').value;
     final List<SchemaEntryAbstract>? relEntries = relations[categoryField.relation.id]?.where((e) {
-      return e.value('id') != id;
+      return e.value('id').value != id;
     }).toList();
     final relation = (relEntries != null) 
       ? EditListEntry(entries: relEntries, field: categoryField.relation.field)
@@ -102,7 +102,7 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
                     EditListWidget(
                       id: '${_entry.value('category_id').value}',
                       relation: relation,
-                      editable: categoryField.isEditable,
+                      editable: true,
                       // style: textStyle,
                       labelText: _field('category', fields).title.inRu,
                       onComplete: (value) {
