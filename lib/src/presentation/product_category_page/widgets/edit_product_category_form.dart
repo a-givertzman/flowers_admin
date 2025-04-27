@@ -58,12 +58,15 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
     final relations = widget.relations;
     final categoryField = _field('category_id', fields);
     _log.debug('.build | categoryField: $categoryField');
-    _log.debug('.build | _relations: $relations');
-    EditListEntry relation = EditListEntry(entries: [], field: categoryField.relation.field);
-    final List<SchemaEntryAbstract>? relEntries = relations[categoryField.relation.id];
-    if (relEntries != null) {
-      relation = EditListEntry(entries: relEntries, field: categoryField.relation.field);
-    }
+    _log.trace('.build | relations: $relations');
+    // EditListEntry relation = EditListEntry(entries: [], field: categoryField.relation.field);
+    final id = _entry.value('id');
+    final List<SchemaEntryAbstract>? relEntries = relations[categoryField.relation.id]?.where((e) {
+      return e.value('id') != id;
+    }).toList();
+    final relation = (relEntries != null) 
+      ? EditListEntry(entries: relEntries, field: categoryField.relation.field)
+      : EditListEntry(entries: [], field: categoryField.relation.field);
     _log.debug('.build | relation: $relation');
     return Padding(
       padding: const EdgeInsets.all(64.0),
