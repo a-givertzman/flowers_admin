@@ -73,7 +73,7 @@ class _EditPurchaseFormState extends State<EditPurchaseForm> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${InRu('Edit customer')} ${_entry.value('name')}', style: Theme.of(context).textTheme.titleLarge,),
+              Text('${InRu('Edit purchase')} ${_entry.value('name').str}', style: Theme.of(context).textTheme.titleLarge,),
               Row(
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

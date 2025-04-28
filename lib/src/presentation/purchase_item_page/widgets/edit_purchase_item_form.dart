@@ -1,6 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
-import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase_item.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
 import 'package:flowers_admin/src/presentation/core/image_widget/load_image_widget/load_image_widget.dart';

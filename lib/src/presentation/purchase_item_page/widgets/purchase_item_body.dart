@@ -1,10 +1,13 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
+import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flowers_admin/src/presentation/purchase_item_page/widgets/edit_purchase_item_form.dart';
@@ -36,24 +39,42 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   late final RelationSchema<EntryPurchaseItem, void> _schema;
+  String _purchaseId = '';
+  late EntryPurchase _purchase;
   //
   //
   @override
   void initState() {
     _log = Log("$runtimeType");
     _schema = _buildSchema();
+    _purchase = EntryPurchase.empty();
+    // _schema.stream.listen((result) {
+    //   final relation = _schema.relations['purchase_id'];
+    //   _log.debug('.initState | relation: $relation');
+    //   if (relation != null) {
+    //     _purchase = relation.firstWhere(
+    //       (entry) => entry.key == _purchaseId, 
+    //       orElse: () => EntryPurchase.empty(),
+    //     ) as EntryPurchase;
+    //     _log.debug('.initState | _purchaseId: $_purchaseId');
+    //     _log.debug('.initState | _purchase: $_purchase');
+    //   }
+    // });
     super.initState();
   }
   ///
   /// Returns TableSchema
-  RelationSchema<EntryPurchaseItem, void> _buildSchema() {
-    return RelationSchema<EntryPurchaseItem, void>(
-        schema: TableSchema<EntryPurchaseItem, void>(
-          read: SqlRead<EntryPurchaseItem, void>(
+  RelationSchema<EntryPurchaseItem, PurchaseItemSqlParam> _buildSchema() {
+    return RelationSchema<EntryPurchaseItem, PurchaseItemSqlParam>(
+        schema: TableSchema<EntryPurchaseItem, PurchaseItemSqlParam>(
+          read: SqlRead<EntryPurchaseItem, PurchaseItemSqlParam>(
             address: _apiAddress,
             authToken: widget.authToken,
             database: _database,
-            sqlBuilder: (sql, params) {
+            sqlBuilder: (sql, PurchaseItemSqlParam? params) {
+              if (_purchaseId.isNotEmpty) {
+                return Sql(sql: 'select * from purchase_item_view where purchase_id = $_purchaseId order by id;');
+              }
               return Sql(sql: 'select * from purchase_item_view order by id;');
             },
             entryBuilder: (row) => EntryPurchaseItem.from(row),
@@ -70,19 +91,19 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
           ),
           fields: [
             const Field(flex: 03, hidden: false, editable: false, key: 'id'),
-            const Field(flex: 10, hidden: false, editable: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
-            const Field(flex: 10, hidden: false, editable: true, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
-            const Field(flex: 10, hidden: false, editable: true, key: 'sale_price'),
-            const Field(flex: 10, hidden: false, editable: true, key: 'sale_currency'),
-            const Field(flex: 10, hidden: false, editable: true, key: 'shipping'),
-            const Field(flex: 10, hidden: false, editable: true, key: 'remains'),
-            const Field(flex: 10, hidden: false, editable: true, key: 'name'),
-            const Field(flex: 10, hidden: false, editable: true, key: 'details'),
-            const Field(flex: 10, hidden: false, editable: true, key: 'description'),
-            const Field(flex: 10, hidden: false, editable: true, key: 'picture'),
-            const Field(flex: 10, hidden: true, editable: true, key: 'created'),
-            const Field(flex: 10, hidden: true, editable: true, key: 'updated'),
-            const Field(flex: 10, hidden: true, editable: true, key: 'deleted'),
+                  Field(flex: 15, hidden: false, editable: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name'), title: 'Purchase'.inRu),
+                  Field(flex: 15, hidden: false, editable: true, key: 'product_id', relation: Relation(id: 'product_id', field: 'name'), title: 'Product'.inRu),
+                  Field(flex: 05, hidden: false, editable: true, key: 'sale_price'),
+                  Field(flex: 05, hidden: false, editable: true, key: 'sale_currency'),
+                  Field(flex: 05, hidden: false, editable: true, key: 'shipping'),
+                  Field(flex: 05, hidden: false, editable: true, key: 'remains'),
+                  Field(flex: 10, hidden: false, editable: true, key: 'name'),
+                  Field(flex: 15, hidden: false, editable: true, key: 'details'),
+                  Field(flex: 20, hidden: false, editable: true, key: 'description'),
+                  Field(flex: 10, hidden: false, editable: true, key: 'picture'),
+            const Field(flex: 05, hidden: true, editable: true, key: 'created'),
+            const Field(flex: 05, hidden: true, editable: true, key: 'updated'),
+            const Field(flex: 05, hidden: true, editable: true, key: 'deleted'),
           ],
         ),
         relations: _buildRelations(),
@@ -126,36 +147,83 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
       ),
     };
   }
+  ///
+  ///
+  Field _field(List<Field> fields, String key) {
+    return fields.firstWhere((element) => element.key == key, orElse: () {
+      return Field<EntryPurchaseItem>(key: key);
+    },);
+  }
   //
   //
   @override
   Widget build(BuildContext context) {
     _log.debug('.build | ');
-    return TableWidget<EntryPurchaseItem, void>(
-      schema: _schema,
-      showDeleted: [AppUserRole.admin].contains(widget.user.role) ? false : null,
-      fetchAction: TableWidgetAction(
-        onPressed: (schema) {
-          return Future.value(Ok(EntryPurchaseItem.empty()));
-        }, 
-        icon: const Icon(Icons.add),
-      ),
-      addAction: TableWidgetAction(
-        onPressed: (schema) {
-          return showDialog<Result<EntryPurchaseItem, void>?>(
-            context: context, 
-            builder: (_) => EditPurchaseItemForm(fields: schema.fields, relations: schema.relations),
-          ).then((result) {
-            // _log.debug('.build | new entry: $result');
-            return switch (result) {
-              Ok(:final value) => Ok(value),
-              Err(:final error) => Err(error),
-              _ => const Err(null),
-            };
-          });
-        }, 
-        icon: const Icon(Icons.add),
-      ),
+    final purchaseField = _field(_schema.fields, 'purchase_id');
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        StreamBuilder(
+          stream: _schema.stream,
+          builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+            switch (snapshot.data) {
+              case Ok(value: _):
+                return EditListWidget(
+                  id: _purchaseId,
+                  relation: EditListEntry(
+                    entries: _schema.relations[purchaseField.relation.id] ?? [],
+                    field: purchaseField.relation.field,
+                  ),
+                  editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  labelText: _field(_schema.fields, 'purchase_id').title.inRu,
+                  onComplete: (purchaseId) {
+                    if (purchaseId != _purchaseId) {
+                      setState(() {
+                        _purchaseId = purchaseId;
+                        _log.debug('.build.onComplete | _purchaseId: $_purchaseId');
+                      });
+                    }
+                  },
+                );
+              case Err(error: _):                
+                return CircularProgressIndicator();
+              case null:                
+                return CircularProgressIndicator();
+            }
+            return CircularProgressIndicator.adaptive();
+          }
+        ),
+
+        Expanded(
+          child: TableWidget<EntryPurchaseItem, void>(
+            schema: _schema,
+            showDeleted: [AppUserRole.admin].contains(widget.user.role) ? false : null,
+            fetchAction: TableWidgetAction(
+              onPressed: (schema) {
+                return Future.value(Ok(EntryPurchaseItem.empty()));
+              }, 
+              icon: const Icon(Icons.add),
+            ),
+            addAction: TableWidgetAction(
+              onPressed: (schema) {
+                return showDialog<Result<EntryPurchaseItem, void>?>(
+                  context: context, 
+                  builder: (_) => EditPurchaseItemForm(fields: schema.fields, relations: schema.relations),
+                ).then((result) {
+                  // _log.debug('.build | new entry: $result');
+                  return switch (result) {
+                    Ok(:final value) => Ok(value),
+                    Err(:final error) => Err(error),
+                    _ => const Err(null),
+                  };
+                });
+              }, 
+              icon: const Icon(Icons.add),
+            ),
+          ),
+        ),
+      ],
     );
   }
   //
@@ -190,4 +258,12 @@ Future<Result<void, void>> showConfirmDialog(BuildContext context, title, conten
       ],              
     ),
   ).then((value) => value ?? const Err(null));
+}
+///
+///
+class PurchaseItemSqlParam {
+  String? purchase_id;
+  PurchaseItemSqlParam({
+    this.purchase_id,
+  });
 }

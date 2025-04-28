@@ -63,6 +63,11 @@ class TableSchemaReady<T extends SchemaEntryAbstract, P> implements TableSchemaA
       _onReady(r);
     });
   }
+  //
+  //
+  @override
+  // TODO: implement stream
+  Stream<Result<List<T>, Failure>> get stream => throw UnimplementedError();
   ///
   /// Inserts new entry into the table schema
   @override

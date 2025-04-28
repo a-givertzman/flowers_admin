@@ -72,6 +72,7 @@ class _TCellState<T extends SchemaEntryAbstract> extends State<TCell<T>> {
   //
   @override
   Widget build(BuildContext context) {
+    final isHeader = widget.entry == null;
     final TextStyle? style = widget.style;
     final flex = widget.flex;
     final bool editable = widget.editable;
@@ -139,7 +140,9 @@ class _TCellState<T extends SchemaEntryAbstract> extends State<TCell<T>> {
               child: Container(
                 decoration: BoxDecoration(
                   // border: _onEnter ? Border.all() : Border.all(color: Colors.transparent),
-                  boxShadow: _onEnter ? [BoxShadow(color: Colors.grey.withValues(alpha: 0.2), spreadRadius: 1, blurRadius: 4)]  : null,
+                  boxShadow: (_onEnter && !isHeader)
+                    ? [BoxShadow(color: Colors.grey.withValues(alpha: 0.2), spreadRadius: 1, blurRadius: 4)] 
+                    : null,
                 ),
                 child: Text(
                   _controller.text,

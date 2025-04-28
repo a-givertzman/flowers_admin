@@ -97,13 +97,18 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   //
   @override
   Widget build(BuildContext context) {
+    final isHeader = _entry == null;
     final deleted = _entry?.value('deleted').str;
     final isDeleted = (deleted != null && deleted.isNotEmpty && deleted.toLowerCase() != 'null');
-    final textStile = !isDeleted
-      ? Theme.of(context).textTheme.bodyMedium 
-      : Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
-        );
+    final textStile = isHeader
+      ? Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: Theme.of(context).colorScheme.onSecondary,
+      )
+      : !isDeleted
+        ? Theme.of(context).textTheme.bodyMedium 
+        : Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+          );
     return GestureDetector(
       // behavior: HitTestBehavior.deferToChild,
       // enableFeedback: false,
@@ -153,8 +158,12 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             Container(
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                color: _entry?.isSelected ?? false ? Colors.blue.withAlpha(128) : null,
-                border: _onEnter ? Border.all(color: Theme.of(context).primaryColor) : Border.all(color: Colors.transparent),
+                color: isHeader
+                  ? Theme.of(context).colorScheme.secondary
+                  : _entry?.isSelected ?? false ? Colors.blue.withAlpha(128) : null,
+                border: (_onEnter && !isHeader)
+                  ? Border.all(color: Theme.of(context).primaryColor)
+                  : Border.all(color: Colors.transparent),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,7 +202,15 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     final fieldValue = entry?.value(field.key);
     // _log.debug("._buildRow | \t value: $fieldValue");
     final builder = field.builder;
-    if (builder != null && entry != null) {
+    if (entry == null) {
+      return TCell<T>(
+        value: field.title.isNotEmpty ? field.title : field.key,
+        editable: false,
+        style: textStyle,
+        flex: field.flex,
+      );
+    }
+    if (builder != null) {
       return TCell<T>.builder(
         builder: builder,
         entry: entry,

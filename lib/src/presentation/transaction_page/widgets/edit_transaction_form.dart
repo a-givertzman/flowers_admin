@@ -62,8 +62,8 @@ class _EditProductFormState extends State<EditTransactionForm> {
     _relations = relations;
   ///
   ///
-  Field _field(String key) {
-    return _fields.firstWhere((element) => element.key == key, orElse: () {
+  Field _field(List<Field> fields, String key) {
+    return fields.firstWhere((element) => element.key == key, orElse: () {
       return Field(key: key) as Field<EntryTransaction>;
     },);
   }
@@ -71,8 +71,8 @@ class _EditProductFormState extends State<EditTransactionForm> {
   //
   @override
   Widget build(BuildContext context) {
-    final authorField = _field('author_id');
-    final customerField = _field('customer_id');
+    final authorField = _field(_fields, 'author_id');
+    final customerField = _field(_fields, 'customer_id');
     _log.debug('.build | authorField: $authorField');
     _log.debug('.build | customerField: $customerField');
     _log.debug('.build | _relations: $_relations');
@@ -114,18 +114,18 @@ class _EditProductFormState extends State<EditTransactionForm> {
                           },
                         ),
                         TextEditWidget(
-                          labelText: _field('value').title.inRu,
+                          labelText: _field(_fields, 'value').title.inRu,
                           value: '${_entry.value('value').value}',
-                          editable: _field('value').isEditable,
+                          editable: _field(_fields, 'value').isEditable,
                           onComplete: (value) {
                             _entry.update('value', value);
                             setState(() {return;});
                           },
                         ),
                         TextEditWidget(
-                          labelText: _field('details').title.inRu,
+                          labelText: _field(_fields, 'details').title.inRu,
                           value: '${_entry.value('details').value}',
-                          editable: _field('details').isEditable,
+                          editable: _field(_fields, 'details').isEditable,
                           onComplete: (value) {
                             _entry.update('details', value);
                             setState(() {return;});
@@ -142,9 +142,9 @@ class _EditProductFormState extends State<EditTransactionForm> {
                           },
                         ),
                         TextEditWidget(
-                          labelText: _field('customer_account').title.inRu,
+                          labelText: _field(_fields, 'customer_account').title.inRu,
                           value: '${_entry.value('customer_account').value}',
-                          editable: _field('customer_account').isEditable,
+                          editable: _field(_fields, 'customer_account').isEditable,
                         ),
                         // TextEditWidget(
                         //   labelText: field('primary_currency').title.inRu,
@@ -155,33 +155,33 @@ class _EditProductFormState extends State<EditTransactionForm> {
                         //   },
                         // ),
                         TextEditWidget(
-                          labelText: _field('description').title.inRu,
+                          labelText: _field(_fields, 'description').title.inRu,
                           value: '${_entry.value('description').value}',
-                          editable: _field('description').isEditable,
+                          editable: _field(_fields, 'description').isEditable,
                           onComplete: (value) {
                             _entry.update('description', value);
                             setState(() {return;});
                           },
                         ),
                         TextEditWidget(
-                          labelText: _field('created').title.inRu,
+                          labelText: _field(_fields, 'created').title.inRu,
                           value: '${_entry.value('created').value}',
-                          editable: _field('created').isEditable,
+                          editable: _field(_fields, 'created').isEditable,
                         ),
                         TextEditWidget(
-                          labelText: _field('updated').title.inRu,
+                          labelText: _field(_fields, 'updated').title.inRu,
                           value: '${_entry.value('updated').value}',
-                          editable: _field('updated').isEditable,
+                          editable: _field(_fields, 'updated').isEditable,
                         ),
                         if (_entry.value('deleted').value != null)
                           TextEditWidget(
-                            labelText: _field('deleted').title.inRu,
+                            labelText: _field(_fields, 'deleted').title.inRu,
                             value: '${_entry.value('deleted').value}',
-                            editable: _field('deleted').isEditable,
+                            editable: _field(_fields, 'deleted').isEditable,
                           ),
                         if ([AppUserRole.admin].contains(_user.role))
                           CheckboxListTile(
-                            enabled: _field('allow_indebted').isEditable,
+                            enabled: _field(_fields, 'allow_indebted').isEditable,
                             contentPadding: EdgeInsets.zero,
                             title: Text('Allow indebted'.inRu),
                             value: _entry.value('allow_indebted').value ?? false, 
