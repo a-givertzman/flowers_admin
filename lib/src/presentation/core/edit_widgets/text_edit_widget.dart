@@ -94,9 +94,11 @@ class _TextEditWidgetState extends State<TextEditWidget> {
           contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
         ),
         onChanged: (value) {
-          setState(() {
-            _isChanged = value != _value;
-          });
+          final isChanged = value != _value;
+          if (_isChanged != isChanged) {
+            _isChanged = isChanged;
+            setState(() {return;});
+          }
         },
         onTapOutside: (_) {
           _onEditingComplete(_controller.text);

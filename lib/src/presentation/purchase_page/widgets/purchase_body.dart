@@ -6,6 +6,7 @@ import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/purchase_status.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/t_edit_date_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
@@ -13,6 +14,7 @@ import 'package:flowers_admin/src/presentation/purchase_page/widgets/edit_purcha
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
+import 'package:intl/intl.dart';
 ///
 ///
 class PurchaseBody extends StatefulWidget {
@@ -47,11 +49,12 @@ class _PurchaseBodyState extends State<PurchaseBody> {
     super.initState();
   }
   ///
+  final _statusRelation = PurchaseStatus.values.asMap().map((i, status) {
+    return MapEntry(status.str, EntryPurchase(map: {'id': FieldValue(status.str), 'status': FieldValue(status.str)}));
+  },);
+  ///
   /// Returns TableSchema
   TableSchema<EntryPurchase, void> _buildSchema() {
-    final statusRelation = PurchaseStatus.values.asMap().map((i, status) {
-      return MapEntry(status.str, EntryPurchase(map: {'id': FieldValue(status.str), 'status': FieldValue(status.str)}));
-    },);
     return TableSchema<EntryPurchase, void>(
       read: SqlRead<EntryPurchase, void>.keep(
         address: _apiAddress,
@@ -77,33 +80,61 @@ class _PurchaseBodyState extends State<PurchaseBody> {
         const Field(flex: 03, hidden: false, editable: false,                             key: 'id'),
               Field(flex: 10, hidden: false, editable: true, title: 'Name'.inRu,          key: 'name'),
               Field(flex: 20, hidden: false, editable: true, title: 'Details'.inRu,       key: 'details'),
-              Field(flex: 05, hidden: false, editable: true, title: 'Status'.inRu,        key: 'status',
-                builder: (BuildContext ctx, EntryPurchase entry) {
-                  return TEditListWidget(
-                    id: '${entry.value('status').value}',
-                    relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
-                    editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
-                    // style: textStyle,
-                    // labelText: 'Status'.inRu,
-                    onComplete: (id) {
-                      final status = statusRelation[id]?.value('status').value;
-                      _log.debug('build.onComplete | status: $status');
-                      if (status != null) {
-                        entry.update('status', status);
-                        setState(() {return;});
-                      }
-                    },
-                  );
-                },
-              ),
-              Field(flex: 10, hidden: false, editable: true, title: 'Date of start'.inRu, key: 'date_of_start'),
-              Field(flex: 10, hidden: false, editable: true, title: 'Date of end'.inRu,   key: 'date_of_end'),
+              Field(flex: 05, hidden: false, editable: true, title: 'Status'.inRu,        key: 'status', builder: _roleBuilder),
+              Field(flex: 10, hidden: false, editable: true, title: 'Date of start'.inRu, key: 'date_of_start', builder: _dateOfStartBuilder),
+              Field(flex: 10, hidden: false, editable: true, title: 'Date of end'.inRu,   key: 'date_of_end', builder: _dateOfEndBuilder),
               Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu,   key: 'description'),
               Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu,       key: 'picture'),
         const Field(flex: 05, hidden: true, editable: true, title: 'created',             key: 'created'),
         const Field(flex: 05, hidden: true, editable: true, title: 'updated',             key: 'updated'),
         const Field(flex: 05, hidden: true, editable: true, title: 'deleted',             key: 'deleted'),
       ],
+    );
+  }
+  ///
+  /// User role builder
+  Widget _roleBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
+    return TEditListWidget(
+      id: '${entry.value('status').value}',
+      relation: EditListEntry(field: 'status', entries: _statusRelation.values.toList()),
+      editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
+      // onComplete: onComplite,
+      onComplete: (id) {
+        final status = _statusRelation[id]?.value('status').value;
+        _log.debug('build.onComplete | status: $status');
+        if (status != null) {
+          entry.update('status', status);
+          if (onComplite != null) onComplite(status);
+          // setState(() {return;});
+        }
+      },
+    );
+  }
+  Widget _dateOfStartBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
+    return TEditDateWidget(
+      value: '${entry.value('date_of_start').value}',
+      onComplete: (value) {
+        final date = DateFormat('dd-MM-yyyy').tryParse(value);
+        entry.update('date_of_start', value);
+        if (onComplite != null) onComplite(date?.toIso8601String() ?? '');
+        // setState(() {return;});
+      },
+    );
+  }
+  Widget _dateOfEndBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
+    return TEditDateWidget(
+      value: '${entry.value('date_of_end').value}',
+      // onComplete: onComplite,
+      onComplete: (value) {
+        final date = DateFormat('dd-MM-yyyy').tryParse(value);
+        entry.update('date_of_end', value);
+        if (onComplite != null) onComplite(date?.toIso8601String() ?? '');
+        // setState(() {return;});
+      },
+      // onComplete: (value) {
+      //   entry.update('date_of_end', value);
+      //   setState(() {return;});
+      // },
     );
   }
   //
@@ -114,6 +145,12 @@ class _PurchaseBodyState extends State<PurchaseBody> {
     return TableWidget<EntryPurchase, void>(
       schema: _schema,
       showDeleted: [AppUserRole.admin].contains(widget.user.role) ? false : null,
+      fetchAction: TableWidgetAction(
+        onPressed: (schema) {
+          return Future.value(Ok(EntryPurchase.empty()));
+        }, 
+        icon: const Icon(Icons.add),
+      ),
       addAction: TableWidgetAction(
         onPressed: (schema) {
           return showDialog<Result<EntryPurchase, void>?>(

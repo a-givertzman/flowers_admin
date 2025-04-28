@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 
 ///
 /// [TableWidget] CheckBox
-class CheckBoxField<T> extends StatefulWidget {
+class CheckBoxField<T extends SchemaEntryAbstract> extends StatefulWidget {
   final SchemaEntryAbstract _entry;
-  final void Function(T)? _onChanged;
+  final void Function(T entry)? _onChanged;
   ///
   /// [TableWidget] CheckBox
   const CheckBoxField({
     super.key,
     required SchemaEntryAbstract entry,
-    required void Function(T)? onChanged
+    required void Function(T entry)? onChanged
   }):
     _entry = entry,
     _onChanged = onChanged;

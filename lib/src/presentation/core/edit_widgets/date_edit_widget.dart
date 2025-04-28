@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 ///
@@ -24,7 +25,7 @@ class DateEditWidget extends StatefulWidget {
     this.editable = true,
     this.keyboardType,
     // this.format,
-    this.divider = '.',
+    this.divider = '-',
   });
   //
   //
@@ -34,22 +35,23 @@ class DateEditWidget extends StatefulWidget {
 //
 //
 class _TextEditWidgetState extends State<DateEditWidget> {
+  late final Log _log;
   late final TextEditingController _controller;
   late final MaskTextInputFormatter _formatter;
   late final DateFormat _format;
-  late final String _initialValue;
   bool _isChanged = false;
   //
   //
   @override
   void initState() {
+    _log = Log('$runtimeType');
     final d = widget.divider;
     _format = DateFormat('dd${d}MM${d}yyyy');
-    _initialValue = _format.format(widget.value ?? DateTime.now());
+    final initialValue = _format.format(widget.value ?? DateTime.now());
     _formatter = MaskTextInputFormatter(
       mask: '##$d##$d####',
       filter: { "#": RegExp(r'[0-9]') },
-      initialText: _initialValue,
+      initialText: initialValue,
     );
     _controller = TextEditingController.fromValue(TextEditingValue(text: _formatter.getMaskedText()));
     super.initState();
@@ -96,9 +98,13 @@ class _TextEditWidgetState extends State<DateEditWidget> {
           contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
         ),
         onChanged: (value) {
-          setState(() {
-            _isChanged = value != _initialValue;
-          });
+          final date = _format.tryParse(value);
+          final isChanged = date != widget.value;
+          if (_isChanged != isChanged) {
+            _isChanged = isChanged;
+            setState(() {return;});
+          }
+          _log.warn('value: $value,  date: $date,  init: ${widget.value}');
         },
         onTapOutside: (_) {
           _onEditingComplete(_controller.text, widget.onComplete);
@@ -128,6 +134,6 @@ class _TextEditWidgetState extends State<DateEditWidget> {
     if (date != null) {
       return null;
     }
-    return 'Invalid date format "$value", Expected "${_format.pattern}"';
+    return 'Invalid date format "${value}", Expected "${_format.pattern}"';
   }
 }

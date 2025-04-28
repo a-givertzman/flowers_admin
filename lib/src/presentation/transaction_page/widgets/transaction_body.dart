@@ -103,7 +103,7 @@ class _TransactionBodyState extends State<TransactionBody> {
                 Field(flex: 05, hidden: false, editable: false, title: '${InRu('CustomerAccountBefore')}', key: 'customer_account'),
                 Field(flex: 05, hidden: false, editable: true, title: '${InRu('Description')}', key: 'description'),
                 Field(flex: 05, hidden: false, editable: false, title: '${InRu('Allow indebted')}', key: 'allow_indebted'),
-                Field(flex: 05, hidden: false, editable: false, title: '${InRu('Created')}', key: 'created', builder: _cratedBuilder),
+                Field(flex: 05, hidden: false, editable: false, title: '${InRu('Created')}', key: 'created', builder: _createdBuilder),
           const Field(flex: 05, hidden: true, editable: false, key: 'updated'),
           const Field(flex: 05, hidden: true, editable: false, key: 'deleted'),
         ],
@@ -113,7 +113,7 @@ class _TransactionBodyState extends State<TransactionBody> {
   }
   ///
   ///
-  Widget _cratedBuilder(BuildContext context, SchemaEntryAbstract entry) {
+  Widget _createdBuilder(BuildContext context, SchemaEntryAbstract entry, Function(String)? onComplite) {
     final dt = DateTime.tryParse('${entry.value('created').value}');
     if (dt != null) {
       return Text('${dt.day}.${dt.month}.${dt.year} | ${dt.hour}:${dt.minute}:${dt.second}');

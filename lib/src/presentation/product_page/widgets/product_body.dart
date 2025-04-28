@@ -119,6 +119,12 @@ class _ProductBodyState extends State<ProductBody> {
     return TableWidget<EntryProduct, void>(
       schema: _schema,
       showDeleted: [AppUserRole.admin].contains(widget.user.role) ? false : null,
+      fetchAction: TableWidgetAction(
+        onPressed: (schema) {
+          return Future.value(Ok(EntryProduct.empty()));
+        }, 
+        icon: const Icon(Icons.add),
+      ),
       addAction: TableWidgetAction(
         onPressed: (schema) {
           return showDialog<Result<EntryProduct, void>?>(

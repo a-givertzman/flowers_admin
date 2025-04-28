@@ -8,7 +8,7 @@ class TCell<T extends SchemaEntryAbstract> extends StatefulWidget {
   final String value;
   final TextStyle? style;
   final void Function(String value)? onComplete;
-  final Widget Function(BuildContext, T)? _builder;
+  final Widget Function(BuildContext ctx, T entry, Function(String)? onComplete)? _builder;
   final T? entry;
   final bool editable;
   final int flex;
@@ -31,7 +31,7 @@ class TCell<T extends SchemaEntryAbstract> extends StatefulWidget {
     this.value = '',
     this.style,
     this.onComplete,
-    required Widget Function(BuildContext, T)? builder,
+    required Widget Function(BuildContext ctx, T entry, Function(String)? onComplete)? builder,
     required T this.entry,
     this.editable = true,
     this.flex = 1,
@@ -80,7 +80,7 @@ class _TCellState<T extends SchemaEntryAbstract> extends State<TCell<T>> {
     if (builder != null && entry != null) {
       return Expanded(
         flex: flex,
-        child: builder(context, entry),
+        child: builder(context, entry, widget.onComplete),
       );
     }
     return Expanded(

@@ -157,9 +157,9 @@ class _PaymentBodyState extends State<PaymentBody> {
           filter: _filter,
           schema: TableSchema<EntryPayment, void>(
             read: SqlRead<EntryPayment, void>.keep(
+              database: _database,
               address: _apiAddress, 
               authToken: _authToken, 
-              database: _database,
               sqlBuilder: (sql, params) {
                 return Sql(sql: 'select * from customer_order_view order by id;');
               },
@@ -179,7 +179,7 @@ class _PaymentBodyState extends State<PaymentBody> {
               debug: true,
             ),
             fields: [
-              Field(hidden: false, key: 'pay', builder: (context, entry) => CheckBoxField(entry: entry, onChanged: (p0) => setState(() {return;}))),
+              Field(hidden: false, key: 'pay', builder: _payBuilder),
               const Field(hidden: false, key: 'id'),
               Field(hidden: false, title: 'Customer'.inRu, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
               // const Field(hidden: false, key: 'customer'),
@@ -207,6 +207,17 @@ class _PaymentBodyState extends State<PaymentBody> {
           ..._buildPurchaseItemRelation(),
         },
       ),
+    );
+  }
+  ///
+  /// Builder for field `pay`
+  Widget _payBuilder(BuildContext ctx, EntryPayment entry, dynamic Function(String)? onComplete) {
+    return CheckBoxField<EntryPayment>(
+      entry: entry,
+      onChanged: (entry) {
+        if (onComplete != null) onComplete(entry.value('pay').value);
+        setState(() {return;});
+      }
     );
   }
   ///
