@@ -4,6 +4,7 @@ import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/purchase_status.dart';
+import 'package:flowers_admin/src/presentation/core/edit_widgets/date_edit_widget.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
 import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/image_widget/load_image_widget/load_image_widget.dart';
@@ -126,35 +127,23 @@ class _EditPurchaseFormState extends State<EditPurchaseForm> {
                             }
                           },
                         ),
-                        InputDatePickerFormField(
-                          fieldLabelText: _field(widget.fields, 'date_of_start').title.inRu,
-                          initialDate: DateTime.tryParse('${_entry.value('date_of_start').value}'),
-                          firstDate: DateTime(DateTime.now().year - 10),  //'${_entry.value('date_of_start').value}',
-                          lastDate: DateTime(DateTime.now().year + 20),
-                          onDateSubmitted: (value) {
+                        DateEditWidget(
+                          labelText: _field(widget.fields, 'date_of_start').title.inRu,
+                          value: DateTime.tryParse('${_entry.value('date_of_start').value}'),
+                          onComplete: (value) {
                             final dateTime = value.toIso8601String();
                             _entry.update('date_of_start', dateTime);
                             setState(() {return;});
                           },
                         ),
-                        InputDatePickerFormField(
-                          fieldLabelText: _field(widget.fields, 'date_of_end').title.inRu,
-                          initialDate: DateTime.tryParse('${_entry.value('date_of_end').value}'),
-                          firstDate: DateTime(DateTime.now().year - 10),  //'${_entry.value('date_of_start').value}',
-                          lastDate: DateTime(DateTime.now().year + 20),
-                          onDateSubmitted: (value) {
+                        DateEditWidget(
+                          labelText: _field(widget.fields, 'date_of_end').title.inRu,
+                          value: DateTime.tryParse('${_entry.value('date_of_end').value}'),
+                          onComplete: (value) {
                             final dateTime = value.toIso8601String();
                             _entry.update('date_of_end', dateTime);
                             setState(() {return;});
                           },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'date_of_start').title.inRu,
-                          value: '${_entry.value('date_of_start').value}',
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'date_of_end').title.inRu,
-                          value: '${_entry.value('date_of_end').value}',
                         ),
                         TextEditWidget(
                           labelText: _field(widget.fields, 'description').title.inRu,

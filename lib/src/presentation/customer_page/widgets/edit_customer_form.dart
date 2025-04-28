@@ -47,14 +47,9 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
   //
   @override
   Widget build(BuildContext context) {
-    final user = widget.user;
     final fields = widget.fields;
     final entry = widget.entry ?? EntryCustomer.empty();
     final title = entry.isEmpty ? InRu('Create customer') : InRu('Edit customer');
-    final editableRole = [AppUserRole.admin].contains(user.role);
-    final editableLogin = [AppUserRole.admin].contains(user.role);
-    final editablePass = [AppUserRole.admin].contains(user.role);
-    final editableAccount = [AppUserRole.admin].contains(user.role);
     final roleEntries = AppUserRole.values.asMap().map((i, role) {
       return MapEntry(role.str, EntryCustomer(map: {'id': FieldValue(role.str), 'role': FieldValue(role.str)}));
     },);
@@ -75,7 +70,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     EditListWidget(
                       id: '${entry.value('role').value}',
                       relation: EditListEntry(field: 'role', entries: roleEntries.values.toList()),
-                      editable: editableRole,
+                      editable: _field('role', fields).isEditable,
                       // style: textStyle,
                       labelText: _field('role', fields).title.inRu,
                       onComplete: (id) {
@@ -87,19 +82,10 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                         }
                       },
                     ),
-
-                    // TextEditWidget(
-                    //   editable: editableRole,
-                    //   labelText: 'role'.inRu,
-                    //   value: '${entry.value('role').value}',
-                    //   onComplete: (value) {
-                    //     entry.update('role', value);
-                    //     setState(() {return;});
-                    //   },
-                    // ),
                     TextEditWidget(
                       labelText: _field('email', fields).title.inRu,
                       value: '${entry.value('email').value}',
+                      editable: _field('email', fields).isEditable,
                       onComplete: (value) {
                         entry.update('email', value);
                         setState(() {return;});
@@ -108,6 +94,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     TextEditWidget(
                       labelText: _field('phone', fields).title.inRu,
                       value: '${entry.value('phone').value}',
+                      editable: _field('phone', fields).isEditable,
                       onComplete: (value) {
                         entry.update('phone', value);
                         setState(() {return;});
@@ -116,6 +103,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     TextEditWidget(
                       labelText: _field('name', fields).title.inRu,
                       value: '${entry.value('name').value}',
+                      editable: _field('name', fields).isEditable,
                       onComplete: (value) {
                         entry.update('name', value);
                         setState(() {return;});
@@ -124,15 +112,16 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     TextEditWidget(
                       labelText: _field('location', fields).title.inRu,
                       value: '${entry.value('location').value}',
+                      editable: _field('location', fields).isEditable,
                       onComplete: (value) {
                         entry.update('location', value);
                         setState(() {return;});
                       },
                     ),
                     TextEditWidget(
-                      editable: editableLogin,
                       labelText: _field('login', fields).title.inRu,
                       value: '${entry.value('login').value}',
+                      editable: _field('login', fields).isEditable,
                       onComplete: (value) {
                         entry.update('login', value);
                         _log.debug('.TextEditWidget.onComplete | enrty: $entry');
@@ -140,18 +129,18 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       },
                     ),
                     TextEditWidget(
-                      editable: editablePass,
                       labelText: _field('pass', fields).title.inRu,
                       value: '${entry.value('pass').value}',
+                      editable: _field('pass', fields).isEditable,
                       onComplete: (value) {
                         entry.update('pass', value);
                         setState(() {return;});
                       },
                     ),
                     TextEditWidget(
-                      editable: editableAccount,
                       labelText: _field('account', fields).title.inRu,
                       value: '${entry.value('account').value}',
+                      editable: _field('account', fields).isEditable,
                       onComplete: (value) {
                         entry.update('account', value);
                         setState(() {return;});
@@ -161,6 +150,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                       contentPadding: EdgeInsets.zero,
                       title: Text(_field('Blocked', fields).title.inRu),
                       value: entry.value('blocked').value ?? false, 
+                      enabled: _field('blocked', fields).isEditable,
                       onChanged: (value) {
                         entry.update('blocked', value ?? false);
                         setState(() {return;});
@@ -169,6 +159,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     TextEditWidget(
                       labelText: _field('last_act', fields).title.inRu,
                       value: '${entry.value('last_act').value}',
+                      editable: _field('last_act', fields).isEditable,
                       onComplete: (value) {
                         entry.update('last_act', value);
                         setState(() {return;});
@@ -177,6 +168,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     TextEditWidget(
                       labelText: _field('created', fields).title.inRu,
                       value: '${entry.value('created').value}',
+                      editable: _field('created', fields).isEditable,
                       onComplete: (value) {
                         entry.update('created', value);
                         setState(() {return;});
@@ -185,6 +177,7 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     TextEditWidget(
                       labelText: _field('updated', fields).title.inRu,
                       value: '${entry.value('updated').value}',
+                      editable: _field('updated', fields).isEditable,
                       onComplete: (value) {
                         entry.update('updated', value);
                         setState(() {return;});
@@ -192,8 +185,8 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                     ),
                     TextEditWidget(
                       labelText: _field('deleted', fields).title.inRu,
-                      editable: [AppUserRole.admin].contains(user.role),
                       value: '${entry.value('deleted').value}',
+                      editable: _field('deleted', fields).isEditable,
                       onComplete: (value) {
                         entry.update('deleted', value);
                         setState(() {return;});
@@ -202,26 +195,27 @@ class _EditCustomerFormState extends State<EditCustomerForm> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed:  () {
-                      Navigator.pop(context, const Err<EntryCustomer, void>(null));
-                    },
-                    child: const Text("Cancel"),
-                  ),
-                  TextButton(
-                    onPressed: entry.isChanged 
-                      ? () {
-                        _log.debug('.TextButton.Yes | _isChanged: ${entry.isChanged}');
-                        _log.debug('.TextButton.Yes | enrty: $entry');
-                        Navigator.pop(context, Ok<EntryCustomer, void>(entry));
-                      } 
-                      : null,
-                    child: const Text("Yes"),
-                  ),
-                ],
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: OverflowBar(
+            children: [
+              TextButton(
+                onPressed:  () {
+                  Navigator.pop(context, const Err<EntryCustomer, void>(null));
+                },
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: entry.isChanged 
+                  ? () {
+                    _log.debug('.TextButton.Yes | isChanged: ${entry.isChanged}');
+                    _log.debug('.TextButton.Yes | enrty: $entry');
+                    Navigator.pop(context, Ok<EntryCustomer, void>(entry));
+                  } 
+                  : null,
+                child: const Text("Yes"),
               ),
             ],
           ),

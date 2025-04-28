@@ -63,6 +63,13 @@ class _TextEditWidgetState extends State<TextEditWidget> {
   //
   //
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  //
+  //
+  @override
   Widget build(BuildContext context) {
     return TapRegion(
       onTapOutside: (PointerDownEvent _) {
@@ -72,7 +79,7 @@ class _TextEditWidgetState extends State<TextEditWidget> {
         controller: _controller,
         enabled: _editable,
         style: _isChanged 
-          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
+          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.blue)
           : null,
         // textAlign: _textAlign,
         decoration: InputDecoration(

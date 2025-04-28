@@ -4,16 +4,18 @@ import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
+import 'package:flowers_admin/src/presentation/core/error/failure_widget.dart';
 import 'package:flowers_admin/src/presentation/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_result.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 ///
-///
+/// Authentication widget.
+/// Using AppUser, by login and pass
 class AuthBody extends StatefulWidget {
   final String authToken;
   ///
-  ///
+  /// Authentication widget
   const AuthBody({
     super.key,
     required this.authToken,
@@ -27,6 +29,7 @@ class AuthBody extends StatefulWidget {
 //
 class AuthBodyState extends State<AuthBody> {
   late final Log _log;
+  late final SqlAccess<EntryCustomer, void> _scheme;
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   AppUser _user = AppUser.empty();
@@ -35,6 +38,19 @@ class AuthBodyState extends State<AuthBody> {
   @override
   void initState() {
     _log = Log("$runtimeType");
+    _scheme = SqlAccess<EntryCustomer, void>(
+      address: _apiAddress,
+      authToken: widget.authToken,
+      database: _database,
+      sqlBuilder: (sql, params) {
+        return Sql(sql: 'select * from customer order by id;');
+      },
+      entryBuilder: (row) {
+        final entry = EntryCustomer.from(row);
+        // _log.debug('.build.entryBuilder | entry: $entry');
+        return entry;
+      },
+    );
     super.initState();
   }
   //
@@ -73,19 +89,7 @@ class AuthBodyState extends State<AuthBody> {
             Expanded(
               child: Center(
                 child: FutureBuilder(
-                  future: SqlAccess<EntryCustomer, void>(
-                    address: _apiAddress,
-                    authToken: authToken,
-                    database: _database,
-                    sqlBuilder: (sql, params) {
-                      return Sql(sql: 'select * from customer order by id;');
-                    },
-                    entryBuilder: (row) {
-                      final entry = EntryCustomer.from(row);
-                      // _log.debug('.build.entryBuilder | entry: $entry');
-                      return entry;
-                    },
-                  ).fetch(),
+                  future: _scheme.fetch(),
                   builder: (BuildContext context, snapshot) {
                     final textStile = Theme.of(context).textTheme.bodyMedium;
                     if (snapshot.connectionState == ConnectionState.done) {
@@ -132,10 +136,16 @@ class AuthBodyState extends State<AuthBody> {
                           );
                         case Err(:final error):
                           _log.debug(".build | result has error: $error");
-                          return Center(child: Text("Error: $error", style: textStile,));
+                          return FailureWidget(
+                            onReload: () => setState(() {}),
+                            error: '$error',
+                          );
                         case null:
                           _log.debug(".build | snapshot has error: ${snapshot.error}");
-                          return Center(child: Text("Error: ${snapshot.error}", style: textStile,));
+                          return FailureWidget(
+                            onReload: () => setState(() {}),
+                            error: '${snapshot.error}',
+                          );
                       }
                     }
                     return Center(child: Column(

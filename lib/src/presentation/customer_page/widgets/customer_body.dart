@@ -1,5 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
@@ -58,9 +59,11 @@ class _CustomerBodyState extends State<CustomerBody> {
   @override
   void initState() {
   _log.debug('.build | Create schema...');
+    final editableRole = [AppUserRole.admin].contains(_user.role);
     final editableLogin = [AppUserRole.admin].contains(_user.role);
     final editablePass = [AppUserRole.admin].contains(_user.role);
     final editableAccount = [AppUserRole.admin].contains(_user.role);
+    final editableBlocked = [AppUserRole.admin].contains(_user.role);
     _schema = TableSchema<EntryCustomer, void>(
       read: SqlRead<EntryCustomer, void>.keep(
         address: _apiAddress, 
@@ -88,20 +91,20 @@ class _CustomerBodyState extends State<CustomerBody> {
         debug: true,
       ),
       fields: [
-        const Field(flex: 03, hidden: false, editable: false, key: 'id'),
-        const Field(flex: 05, hidden: false, editable: false, key: 'role', title: 'Role'),
-        const Field(flex: 15, hidden: false, editable: true, key: 'email', title: 'Email'),
-        const Field(flex: 07, hidden: false, editable: true, key: 'phone', title: 'Phone'),
-        const Field(flex: 10, hidden: false, editable: true, key: 'name', title: 'Name'),
-        const Field(flex: 05, hidden: false, editable: true, key: 'location', title: 'Location'),
-              Field(flex: 15, hidden: false, editable: editableLogin, key: 'login', title: 'Login'),
-              Field(flex: 10, hidden: false, editable: editablePass, key: 'pass', title: 'Pass'),
-              Field(flex: 07, hidden: false, editable: editableAccount, key: 'account', title: 'Account'),
-        const Field(flex: 10, hidden: false, editable: true, key: 'last_act', title: 'Last action'),
-        const Field(flex: 05, hidden: false, editable: true, key: 'blocked', title: 'Blocked'),
-        const Field(flex: 05, hidden: true, editable: true, key: 'created', title: 'Created'),
-        const Field(flex: 05, hidden: true, editable: true, key: 'updated', title: 'Updated'),
-        const Field(flex: 05, hidden: true, editable: true, key: 'deleted', title: 'Deleted'),
+              Field(flex: 03, hidden: false, editable: false, key: 'id'),
+              Field(flex: 05, hidden: false, editable: editableRole, key: 'role', title: 'Role'.inRu),
+              Field(flex: 15, hidden: false, editable: true, key: 'email', title: 'Email'.inRu),
+              Field(flex: 07, hidden: false, editable: true, key: 'phone', title: 'Phone'.inRu),
+              Field(flex: 10, hidden: false, editable: true, key: 'name', title: 'Name'.inRu),
+              Field(flex: 05, hidden: false, editable: true, key: 'location', title: 'Location'.inRu),
+              Field(flex: 15, hidden: false, editable: editableLogin, key: 'login', title: 'Login'.inRu),
+              Field(flex: 10, hidden: false, editable: editablePass, key: 'pass', title: 'Pass'.inRu),
+              Field(flex: 07, hidden: false, editable: editableAccount, key: 'account', title: 'Account'.inRu),
+              Field(flex: 10, hidden: false, editable: false, key: 'last_act', title: 'Last action'.inRu),
+              Field(flex: 05, hidden: false, editable: editableBlocked, key: 'blocked', title: 'Blocked'.inRu),
+              Field(flex: 05, hidden: true, editable: true, key: 'created', title: 'Created'.inRu),
+              Field(flex: 05, hidden: true, editable: true, key: 'updated', title: 'Updated'.inRu),
+              Field(flex: 05, hidden: true, editable: true, key: 'deleted', title: 'Deleted'.inRu),
       ],
     );
     super.initState();

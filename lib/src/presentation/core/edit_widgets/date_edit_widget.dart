@@ -1,115 +1,133 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 ///
 ///
-class TextEditWidget extends StatefulWidget {
-  final String _value;
-  final Function(String)? _onComplete;
-  final String? _labelText;
-  final String? _errorText;
-  final bool _editable;
+class DateEditWidget extends StatefulWidget {
+  final DateTime? value;
+  final Function(DateTime)? onComplete;
+  final String? labelText;
+  final String? errorText;
+  final bool editable;
+  final TextInputType? keyboardType;
+  // final DateFormat? format;
+  final String divider;
   ///
-  ///
-  const TextEditWidget({
+  /// Provides masked date input
+  /// - [divider] - synbol divides date parts
+  const DateEditWidget({
     super.key,
-    String? value = '',
-    Function(String)? onComplete,
-    String? labelText,
-    String? errorText,
-    bool editable = true,
-  }):
-    _value = value ?? '',
-    _onComplete = onComplete,
-    _labelText = labelText,
-    _errorText = errorText,
-    _editable = editable;
+    this.value,
+    this.onComplete,
+    this.labelText,
+    this.errorText,
+    this.editable = true,
+    this.keyboardType,
+    // this.format,
+    this.divider = '.',
+  });
   //
   //
   @override
-  // ignore: no_logic_in_create_state
-  State<TextEditWidget> createState() => _TextEditWidgetState(
-    value: _value,
-    onComplete: _onComplete,
-    labelText: _labelText,
-    errorText: _errorText,
-    editable: _editable,
-  );
+  State<DateEditWidget> createState() => _TextEditWidgetState();
 }
 //
 //
-class _TextEditWidgetState extends State<TextEditWidget> {
-  final Function(String)? _onComplete;
-  final TextEditingController _controller;
-  final String? _labelText;
-  final String? _errorText;
-  final String _value;
-  final bool _editable;
+class _TextEditWidgetState extends State<DateEditWidget> {
+  late final TextEditingController _controller;
+  late final MaskTextInputFormatter _formatter;
+  late final DateFormat _format;
+  late final String _initialValue;
   bool _isChanged = false;
-  ///
-  ///
-  _TextEditWidgetState({
-    required String value,
-    required Function(String)? onComplete,
-    required String? labelText,
-    required String? errorText,
-    required bool editable,
-  }):
-    _value = value,
-    _controller = TextEditingController.fromValue(TextEditingValue(text: value)),
-    _onComplete = onComplete,
-    _labelText = labelText,
-    _errorText = errorText,
-    _editable = editable;
+  //
+  //
+  @override
+  void initState() {
+    final d = widget.divider;
+    _format = DateFormat('dd${d}MM${d}yyyy');
+    _initialValue = _format.format(widget.value ?? DateTime.now());
+    _formatter = MaskTextInputFormatter(
+      mask: '##$d##$d####',
+      filter: { "#": RegExp(r'[0-9]') },
+      initialText: _initialValue,
+    );
+    _controller = TextEditingController.fromValue(TextEditingValue(text: _formatter.getMaskedText()));
+    super.initState();
+  }
+  //
+  //
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
   //
   //
   @override
   Widget build(BuildContext context) {
     return TapRegion(
       onTapOutside: (PointerDownEvent _) {
-        _onEditingComplete(_controller.text);
+        _onEditingComplete(_controller.text, widget.onComplete);
+        // _onEditingComplete(_formatter.getMaskedText(), widget.onComplete);
       },
-      child: InputDatePickerFormField(
-        firstDate: DateTime.now(),
-        lastDate: DateTime.now(),
-      )
-      // TextField(
-      //   controller: _controller,
-      //   enabled: _editable,
-      //   style: _isChanged 
-      //     ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
-      //     : null,
-      //   // textAlign: _textAlign,
-      //   decoration: InputDecoration(
-      //     // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withValue(alpha: 0.5) : Colors.black.withValue(alpha: 0.5))),
-      //     // border: const OutlineInputBorder(),
-      //     isDense: true,
-      //     labelText: _labelText,
-      //     filled: true,
-      //     fillColor: Colors.transparent,
-      //     hoverColor: Theme.of(context).hoverColor,
-      //     errorText: _errorText,
-      //     contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-      //   ),
-      //   onChanged: (value) {
-      //     setState(() {
-      //       _isChanged = value != _value;
-      //     });
-      //   },
-      //   onTapOutside: (_) {
-      //     _onEditingComplete(_controller.text);
-      //   },
-      //   onEditingComplete: () {
-      //     _onEditingComplete(_controller.text);
-      //   },
-      // ),
+      child: TextFormField(
+        controller: _controller,
+        enabled: widget.editable,
+        style: _isChanged 
+          ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.blue)
+          : null,
+        // textAlign: _textAlign,
+        keyboardType: widget.keyboardType ?? TextInputType.datetime,
+        inputFormatters: [
+          // WhitelistingTextInputFormatter.digitsOnly,
+          _formatter,
+        ],
+        autovalidateMode: AutovalidateMode.always,
+        validator: _dateValidator,
+        decoration: InputDecoration(
+          // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withValue(alpha: 0.5) : Colors.black.withValue(alpha: 0.5))),
+          // border: const OutlineInputBorder(),
+          isDense: true,
+          labelText: widget.labelText,
+          filled: true,
+          fillColor: Colors.transparent,
+          hoverColor: Theme.of(context).hoverColor,
+          errorText: widget.errorText,
+          contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+        ),
+        onChanged: (value) {
+          setState(() {
+            _isChanged = value != _initialValue;
+          });
+        },
+        onTapOutside: (_) {
+          _onEditingComplete(_controller.text, widget.onComplete);
+          // _onEditingComplete(_formatter.getMaskedText(), widget.onComplete);
+        },
+        onEditingComplete: () {
+          _onEditingComplete(_controller.text, widget.onComplete);
+          // _onEditingComplete(_formatter.getMaskedText(), widget.onComplete);
+        },
+      ),
     );
   }
   ///
   ///
-  _onEditingComplete(String value) {
-    if (value != _value) {
-      final onComplete = _onComplete;
-      if (onComplete != null) onComplete(value);
+  _onEditingComplete(String value, Function(DateTime)? onComplete) {
+    final val = _format.tryParse(value);
+    if (val != null) {
+      if (val != widget.value) {
+        if (onComplete != null) onComplete(val);
+      }
     }
+  }
+  ///
+  /// Returns Error message if date is not valid to specified [_format]
+  String? _dateValidator(String? value) {
+    final date = _format.tryParse(value ?? '');
+    if (date != null) {
+      return null;
+    }
+    return 'Invalid date format "$value", Expected "${_format.pattern}"';
   }
 }
