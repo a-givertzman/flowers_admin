@@ -14,13 +14,13 @@ create type public."purchase_status_enum" as enum (
 create table public.purchase (
     id                  bigserial primary key not null,
     name                varchar(255) not null,
-    status              purchase_status_enum not null,
-    details             varchar(255) not null,
-    preview             text not null,
-    description         text not null,
+    status              purchase_status_enum not null,                  -- current state of the purchase
+    details             varchar(255) not null,                          -- short details about
+    preview             text not null,                                  -- used to list some key items of the purchase
+    description         text not null,                                  -- detiled description
     date_of_start       timestamp not null,
     date_of_end         timestamp not null,
-    picture             text,
+    picture             text,                                           -- url to image
     created             timestamp default current_timestamp not null,
     updated             timestamp default current_timestamp not null,
     deleted             timestamp null
