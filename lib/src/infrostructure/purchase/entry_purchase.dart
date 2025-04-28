@@ -12,7 +12,7 @@ class EntryPurchase implements SchemaEntryAbstract {
 	    'id': FieldValue(null),
 	    'name': FieldValue(''),
 	    'details': FieldValue(''),
-	    'preview': FieldValue(''),
+	    'preview': FieldValue(''),        // used to list some key items of the purchase
 	    'status': FieldValue(''),
 	    'date_of_start': FieldValue(''),
 	    'date_of_end': FieldValue(''),
@@ -96,6 +96,7 @@ class EntryPurchase implements SchemaEntryAbstract {
         id,
         name,
         details,
+        preview,
         status,
         date_of_start,
         date_of_end,
@@ -108,6 +109,7 @@ class EntryPurchase implements SchemaEntryAbstract {
         ${entry.value('id').str},
         ${entry.value('name').str},
         ${entry.value('details').str},
+        ${entry.value('preview').str},
         ${entry.value('status').str},
         ${entry.value('date_of_start').str},
         ${entry.value('date_of_end').str},
@@ -123,24 +125,26 @@ class EntryPurchase implements SchemaEntryAbstract {
   ///
   /// Insert SQL
   static Sql insertSqlBuilder(Sql sql, EntryPurchase entry) {
+    String picture = '${entry.value('picture').value}';
+    if (picture.isEmpty) picture = 'null';
     return Sql(sql: """insert into public.purchase (
-        id,
         name,
         details,
+        preview,
         status,
         date_of_start,
         date_of_end,
         description,
         picture
       ) values (
-        ${entry.value('id').str},
         ${entry.value('name').str},
         ${entry.value('details').str},
+        ${entry.value('preview').str},
         ${entry.value('status').str},
         ${entry.value('date_of_start').str},
         ${entry.value('date_of_end').str},
         ${entry.value('description').str},
-        ${entry.value('picture').str}
+        $picture
     );""");
   }
   ///

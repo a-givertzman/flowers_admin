@@ -37,10 +37,10 @@ class _TEditListWidgetState extends State<TEditDateWidget> {
   final _textPaddingV = 8.0;
   final _textAlign = TextAlign.justify;
   late final DateFormat _format;
-  late final DateTime _value;
   late final DateTime? _widgetValue;
   bool _isEditing = false;
   bool _isChanged = false;
+  late DateTime _value;
   //
   //
   @override

@@ -80,7 +80,7 @@ class _PurchaseBodyState extends State<PurchaseBody> {
         const Field(flex: 03, hidden: false, editable: false,                             key: 'id'),
               Field(flex: 10, hidden: false, editable: true, title: 'Name'.inRu,          key: 'name'),
               Field(flex: 20, hidden: false, editable: true, title: 'Details'.inRu,       key: 'details'),
-              Field(flex: 05, hidden: false, editable: true, title: 'Status'.inRu,        key: 'status', builder: _roleBuilder),
+              Field(flex: 07, hidden: false, editable: true, title: 'Status'.inRu,        key: 'status', builder: _roleBuilder),
               Field(flex: 10, hidden: false, editable: true, title: 'Date of start'.inRu, key: 'date_of_start', builder: _dateOfStartBuilder),
               Field(flex: 10, hidden: false, editable: true, title: 'Date of end'.inRu,   key: 'date_of_end', builder: _dateOfEndBuilder),
               Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu,   key: 'description'),
