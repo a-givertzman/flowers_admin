@@ -98,14 +98,12 @@ class _PurchaseBodyState extends State<PurchaseBody> {
       id: '${entry.value('status').value}',
       relation: EditListEntry(field: 'status', entries: _statusRelation.values.toList()),
       editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
-      // onComplete: onComplite,
       onComplete: (id) {
         final status = _statusRelation[id]?.value('status').value;
         _log.debug('build.onComplete | status: $status');
         if (status != null) {
           entry.update('status', status);
           if (onComplite != null) onComplite(status);
-          // setState(() {return;});
         }
       },
     );
@@ -117,24 +115,17 @@ class _PurchaseBodyState extends State<PurchaseBody> {
         final date = DateFormat('dd-MM-yyyy').tryParse(value);
         entry.update('date_of_start', value);
         if (onComplite != null) onComplite(date?.toIso8601String() ?? '');
-        // setState(() {return;});
       },
     );
   }
   Widget _dateOfEndBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
     return TEditDateWidget(
       value: '${entry.value('date_of_end').value}',
-      // onComplete: onComplite,
       onComplete: (value) {
         final date = DateFormat('dd-MM-yyyy').tryParse(value);
         entry.update('date_of_end', value);
         if (onComplite != null) onComplite(date?.toIso8601String() ?? '');
-        // setState(() {return;});
       },
-      // onComplete: (value) {
-      //   entry.update('date_of_end', value);
-      //   setState(() {return;});
-      // },
     );
   }
   //

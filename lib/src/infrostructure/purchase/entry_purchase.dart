@@ -125,8 +125,6 @@ class EntryPurchase implements SchemaEntryAbstract {
   ///
   /// Insert SQL
   static Sql insertSqlBuilder(Sql sql, EntryPurchase entry) {
-    String picture = '${entry.value('picture').value}';
-    if (picture.isEmpty) picture = 'null';
     return Sql(sql: """insert into public.purchase (
         name,
         details,
@@ -144,8 +142,9 @@ class EntryPurchase implements SchemaEntryAbstract {
         ${entry.value('date_of_start').str},
         ${entry.value('date_of_end').str},
         ${entry.value('description').str},
-        $picture
-    );""");
+        ${entry.value('picture').str}
+      );""",
+    );
   }
   ///
   /// Returns delete CUSTOMER Sql 

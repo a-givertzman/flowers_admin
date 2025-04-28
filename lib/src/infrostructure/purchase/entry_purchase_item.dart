@@ -97,7 +97,7 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   ///
   ///
   static Sql updateSqlBuilder(Sql sql, EntryPurchaseItem entry) {
-    return Sql(sql: """UPDATE purchase_item SET (
+    return Sql(sql: """UPDATE public.purchase_item SET (
         id,
         purchase_id,
         product_id,
@@ -130,5 +130,33 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
       )
       WHERE id = ${entry.value('id').str};
     """);
+  }
+  ///
+  ///
+  static Sql insertSqlBuilder(Sql sql, EntryPurchaseItem entry) {
+    return Sql(sql: """insert into public.purchase_item (
+        purchase_id,
+        product_id,
+        sale_price,
+        sale_currency,
+        shipping,
+        remains,
+        name,
+        details,
+        description,
+        picture
+      ) values (
+        ${entry.value('purchase_id').str},
+        ${entry.value('product_id').str},
+        ${entry.value('sale_price').str},
+        ${entry.value('sale_currency').str},
+        ${entry.value('shipping').str},
+        ${entry.value('remains').str},
+        ${entry.value('name').str},
+        ${entry.value('details').str},
+        ${entry.value('description').str},
+        ${entry.value('picture').str}
+      );""",
+    );
   }
 }
