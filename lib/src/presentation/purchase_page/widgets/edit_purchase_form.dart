@@ -67,98 +67,100 @@ class _EditPurchaseFormState extends State<EditPurchaseForm> {
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('${InRu('Edit purchase')} ${_entry.value('name').str}', style: Theme.of(context).textTheme.titleLarge,),
-              Row(
-                // crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        LoadImageWidget(
-                          labelText: _field(widget.fields, 'picture').title.inRu,
-                          src: '${_entry.value('picture').value}',
-                          onComplete: (value) {
-                            _entry.update('picture', value);
-                            setState(() {return;});
-                          },
-                        ),
-                      ],
-                    ),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('${_entry.value('name').value}', style: Theme.of(context).textTheme.titleLarge,),
+        ),
+        body: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Card(
+                margin: const EdgeInsets.all(16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: LoadImageWidget(
+                    labelText: _field(widget.fields, 'picture').title.inRu,
+                    src: '${_entry.value('picture').value}',
+                    onComplete: (value) {
+                      _entry.update('picture', value);
+                      setState(() {return;});
+                    },
                   ),
-                  Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'name').title.inRu,
-                          value: '${_entry.value('name').value}',
-                          onComplete: (value) {
-                            _entry.update('name', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'details').title.inRu,
-                          value: '${_entry.value('details').value}',
-                          onComplete: (value) {
-                            _entry.update('details', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        EditListWidget(
-                          id: '${_entry.value('status').value}',
-                          relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
-                          editable: _field(widget.fields, 'Status').isEditable,
-                          // style: textStyle,
-                          labelText: _field(widget.fields, 'Status').title.inRu,
-                          onComplete: (id) {
-                            final status = statusRelation[id]?.value('status').value;
-                            _log.debug('build.onComplete | status: $status');
-                            if (status != null) {
-                              _entry.update('status', status);
-                              setState(() {return;});
-                            }
-                          },
-                        ),
-                        DateEditWidget(
-                          labelText: _field(widget.fields, 'date_of_start').title.inRu,
-                          value: DateTime.tryParse('${_entry.value('date_of_start').value}'),
-                          onComplete: (value) {
-                            final dateTime = value.toIso8601String();
-                            _entry.update('date_of_start', dateTime);
-                            setState(() {return;});
-                          },
-                        ),
-                        DateEditWidget(
-                          labelText: _field(widget.fields, 'date_of_end').title.inRu,
-                          value: DateTime.tryParse('${_entry.value('date_of_end').value}'),
-                          onComplete: (value) {
-                            final dateTime = value.toIso8601String();
-                            _entry.update('date_of_end', dateTime);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'description').title.inRu,
-                          value: '${_entry.value('description').value}',
-                          onComplete: (value) {
-                            _entry.update('description', value);
-                            setState(() {return;});
-                          },
-                        ),                      
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: Card(
+                margin: const EdgeInsets.only(top: 16.0, right: 16.0, bottom: 16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'name').title.inRu,
+                        value: '${_entry.value('name').value}',
+                        onComplete: (value) {
+                          _entry.update('name', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'details').title.inRu,
+                        value: '${_entry.value('details').value}',
+                        onComplete: (value) {
+                          _entry.update('details', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      EditListWidget(
+                        id: '${_entry.value('status').value}',
+                        relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
+                        editable: _field(widget.fields, 'Status').isEditable,
+                        // style: textStyle,
+                        labelText: _field(widget.fields, 'Status').title.inRu,
+                        onComplete: (id) {
+                          final status = statusRelation[id]?.value('status').value;
+                          _log.debug('build.onComplete | status: $status');
+                          if (status != null) {
+                            _entry.update('status', status);
+                            setState(() {return;});
+                          }
+                        },
+                      ),
+                      DateEditWidget(
+                        labelText: _field(widget.fields, 'date_of_start').title.inRu,
+                        value: DateTime.tryParse('${_entry.value('date_of_start').value}'),
+                        onComplete: (value) {
+                          final dateTime = value.toIso8601String();
+                          _entry.update('date_of_start', dateTime);
+                          setState(() {return;});
+                        },
+                      ),
+                      DateEditWidget(
+                        labelText: _field(widget.fields, 'date_of_end').title.inRu,
+                        value: DateTime.tryParse('${_entry.value('date_of_end').value}'),
+                        onComplete: (value) {
+                          final dateTime = value.toIso8601String();
+                          _entry.update('date_of_end', dateTime);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'description').title.inRu,
+                        value: '${_entry.value('description').value}',
+                        onComplete: (value) {
+                          _entry.update('description', value);
+                          setState(() {return;});
+                        },
+                      ),                      
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         bottomNavigationBar: BottomAppBar(
           child: OverflowBar(

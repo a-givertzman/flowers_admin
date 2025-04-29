@@ -21,6 +21,7 @@ class EntryCustomer implements SchemaEntryAbstract {
       'account': FieldValue('0'),
       'last_act': FieldValue(null),
       'blocked': FieldValue(null),
+      'picture': FieldValue(''),
       'created': FieldValue(null),
       'updated': FieldValue(null),
       'deleted': FieldValue(null),
@@ -110,6 +111,7 @@ class EntryCustomer implements SchemaEntryAbstract {
           account,
           last_act,
           blocked,
+          picture
           created,
           updated,
           deleted
@@ -125,6 +127,7 @@ class EntryCustomer implements SchemaEntryAbstract {
           ${entry.value('account').str},
           ${entry.value('last_act').str},
           ${entry.value('blocked').str},
+          ${entry.value('picture').str},
           ${entry.value('created').str},
           ${entry.value('updated').str},
           ${entry.value('deleted').str}
@@ -150,7 +153,8 @@ class EntryCustomer implements SchemaEntryAbstract {
           pass,
           account,
           last_act,
-          blocked
+          blocked,
+          picture
         ) values (
           ${entry.value('role').str},
           ${entry.value('email').str},
@@ -161,7 +165,8 @@ class EntryCustomer implements SchemaEntryAbstract {
           ${entry.value('pass').str},
           ${entry.value('account').str},
           ${entry.value('last_act').str},
-          ${entry.value('blocked').str}
+          ${entry.value('blocked').str},
+          ${entry.value('picture').str}
         );
         """,
       );

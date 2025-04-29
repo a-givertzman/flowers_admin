@@ -64,108 +64,110 @@ class _EditProductFormState extends State<EditProductForm> {
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('${InRu('Edit product')} ${_entry.value('name').str}', style: Theme.of(context).textTheme.titleLarge,),
-              Row(
-                // crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        LoadImageWidget(
-                          labelText: _field(widget.fields, 'picture').title.inRu,
-                          src: '${_entry.value('picture').value}',
-                          onComplete: (value) {
-                            _entry.update('picture', value);
-                            setState(() {return;});
-                          },
-                        ),
-                      ],
-                    ),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('${_entry.value('name').value}', style: Theme.of(context).textTheme.titleLarge,),
+        ),
+        body: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Card(
+                margin: const EdgeInsets.all(16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: LoadImageWidget(
+                    labelText: _field(widget.fields, 'picture').title.inRu,
+                    src: '${_entry.value('picture').value}',
+                    onComplete: (value) {
+                      _entry.update('picture', value);
+                      setState(() {return;});
+                    },
                   ),
-                  Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        EditListWidget(
-                          id: '${_entry.value('product_category_id').value}',
-                          relation: relation,
-                          editable: categoryField.isEditable,
-                          // style: textStyle,
-                          // labelText: field('category').title.inRu,
-                          onComplete: (value) {
-                            _entry.update('product_category_id', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'name').title.inRu,
-                          value: '${_entry.value('name').value}',
-                          onComplete: (value) {
-                            _entry.update('name', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'details').title.inRu,
-                          value: '${_entry.value('details').value}',
-                          onComplete: (value) {
-                            _entry.update('details', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'primary_price').title.inRu,
-                          value: '${_entry.value('primary_price').value}',
-                          onComplete: (value) {
-                            _entry.update('primary_price', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'primary_currency').title.inRu,
-                          value: '${_entry.value('primary_currency').value}',
-                          onComplete: (value) {
-                            _entry.update('primary_currency', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'primary_order_quantity').title.inRu,
-                          value: '${_entry.value('primary_order_quantity').value}',
-                          onComplete: (value) {
-                            _entry.update('primary_order_quantity', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'order_quantity').title.inRu,
-                          value: '${_entry.value('order_quantity').value}',
-                          onComplete: (value) {
-                            _entry.update('order_quantity', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(widget.fields, 'description').title.inRu,
-                          value: '${_entry.value('description').value}',
-                          onComplete: (value) {
-                            _entry.update('description', value);
-                            setState(() {return;});
-                          },
-                        ),                      
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: Card(
+                margin: const EdgeInsets.only(top: 16.0, right: 16.0, bottom: 16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      EditListWidget(
+                        id: '${_entry.value('product_category_id').value}',
+                        relation: relation,
+                        editable: categoryField.isEditable,
+                        // style: textStyle,
+                        // labelText: field('category').title.inRu,
+                        onComplete: (value) {
+                          _entry.update('product_category_id', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'name').title.inRu,
+                        value: '${_entry.value('name').value}',
+                        onComplete: (value) {
+                          _entry.update('name', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'details').title.inRu,
+                        value: '${_entry.value('details').value}',
+                        onComplete: (value) {
+                          _entry.update('details', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'primary_price').title.inRu,
+                        value: '${_entry.value('primary_price').value}',
+                        onComplete: (value) {
+                          _entry.update('primary_price', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'primary_currency').title.inRu,
+                        value: '${_entry.value('primary_currency').value}',
+                        onComplete: (value) {
+                          _entry.update('primary_currency', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'primary_order_quantity').title.inRu,
+                        value: '${_entry.value('primary_order_quantity').value}',
+                        onComplete: (value) {
+                          _entry.update('primary_order_quantity', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'order_quantity').title.inRu,
+                        value: '${_entry.value('order_quantity').value}',
+                        onComplete: (value) {
+                          _entry.update('order_quantity', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'description').title.inRu,
+                        value: '${_entry.value('description').value}',
+                        onComplete: (value) {
+                          _entry.update('description', value);
+                          setState(() {return;});
+                        },
+                      ),                      
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         bottomNavigationBar: BottomAppBar(
           child: OverflowBar(

@@ -89,11 +89,11 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
             ),
           ],
         ),
-        SizedBox(
-          width: 300.0,
-          height: 300.0,
+        Divider(indent: 16.0, color: Colors.transparent,),
+        Expanded(
           child: Image.network(
             _src,
+            fit: BoxFit.contain,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress != null) {
                 return Center(
@@ -108,7 +108,10 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
             },
             errorBuilder: (context, error, stackTrace) {
               return Center(
-                child: Image.asset('assets/images/indoor-plants.png'),
+                child: Image.asset(
+                  'assets/images/indoor-plants.png',
+                  fit: BoxFit.contain,
+                ),
                 // Text(
                 //   'Invalid link'.inRu,
                 //   style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.error),

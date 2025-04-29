@@ -73,72 +73,76 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          // title: Text('${InRu('Edit product category')}', style: Theme.of(context).textTheme.titleLarge,),
           title: Text('${_entry.value('name').value}', style: Theme.of(context).textTheme.titleLarge,),
         ),
-        body: Card(
-          margin: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    LoadImageWidget(
-                      labelText: _field('picture', fields).title.inRu,
-                      src: '${_entry.value('picture').value}',
-                      onComplete: (value) {
-                        _entry.update('picture', value);
-                        setState(() {return;});
-                      },
-                    ),
-                  ],
+        body: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Card(
+                margin: const EdgeInsets.all(16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: LoadImageWidget(
+                    labelText: _field('picture', fields).title.inRu,
+                    src: '${_entry.value('picture').value}',
+                    onComplete: (value) {
+                      _entry.update('picture', value);
+                      setState(() {return;});
+                    },
+                  ),
                 ),
               ),
-              Expanded(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    EditListWidget(
-                      id: '${_entry.value('category_id').value}',
-                      relation: relation,
-                      editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
-                      // style: textStyle,
-                      labelText: _field('category', fields).title.inRu,
-                      onComplete: (value) {
-                        _entry.update('category_id', value);
-                        setState(() {return;});
-                      },
-                    ),
-                    TextEditWidget(
-                      labelText: _field('name', fields).title.inRu,
-                      value: '${_entry.value('name').value}',
-                      onComplete: (value) {
-                        _entry.update('name', value);
-                        setState(() {return;});
-                      },
-                    ),
-                    TextEditWidget(
-                      labelText: _field('details', fields).title.inRu,
-                      value: '${_entry.value('details').value}',
-                      onComplete: (value) {
-                        _entry.update('details', value);
-                        setState(() {return;});
-                      },
-                    ),
-                    TextEditWidget(
-                      labelText: _field('description', fields).title.inRu,
-                      value: '${_entry.value('description').value}',
-                      onComplete: (value) {
-                        _entry.update('description', value);
-                        setState(() {return;});
-                      },
-                    ),                      
-                  ],
+            ),
+            Expanded(
+              child: Card(
+                margin: const EdgeInsets.only(top: 16.0, right: 16.0, bottom: 16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      EditListWidget(
+                        id: '${_entry.value('category_id').value}',
+                        relation: relation,
+                        editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
+                        // style: textStyle,
+                        labelText: _field('category', fields).title.inRu,
+                        onComplete: (value) {
+                          _entry.update('category_id', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field('name', fields).title.inRu,
+                        value: '${_entry.value('name').value}',
+                        onComplete: (value) {
+                          _entry.update('name', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field('details', fields).title.inRu,
+                        value: '${_entry.value('details').value}',
+                        onComplete: (value) {
+                          _entry.update('details', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field('description', fields).title.inRu,
+                        value: '${_entry.value('description').value}',
+                        onComplete: (value) {
+                          _entry.update('description', value);
+                          setState(() {return;});
+                        },
+                      ),                      
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         bottomNavigationBar: BottomAppBar(
           child: OverflowBar(

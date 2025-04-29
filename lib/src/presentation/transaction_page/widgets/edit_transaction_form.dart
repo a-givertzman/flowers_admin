@@ -90,131 +90,128 @@ class _EditProductFormState extends State<EditTransactionForm> {
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('${'Transaction'.inRu} [${_entry.value('id').str}] ${InRu('from')} $created', style: Theme.of(context).textTheme.titleLarge,),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('${InRu('Edit transaction')} [${_entry.value('id').str}] ${InRu('from')} $created', style: Theme.of(context).textTheme.titleLarge,),
-              Row(
-                // crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
+                shrinkWrap: true,
                 children: [
-                  Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        EditListWidget(
-                          labelText: '${InRu('Author')}',
-                          id: '${_entry.value('author_id').value}',
-                          relation: authorRelation,
-                          editable: authorField.isEditable,
-                          onComplete: (value) {
-                            _entry.update('author_id', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(_fields, 'value').title.inRu,
-                          value: '${_entry.value('value').value}',
-                          editable: _field(_fields, 'value').isEditable,
-                          onComplete: (value) {
-                            _entry.update('value', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(_fields, 'details').title.inRu,
-                          value: '${_entry.value('details').value}',
-                          editable: _field(_fields, 'details').isEditable,
-                          onComplete: (value) {
-                            _entry.update('details', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        EditListWidget(
-                          labelText: '${InRu('Customer')}',
-                          id: '${_entry.value('customer_id').value}',
-                          relation: customerRelation,
-                          editable: customerField.isEditable,
-                          onComplete: (value) {
-                            _entry.update('customer_id', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(_fields, 'customer_account').title.inRu,
-                          value: '${_entry.value('customer_account').value}',
-                          editable: _field(_fields, 'customer_account').isEditable,
-                        ),
-                        // TextEditWidget(
-                        //   labelText: field('primary_currency').title.inRu,
-                        //   value: '${_entry.value('primary_currency').value}',
-                        //   onComplete: (value) {
-                        //     _entry.update('primary_currency', value);
-                        //     setState(() {return;});
-                        //   },
-                        // ),
-                        TextEditWidget(
-                          labelText: _field(_fields, 'description').title.inRu,
-                          value: '${_entry.value('description').value}',
-                          editable: _field(_fields, 'description').isEditable,
-                          onComplete: (value) {
-                            _entry.update('description', value);
-                            setState(() {return;});
-                          },
-                        ),
-                        TextEditWidget(
-                          labelText: _field(_fields, 'created').title.inRu,
-                          value: '${_entry.value('created').value}',
-                          editable: _field(_fields, 'created').isEditable,
-                        ),
-                        TextEditWidget(
-                          labelText: _field(_fields, 'updated').title.inRu,
-                          value: '${_entry.value('updated').value}',
-                          editable: _field(_fields, 'updated').isEditable,
-                        ),
-                        if (_entry.value('deleted').value != null)
-                          TextEditWidget(
-                            labelText: _field(_fields, 'deleted').title.inRu,
-                            value: '${_entry.value('deleted').value}',
-                            editable: _field(_fields, 'deleted').isEditable,
-                          ),
-                        if ([AppUserRole.admin].contains(_user.role))
-                          CheckboxListTile(
-                            enabled: _field(_fields, 'allow_indebted').isEditable,
-                            contentPadding: EdgeInsets.zero,
-                            title: Text('Allow indebted'.inRu),
-                            value: _entry.value('allow_indebted').value ?? false, 
-                            onChanged: (value) {
-                              _entry.update('allow_indebted', value ?? false);
-                              setState(() {return;});
-                            },
-                          ),
-                      ],
-                    ),
+                  EditListWidget(
+                    labelText: '${InRu('Author')}',
+                    id: '${_entry.value('author_id').value}',
+                    relation: authorRelation,
+                    editable: authorField.isEditable,
+                    onComplete: (value) {
+                      _entry.update('author_id', value);
+                      setState(() {return;});
+                    },
                   ),
+                  TextEditWidget(
+                    labelText: _field(_fields, 'value').title.inRu,
+                    value: '${_entry.value('value').value}',
+                    editable: _field(_fields, 'value').isEditable,
+                    onComplete: (value) {
+                      _entry.update('value', value);
+                      setState(() {return;});
+                    },
+                  ),
+                  TextEditWidget(
+                    labelText: _field(_fields, 'details').title.inRu,
+                    value: '${_entry.value('details').value}',
+                    editable: _field(_fields, 'details').isEditable,
+                    onComplete: (value) {
+                      _entry.update('details', value);
+                      setState(() {return;});
+                    },
+                  ),
+                  EditListWidget(
+                    labelText: '${InRu('Customer')}',
+                    id: '${_entry.value('customer_id').value}',
+                    relation: customerRelation,
+                    editable: customerField.isEditable,
+                    onComplete: (value) {
+                      _entry.update('customer_id', value);
+                      setState(() {return;});
+                    },
+                  ),
+                  TextEditWidget(
+                    labelText: _field(_fields, 'customer_account').title.inRu,
+                    value: '${_entry.value('customer_account').value}',
+                    editable: _field(_fields, 'customer_account').isEditable,
+                  ),
+                  // TextEditWidget(
+                  //   labelText: field('primary_currency').title.inRu,
+                  //   value: '${_entry.value('primary_currency').value}',
+                  //   onComplete: (value) {
+                  //     _entry.update('primary_currency', value);
+                  //     setState(() {return;});
+                  //   },
+                  // ),
+                  TextEditWidget(
+                    labelText: _field(_fields, 'description').title.inRu,
+                    value: '${_entry.value('description').value}',
+                    editable: _field(_fields, 'description').isEditable,
+                    onComplete: (value) {
+                      _entry.update('description', value);
+                      setState(() {return;});
+                    },
+                  ),
+                  TextEditWidget(
+                    labelText: _field(_fields, 'created').title.inRu,
+                    value: '${_entry.value('created').value}',
+                    editable: _field(_fields, 'created').isEditable,
+                  ),
+                  TextEditWidget(
+                    labelText: _field(_fields, 'updated').title.inRu,
+                    value: '${_entry.value('updated').value}',
+                    editable: _field(_fields, 'updated').isEditable,
+                  ),
+                  if (_entry.value('deleted').value != null)
+                    TextEditWidget(
+                      labelText: _field(_fields, 'deleted').title.inRu,
+                      value: '${_entry.value('deleted').value}',
+                      editable: _field(_fields, 'deleted').isEditable,
+                    ),
+                  if ([AppUserRole.admin].contains(_user.role))
+                    CheckboxListTile(
+                      enabled: _field(_fields, 'allow_indebted').isEditable,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text('Allow indebted'.inRu),
+                      value: _entry.value('allow_indebted').value ?? false, 
+                      onChanged: (value) {
+                        _entry.update('allow_indebted', value ?? false);
+                        setState(() {return;});
+                      },
+                    ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed:  () {
-                      Navigator.pop(context, const Err<EntryTransaction, void>(null));
-                    },
-                    child: const Text("Cancel"),
-                  ),
-                  TextButton(
-                    onPressed: _entry.isChanged 
-                      ? () {
-                        _log.debug('.TextButton.Yes | _isChanged: ${_entry.isChanged}');
-                        _log.debug('.TextButton.Yes | enrty: $_entry');
-                        Navigator.pop(context, Ok<EntryTransaction, void>(_entry));
-                      } 
-                      : null,
-                    child: const Text("Yes"),
-                  ),
-                ],
+            ),
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: OverflowBar(
+            children: [
+              TextButton(
+                onPressed:  () {
+                  Navigator.pop(context, const Err<EntryTransaction, void>(null));
+                },
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: _entry.isChanged 
+                  ? () {
+                    _log.debug('.TextButton.Yes | _isChanged: ${_entry.isChanged}');
+                    _log.debug('.TextButton.Yes | enrty: $_entry');
+                    Navigator.pop(context, Ok<EntryTransaction, void>(_entry));
+                  } 
+                  : null,
+                child: const Text("Yes"),
               ),
             ],
           ),

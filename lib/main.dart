@@ -22,7 +22,7 @@ void main() async {
       WidgetsFlutterBinding.ensureInitialized();
       if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
           setWindowTitle('Flowers | Admin');
-          setWindowMinSize(const Size(400, 300));
+          setWindowMinSize(const Size(500, 500));
           setWindowMaxSize(Size.infinite);
       }
       // if (!kIsWeb) {

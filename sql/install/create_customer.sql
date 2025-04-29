@@ -23,6 +23,7 @@ create table public.customer (
     account     numeric(20, 2) default '0.0' not null,
     last_act    timestamp not null,
     blocked     timestamp null,
+    picture     text,
     created     timestamp default current_timestamp NOT NULL,
     updated     timestamp default current_timestamp NOT NULL,
     deleted     timestamp null,
