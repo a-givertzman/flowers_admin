@@ -204,7 +204,8 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
     final builder = field.builder;
     if (entry == null) {
       return TCell<T>(
-        value: field.title.isNotEmpty ? field.title : field.key,
+        value: field.title,
+        hint: field.hint,
         editable: false,
         style: textStyle,
         flex: field.flex,
@@ -234,7 +235,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
       );
     } else {
       return TCell<T>(
-        value: fieldValue?.value.toString() ?? (field.title.isNotEmpty ? field.title : field.key),
+        value: fieldValue?.value.toString() ?? field.title,
         editable: field.isEditable,
         style: textStyle,
         onComplete: (value) => _onComplete(value, field),

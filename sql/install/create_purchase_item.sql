@@ -2,11 +2,11 @@
 -- public.purchase_item
 create table public.purchase_item (
     id                  bigserial primary key not null,
-    purchase_id         int8 not null,     -- item refers to Purchase
-    product_id          int8 not null,     -- item refers to Product
-    sale_price          numeric(20, 2) default '0.0' not null,  -- цена за единицу
-    sale_currency       varchar(16) not null,
-    shipping            numeric(20, 2) default '0.0' not null,  -- доставка за единицу
+    purchase_id         int8 not null,                          -- Item refers to Purchase
+    product_id          int8 not null,                          -- Item refers to Product
+    sale_price          numeric(20, 2) default '0.0' not null,  -- Цена за единицу
+    sale_currency       varchar(16) not null,                   -- Валюьа цены
+    shipping            numeric(20, 2) default '0.0' not null,  -- Цена доставки за единицу
     remains             int8 not null,
     name                varchar(255),
     details             varchar(255),

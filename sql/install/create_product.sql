@@ -6,7 +6,7 @@ create table public.product (
     name                    varchar(255) not null,
     details                 varchar(255) not null,
     primary_price           numeric(20, 2) default '0.0' not null,  -- Закупочная цена
-    primary_currency        varchar(16) not null,                   -- Валюьа в которой товар закупается
+    primary_currency        varchar(16) not null,                   -- Валюьа закупочной цены
     primary_order_quantity  int8 not null,                          -- Кратность закупа (минимальное количество)
     order_quantity          int8 not null,                          -- Кратность заказа пользователям (минимальное количество)
     description             text not null,

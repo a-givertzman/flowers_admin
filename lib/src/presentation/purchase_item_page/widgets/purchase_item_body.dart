@@ -40,26 +40,12 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   late final RelationSchema<EntryPurchaseItem, void> _schema;
   String _purchaseId = '';
-  late EntryPurchase _purchase;
   //
   //
   @override
   void initState() {
     _log = Log("$runtimeType");
     _schema = _buildSchema();
-    _purchase = EntryPurchase.empty();
-    // _schema.stream.listen((result) {
-    //   final relation = _schema.relations['purchase_id'];
-    //   _log.debug('.initState | relation: $relation');
-    //   if (relation != null) {
-    //     _purchase = relation.firstWhere(
-    //       (entry) => entry.key == _purchaseId, 
-    //       orElse: () => EntryPurchase.empty(),
-    //     ) as EntryPurchase;
-    //     _log.debug('.initState | _purchaseId: $_purchaseId');
-    //     _log.debug('.initState | _purchase: $_purchase');
-    //   }
-    // });
     super.initState();
   }
   ///
@@ -91,16 +77,16 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
           ),
           fields: [
             const Field(flex: 03, hidden: false, editable: false, key: 'id'),
-                  Field(flex: 15, hidden: false, editable: true, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name'), title: 'Purchase'.inRu),
-                  Field(flex: 15, hidden: false, editable: true, key: 'product_id', relation: Relation(id: 'product_id', field: 'name'), title: 'Product'.inRu),
-                  Field(flex: 05, hidden: false, editable: true, key: 'sale_price'),
-                  Field(flex: 05, hidden: false, editable: true, key: 'sale_currency'),
-                  Field(flex: 05, hidden: false, editable: true, key: 'shipping'),
-                  Field(flex: 05, hidden: false, editable: true, key: 'remains'),
-                  Field(flex: 10, hidden: false, editable: true, key: 'name'),
-                  Field(flex: 15, hidden: false, editable: true, key: 'details'),
-                  Field(flex: 20, hidden: false, editable: true, key: 'description'),
-                  Field(flex: 10, hidden: false, editable: true, key: 'picture'),
+                  Field(flex: 15, hidden: false, editable: true, title: 'Purchase'.inRu, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
+                  Field(flex: 15, hidden: false, editable: true, title: 'Product'.inRu, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
+                  Field(flex: 05, hidden: false, editable: true, title: 'Price'.inRu, key: 'sale_price', hint: 'Цена за единицу товара'),
+                  Field(flex: 05, hidden: false, editable: true, title: 'Currency'.inRu, key: 'sale_currency', hint:'Валюта цены продажи'),
+                  Field(flex: 05, hidden: false, editable: true, title: 'Shipping'.inRu, key: 'shipping', hint: 'Цена доставки за единицу товара'),
+                  Field(flex: 05, hidden: false, editable: true, title: 'Remains'.inRu, key: 'remains', hint: 'Остаток товара на данный момент. \nЕсли статус закупки "Active" может быстро меняться из-за поступления новых заказов'),
+                  Field(flex: 10, hidden: false, editable: true, title: 'Name'.inRu, key: 'name'),
+                  Field(flex: 15, hidden: false, editable: true, title: 'Details'.inRu, key: 'details', hint: 'Короткое описание'),
+                  Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu, key: 'description', hint: 'Детальное описание'),
+                  Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu, key: 'picture', hint: 'Сыылка на изображение'),
             const Field(flex: 05, hidden: true, editable: true, key: 'created'),
             const Field(flex: 05, hidden: true, editable: true, key: 'updated'),
             const Field(flex: 05, hidden: true, editable: true, key: 'deleted'),
@@ -194,7 +180,6 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
             return CircularProgressIndicator.adaptive();
           }
         ),
-
         Expanded(
           child: TableWidget<EntryPurchaseItem, void>(
             schema: _schema,

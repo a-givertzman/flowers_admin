@@ -38,6 +38,7 @@ const tr = {
   'Customer': {Lang.en: 'Customer', Lang.ru: 'Пользователь'},
   'Value': {Lang.en: 'Value', Lang.ru: 'Сумма'},
   'Created': {Lang.en: 'Created', Lang.ru: 'Создано'},
+  'Details': {Lang.en: 'Details', Lang.ru: 'Детали'},
   'Description': {Lang.en: 'Description', Lang.ru: 'Описание'},
   'TransactionDetails': {Lang.en: 'Details', Lang.ru: 'Назначение'},
   'CustomerAccountBefore': {Lang.en: 'Customer account before', Lang.ru: 'Счет клиента до'},
@@ -45,6 +46,15 @@ const tr = {
   'AllowIndebted': {Lang.en: 'Allow indebted', Lang.ru: 'Разрешить в долг'},
   'Amount': {Lang.en: 'Amount', Lang.ru: 'Сумма'},
   'amount': {Lang.en: 'amount', Lang.ru: 'сумма'},
+  
+  'Price': {Lang.en: 'Price', Lang.ru: 'Цена'},
+  'Currency': {Lang.en: 'Currency', Lang.ru: 'Валюта'},
+  'Shipping': {Lang.en: 'Shipping', Lang.ru: 'Доставка'},
+  'Remains': {Lang.en: 'Remains', Lang.ru: 'Остаток'},
+  // '**': {Lang.en: '**', Lang.ru: '---'},
+  // '**': {Lang.en: '**', Lang.ru: '---'},
+  // '**': {Lang.en: '**', Lang.ru: '---'},
+
   'of': {Lang.en: 'of', Lang.ru: 'от'},
   'Show deleted': {Lang.en: 'Show deleted', Lang.ru: 'Показывать удаленные'},
   'Customers': {Lang.en: 'Customers', Lang.ru: 'Пользователи'},

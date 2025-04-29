@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 ///
 class TCell<T extends SchemaEntryAbstract> extends StatefulWidget {
   final String value;
+  final String hint;
   final TextStyle? style;
   final void Function(String value)? onComplete;
   final Widget Function(BuildContext ctx, T entry, Function(String)? onComplete)? _builder;
@@ -17,6 +18,7 @@ class TCell<T extends SchemaEntryAbstract> extends StatefulWidget {
   const TCell({
     super.key,
     this.value = '',
+    this.hint = '',
     this.style,
     this.onComplete,
     this.editable = true,
@@ -29,6 +31,7 @@ class TCell<T extends SchemaEntryAbstract> extends StatefulWidget {
   const TCell.builder({
     super.key,
     this.value = '',
+    this.hint = '',
     this.style,
     this.onComplete,
     required Widget Function(BuildContext ctx, T entry, Function(String)? onComplete)? builder,
@@ -144,13 +147,24 @@ class _TCellState<T extends SchemaEntryAbstract> extends State<TCell<T>> {
                     ? [BoxShadow(color: Colors.grey.withValues(alpha: 0.2), spreadRadius: 1, blurRadius: 4)] 
                     : null,
                 ),
-                child: Text(
-                  _controller.text,
-                  style: style?.copyWith(color: _isChanged ? Colors.blue : null),
-                  textAlign: _textAlign,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                child: widget.hint.isEmpty
+                  ? Text(
+                    _controller.text,
+                    style: style?.copyWith(color: _isChanged ? Colors.blue : null),
+                    textAlign: _textAlign,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                  : Tooltip(
+                    message: widget.hint,
+                    child: Text(
+                      _controller.text,
+                      style: style?.copyWith(color: _isChanged ? Colors.blue : null),
+                      textAlign: _textAlign,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
               ),
             ),
           ),

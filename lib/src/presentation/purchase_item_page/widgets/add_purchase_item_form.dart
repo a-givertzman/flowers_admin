@@ -26,7 +26,6 @@ class EditPurchaseItemForm extends StatefulWidget {
   //
   //
   @override
-  // ignore: no_logic_in_create_state
   State<EditPurchaseItemForm> createState() => _EditProductFormState();
 }
 //
