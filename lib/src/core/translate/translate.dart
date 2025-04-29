@@ -54,6 +54,8 @@ const tr = {
   // '**': {Lang.en: '**', Lang.ru: '---'},
   // '**': {Lang.en: '**', Lang.ru: '---'},
   // '**': {Lang.en: '**', Lang.ru: '---'},
+  // '**': {Lang.en: '**', Lang.ru: '---'},
+  // '**': {Lang.en: '**', Lang.ru: '---'},
 
   'of': {Lang.en: 'of', Lang.ru: 'от'},
   'Show deleted': {Lang.en: 'Show deleted', Lang.ru: 'Показывать удаленные'},
@@ -71,6 +73,8 @@ const tr = {
   'Paid': {Lang.en: 'Paid', Lang.ru: 'Оплачено'},
   'Cost': {Lang.en: 'Cost', Lang.ru: 'Стоимость'},
   'Distributed': {Lang.en: 'Distributed', Lang.ru: 'Выдано'},
+  'To refound': {Lang.en: 'To refound', Lang.ru: 'Возврат'},
+  'Refounded': {Lang.en: 'Refounded', Lang.ru: 'Возвращено'},
   'No date': {Lang.en: 'No date', Lang.ru: 'Нет даты'},
   'Allow indebted': {Lang.en: 'Allow indebted', Lang.ru: 'Разрешить долг'},
 };

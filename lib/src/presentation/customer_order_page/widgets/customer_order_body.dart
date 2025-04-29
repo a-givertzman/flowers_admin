@@ -1,5 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer_order.dart';
@@ -77,20 +78,20 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
         ),
         fields: [
           const Field(hidden: false, editable: false, key: 'id'),
-          const Field(hidden: false, editable: false, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+                Field(hidden: false, editable: false, title: 'Customer'.inRu, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
           // const Field(hidden: false, editable: false, key: 'customer'),
-          const Field(hidden: false, editable: true, key: 'purchase_item_id'),
-          const Field(hidden: false, editable: true, title: 'Purchase id', key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
-          const Field(hidden: false, editable: true, title: 'Product id', key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
+                Field(hidden: false, editable: true, key: 'purchase_item_id'),
+                Field(hidden: false, editable: true, title: 'Purchase'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
+                Field(hidden: false, editable: true, title: 'Product'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
           // const Field(hidden: false, editable: true, key: 'purchase'),
           // const Field(hidden: false, editable: true, key: 'product'),
-          const Field(hidden: false, editable: true, key: 'count'),
-          const Field(hidden: false, editable: true, key: 'cost'),
-          const Field(hidden: false, editable: true, key: 'paid'),
-          const Field(hidden: false, editable: true, key: 'distributed'),
-          const Field(hidden: false, editable: true, key: 'to_refound'),
-          const Field(hidden: false, editable: true, key: 'refounded'),
-          const Field(hidden: false, editable: true, key: 'description'),
+                Field(hidden: false, editable: true, title: 'Count'.inRu, key: 'count'),
+                Field(hidden: false, editable: true, title: 'Cost'.inRu, key: 'cost'),
+                Field(hidden: false, editable: true, title: 'Paid'.inRu, key: 'paid'),
+                Field(hidden: false, editable: true, title: 'Distributed'.inRu, key: 'distributed'),
+                Field(hidden: false, editable: true, title: 'To refound'.inRu, key: 'to_refound'),
+                Field(hidden: false, editable: true, title: 'Refounded'.inRu, key: 'refounded'),
+                Field(hidden: false, editable: true, title: 'Description'.inRu, key: 'description'),
           const Field(hidden: true, editable: true, key: 'created'),
           const Field(hidden: true, editable: true, key: 'updated'),
           const Field(hidden: true, editable: true, key: 'deleted'),
