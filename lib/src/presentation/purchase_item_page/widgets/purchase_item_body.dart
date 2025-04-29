@@ -6,8 +6,10 @@ import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
+import 'package:flowers_admin/src/infrostructure/purchase/purchase_status.dart';
 import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/t_edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flowers_admin/src/presentation/purchase_item_page/widgets/edit_purchase_item_form.dart';
@@ -78,7 +80,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
           fields: [
             const Field(flex: 03, hidden: false, editable: false, key: 'id'),
                   Field(flex: 15, hidden: false, editable: true, title: 'Purchase'.inRu, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
-                  Field(flex: 05, hidden: false, editable: true, title: 'Status'.inRu, key: 'status', hint: 'Статус закупки'),
+                  Field(flex: 05, hidden: false, editable: true, title: 'Status'.inRu, key: 'status', builder: _statusBuilder, hint: 'Статус закупки'),
                   Field(flex: 15, hidden: false, editable: true, title: 'Prodict'.inRu, key: 'product'),
                   // Field(flex: 15, hidden: false, editable: true, title: 'Product'.inRu, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
                   Field(flex: 05, hidden: false, editable: true, title: 'Price'.inRu, key: 'sale_price', hint: 'Цена за единицу товара'),
@@ -95,6 +97,24 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
         ),
         relations: _buildRelations(),
       );
+  }
+  ///
+  /// PerchaseStatus field builder
+  Widget _statusBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
+    final statusRelation = PurchaseStatus.relation;
+    return TEditListWidget(
+      id: '${entry.value('status').value}',
+      relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
+      editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
+      onComplete: (id) {
+        final status = statusRelation[id]?.value('status').value;
+        _log.debug('build.onComplete | status: $status');
+        if (status != null) {
+          entry.update('status', status);
+          if (onComplite != null) onComplite(status);
+        }
+      },
+    );
   }
   ///
   /// Returns Relations
@@ -205,6 +225,47 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
                   };
                 });
               }, 
+              icon: const Icon(Icons.add),
+            ),
+            editAction: TableWidgetAction(
+              onPressed: (schema) {
+                final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
+                if (toBeUpdated.isNotEmpty) {
+                  return showDialog<Result<EntryPurchaseItem, void>?>(
+                    context: context, 
+                    builder: (_) => EditPurchaseItemForm(fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
+                  ).then((result) {
+                    _log.debug('.build | edited entry: $result');
+                    return switch (result) {
+                      Ok(:final value) => Ok(value),
+                      Err(:final error) => Err(error),
+                      _ => const Err(null),
+                    };
+                  });
+                }
+                return Future.value(Err(null));
+              }, 
+              icon: const Icon(Icons.add),
+            ),      
+            delAction: TableWidgetAction(
+              onPressed: (schema) {
+                final toBeDeleted = schema.entries.values.firstWhere(
+                  (e) {
+                    return e.isSelected;
+                  },
+                  orElse: () => EntryPurchaseItem.empty(),
+                );
+                return showConfirmDialog(
+                  context, 
+                  const Text('Delete Purchase item ?'), 
+                  Text('Are you sure want to delete following:\n${toBeDeleted.value('name').str}'),
+                ).then((value) {
+                  return switch (value) {
+                    Ok() => Ok(toBeDeleted),
+                    Err(:final error) => Err(error),
+                  };
+                });
+              },
               icon: const Icon(Icons.add),
             ),
           ),

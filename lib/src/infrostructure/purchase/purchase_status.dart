@@ -1,3 +1,5 @@
+import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_status.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 ///
 /// Represents a list of posible Purchase statuses in the DB
@@ -40,6 +42,10 @@ enum PurchaseStatus {
         return PurchaseStatus.notsampled;
     }
   }
+  // Returns map of all [PurchaseStatus] values
+  static final relation = PurchaseStatus.values.asMap().map((i, status) {
+    return MapEntry(status.str, EntryPurchaseStatus(map: {'id': FieldValue(status.str), 'status': FieldValue(status.str)}));
+  });
 }
 extension ParseToString on PurchaseStatus {
   String get str {

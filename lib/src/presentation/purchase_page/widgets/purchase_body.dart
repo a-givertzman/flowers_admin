@@ -49,10 +49,6 @@ class _PurchaseBodyState extends State<PurchaseBody> {
     super.initState();
   }
   ///
-  final _statusRelation = PurchaseStatus.values.asMap().map((i, status) {
-    return MapEntry(status.str, EntryPurchase(map: {'id': FieldValue(status.str), 'status': FieldValue(status.str)}));
-  },);
-  ///
   /// Returns TableSchema
   TableSchema<EntryPurchase, void> _buildSchema() {
     return TableSchema<EntryPurchase, void>(
@@ -80,7 +76,7 @@ class _PurchaseBodyState extends State<PurchaseBody> {
         const Field(flex: 03, hidden: false, editable: false,                             key: 'id'),
               Field(flex: 10, hidden: false, editable: true, title: 'Name'.inRu,          key: 'name'),
               Field(flex: 20, hidden: false, editable: true, title: 'Details'.inRu,       key: 'details'),
-              Field(flex: 07, hidden: false, editable: true, title: 'Status'.inRu,        key: 'status', builder: _roleBuilder),
+              Field(flex: 07, hidden: false, editable: true, title: 'Status'.inRu,        key: 'status', builder: _statusBuilder),
               Field(flex: 10, hidden: false, editable: true, title: 'Date of start'.inRu, key: 'date_of_start', builder: _dateOfStartBuilder),
               Field(flex: 10, hidden: false, editable: true, title: 'Date of end'.inRu,   key: 'date_of_end', builder: _dateOfEndBuilder),
               Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu,   key: 'description'),
@@ -92,14 +88,15 @@ class _PurchaseBodyState extends State<PurchaseBody> {
     );
   }
   ///
-  /// User role builder
-  Widget _roleBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
+  /// PerchaseStatus field builder
+  Widget _statusBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
+    final statusRelation = PurchaseStatus.relation;
     return TEditListWidget(
       id: '${entry.value('status').value}',
-      relation: EditListEntry(field: 'status', entries: _statusRelation.values.toList()),
+      relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
       editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
       onComplete: (id) {
-        final status = _statusRelation[id]?.value('status').value;
+        final status = statusRelation[id]?.value('status').value;
         _log.debug('build.onComplete | status: $status');
         if (status != null) {
           entry.update('status', status);
@@ -108,6 +105,8 @@ class _PurchaseBodyState extends State<PurchaseBody> {
       },
     );
   }
+  ///
+  /// Purchase start date field builder
   Widget _dateOfStartBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
     return TEditDateWidget(
       value: '${entry.value('date_of_start').value}',
@@ -118,6 +117,8 @@ class _PurchaseBodyState extends State<PurchaseBody> {
       },
     );
   }
+  ///
+  /// Purchase end date field builder
   Widget _dateOfEndBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
     return TEditDateWidget(
       value: '${entry.value('date_of_end').value}',
@@ -188,7 +189,7 @@ class _PurchaseBodyState extends State<PurchaseBody> {
           );
           return showConfirmDialog(
             context, 
-            const Text('Delete Product'), 
+            const Text('Delete Purchase ?'), 
             Text('Are you sure want to delete following:\n${toBeDeleted.value('name').str}'),
           ).then((value) {
             return switch (value) {

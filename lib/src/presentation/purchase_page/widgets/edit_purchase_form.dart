@@ -1,7 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
-import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/purchase_status.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/date_edit_widget.dart';
@@ -115,7 +114,7 @@ class _EditPurchaseFormState extends State<EditPurchaseForm> {
                         EditListWidget(
                           id: '${_entry.value('status').value}',
                           relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
-                          editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
+                          editable: _field(widget.fields, 'Status').isEditable,
                           // style: textStyle,
                           labelText: _field(widget.fields, 'Status').title.inRu,
                           onComplete: (id) {
