@@ -3,7 +3,7 @@
 create table public.purchase_item (
     id                  bigserial primary key not null,
     purchase_id         int8 not null,                          -- Item refers to Purchase
-    status              purchase_status_enum not null,          -- Current state of the purchase item, inherits from purchase, can be customized
+    status              purchase_status_enum null,              -- Current state of the purchase item, inherits from purchase, can be customized
     product_id          int8 not null,                          -- Item refers to Product
     sale_price          numeric(20, 2) default '0.0' not null,  -- Цена за единицу
     sale_currency       varchar(16) not null,                   -- Валюьа цены

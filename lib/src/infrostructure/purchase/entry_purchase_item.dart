@@ -11,6 +11,7 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
     final initial = <String, FieldValue>{
 	    'id': FieldValue(null),
 	    'purchase_id': FieldValue(null),
+	    'status': FieldValue(''),
 	    'product_id': FieldValue(null),
 	    'purchase': FieldValue(''),
 	    'product': FieldValue(''),
@@ -22,7 +23,6 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
 	    'details': FieldValue(''),
 	    'description': FieldValue(''),
 	    'picture': FieldValue(''),
-	    'status': FieldValue(''),
 	    'created': FieldValue(''),
 	    'updated': FieldValue(''),
 	    'deleted': FieldValue(''),
@@ -96,10 +96,16 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   String toString() => _entry.toString();
   ///
   ///
+  static String _nullIfEmpty(dynamic val) {
+    return (val == null) ? 'null' : ('$val'.isEmpty) ? 'null' : "'$val'";
+  }
+  ///
+  ///
   static Sql updateSqlBuilder(Sql sql, EntryPurchaseItem entry) {
     return Sql(sql: """UPDATE public.purchase_item SET (
         id,
         purchase_id,
+        status,
         product_id,
         sale_price,
         sale_currency,
@@ -115,15 +121,16 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
       ) = (
         ${entry.value('id').str},
         ${entry.value('purchase_id').str},
+        ${_nullIfEmpty(entry.value('status').value)},
         ${entry.value('product_id').str},
         ${entry.value('sale_price').str},
         ${entry.value('sale_currency').str},
         ${entry.value('shipping').str},
         ${entry.value('remains').str},
-        ${entry.value('name').str},
-        ${entry.value('details').str},
-        ${entry.value('description').str},
-        ${entry.value('picture').str},
+        ${_nullIfEmpty(entry.value('product').value)},
+        ${_nullIfEmpty(entry.value('details').value)},
+        ${_nullIfEmpty(entry.value('description').value)},
+        ${_nullIfEmpty(entry.value('picture').value)},
         ${entry.value('created').str},
         ${entry.value('updated').str},
         ${entry.value('deleted').str}
