@@ -69,10 +69,10 @@ class _EditProductFormState extends State<EditPurchaseItemForm> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('${_entry.value('product').value} > ${_entry.value('purchase').value}', style: Theme.of(context).textTheme.titleLarge,),
+          title: Text('${_entry.value('purchase').value}  >  ${_entry.value('product').value}', style: Theme.of(context).textTheme.titleLarge,),
         ),
         body: Row(
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
               child: Card(
