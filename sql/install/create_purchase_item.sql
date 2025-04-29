@@ -3,6 +3,7 @@
 create table public.purchase_item (
     id                  bigserial primary key not null,
     purchase_id         int8 not null,                          -- Item refers to Purchase
+    status              purchase_status_enum not null,          -- Current state of the purchase item, inherits from purchase, can be customized
     product_id          int8 not null,                          -- Item refers to Product
     sale_price          numeric(20, 2) default '0.0' not null,  -- Цена за единицу
     sale_currency       varchar(16) not null,                   -- Валюьа цены
@@ -23,13 +24,13 @@ CREATE OR REPLACE VIEW public.purchase_item_view AS
         pui.id,
         pui.purchase_id,
         pu.name as purchase,
-        pu.status as status,
+        coalesce(pui.name, p.name) as product,
+        coalesce(pui.status, pu.status) as status,
         pui.product_id,
         pui.sale_price,
         pui.sale_currency,
         pui.shipping,
         pui.remains,
-        coalesce(pui.name, p.name) as product,
         coalesce(pui.details, p.details) as details,
         coalesce(pui.description, p.description) as description,
         coalesce(pui.picture, p.picture) as picture,
