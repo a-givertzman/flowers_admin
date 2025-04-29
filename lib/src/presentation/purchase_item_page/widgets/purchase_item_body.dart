@@ -53,6 +53,8 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   ///
   /// Returns TableSchema
   RelationSchema<EntryPurchaseItem, PurchaseItemSqlParam> _buildSchema() {
+    final currencyEditable = [AppUserRole.admin].contains(widget.user.role);
+    final remainsEditable = [AppUserRole.admin].contains(widget.user.role);
     return RelationSchema<EntryPurchaseItem, PurchaseItemSqlParam>(
         schema: TableSchema<EntryPurchaseItem, PurchaseItemSqlParam>(
           read: SqlRead<EntryPurchaseItem, PurchaseItemSqlParam>(
@@ -84,9 +86,9 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
                   Field(flex: 15, hidden: false, editable: true, title: 'Prodict'.inRu, key: 'product'),
                   // Field(flex: 15, hidden: false, editable: true, title: 'Product'.inRu, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
                   Field(flex: 05, hidden: false, editable: true, title: 'Price'.inRu, key: 'sale_price', hint: 'Цена за единицу товара'),
-                  Field(flex: 04, hidden: false, editable: true, title: 'Currency'.inRu, key: 'sale_currency', hint:'Валюта цены'),
+                  Field(flex: 04, hidden: false, editable: currencyEditable, title: 'Currency'.inRu, key: 'sale_currency', hint:'Валюта цены'),
                   Field(flex: 05, hidden: false, editable: true, title: 'Shipping'.inRu, key: 'shipping', hint: 'Цена доставки за единицу товара'),
-                  Field(flex: 05, hidden: false, editable: true, title: 'Remains'.inRu, key: 'remains', hint: 'Остаток товара на данный момент. \nЕсли статус закупки "Active" может быстро меняться из-за поступления новых заказов'),
+                  Field(flex: 05, hidden: false, editable: remainsEditable, title: 'Remains'.inRu, key: 'remains', hint: 'Остаток товара на данный момент. \nЕсли статус закупки "Active" может быстро меняться из-за поступления новых заказов'),
                   Field(flex: 15, hidden: false, editable: true, title: 'Details'.inRu, key: 'details', hint: 'Короткое описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
                   Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu, key: 'description', hint: 'Детальное описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
                   Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu, key: 'picture', hint: 'Ссылка на изображение. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
