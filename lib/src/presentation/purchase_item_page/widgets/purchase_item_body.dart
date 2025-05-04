@@ -12,6 +12,7 @@ import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry
 import 'package:flowers_admin/src/presentation/core/table_widget/t_edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
+import 'package:flowers_admin/src/presentation/purchase_item_page/widgets/add_purchase_item_form.dart';
 import 'package:flowers_admin/src/presentation/purchase_item_page/widgets/edit_purchase_item_form.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
@@ -83,8 +84,8 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
             const Field(flex: 03, hidden: false, editable: false, key: 'id'),
                   Field(flex: 15, hidden: false, editable: false, title: 'Purchase'.inRu, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
                   Field(flex: 05, hidden: false, editable: true, title: 'Status'.inRu, key: 'status', builder: _statusBuilder, hint: 'Статус закупки. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
-                  Field(flex: 15, hidden: false, editable: true, title: 'Prodict'.inRu, key: 'product'),
-                  // Field(flex: 15, hidden: false, editable: true, title: 'Product'.inRu, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
+                  // Field(flex: 15, hidden: false, editable: true, title: 'Prodict'.inRu, key: 'product'),
+                  Field(flex: 15, hidden: false, editable: true, title: 'Product'.inRu, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
                   Field(flex: 05, hidden: false, editable: true, title: 'Price'.inRu, key: 'sale_price', hint: 'Цена за единицу товара'),
                   Field(flex: 04, hidden: false, editable: currencyEditable, title: 'Currency'.inRu, key: 'sale_currency', hint:'Валюта цены'),
                   Field(flex: 05, hidden: false, editable: true, title: 'Shipping'.inRu, key: 'shipping', hint: 'Цена доставки за единицу товара'),
@@ -215,9 +216,10 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
             ),
             addAction: TableWidgetAction(
               onPressed: (schema) {
+                final entry = EntryPurchaseItem.from({'purchase_id': _purchaseId});
                 return showDialog<Result<EntryPurchaseItem, void>?>(
                   context: context, 
-                  builder: (_) => EditPurchaseItemForm(fields: schema.fields, relations: schema.relations),
+                  builder: (_) => AddPurchaseItemForm(fields: schema.fields, entry: entry, relations: schema.relations),
                 ).then((result) {
                   // _log.debug('.build | new entry: $result');
                   return switch (result) {

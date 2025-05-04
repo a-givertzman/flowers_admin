@@ -80,15 +80,6 @@ class _HomeBodyState extends State<HomeBody> {
         body: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.end,
-            //   children: [
-            //     Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Divider(),
-            //     )
-            //   ],
-            // ),
             Expanded(
               child: TabBarView(
                 children: [

@@ -1,6 +1,8 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
-import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
+import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
+import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
+import 'package:flowers_admin/src/infrostructure/purchase/purchase_status.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
 import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/image_widget/load_image_widget/load_image_widget.dart';
@@ -11,13 +13,13 @@ import 'package:hmi_core/hmi_core_result.dart';
 
 ///
 ///
-class EditPurchaseItemForm extends StatefulWidget {
+class AddPurchaseItemForm extends StatefulWidget {
   final List<Field> fields;
-  final EntryProduct? entry;
+  final EntryPurchaseItem? entry;
   final Map<String, List<SchemaEntryAbstract>> relations;
   ///
   ///
-  const EditPurchaseItemForm({
+  const AddPurchaseItemForm({
     super.key,
     required this.fields,
     this.entry,
@@ -26,46 +28,53 @@ class EditPurchaseItemForm extends StatefulWidget {
   //
   //
   @override
-  State<EditPurchaseItemForm> createState() => _EditProductFormState();
+  // ignore: no_logic_in_create_state
+  State<AddPurchaseItemForm> createState() => _AddPurchaseItemFormState();
 }
 //
 //
-class _EditProductFormState extends State<EditPurchaseItemForm> {
+class _AddPurchaseItemFormState extends State<AddPurchaseItemForm> {
   late final Log _log;
-  late EntryProduct _entry;
+  late EntryPurchaseItem _entry;
   //
   //
   @override
   void initState() {
     _log = Log("$runtimeType");
-    _entry = widget.entry ?? EntryProduct.empty();
+    _entry = widget.entry ?? EntryPurchaseItem.empty();
     super.initState();
   }
   ///
   ///
   Field _field(List<Field> fields, String key) {
     return fields.firstWhere((element) => element.key == key, orElse: () {
-      return Field(key: key) as Field<EntryProduct>;
+      return Field<EntryPurchaseItem>(key: key);
     },);
   }
   //
   //
   @override
   Widget build(BuildContext context) {
-    final categoryField = _field(widget.fields, 'product_category_id');
-    _log.debug('.build | categoryField: $categoryField');
-    _log.trace('.build | relations: ${widget.relations}');
-    final relation = EditListEntry(
-      entries: widget.relations[categoryField.relation.id] ?? [],
-      field: categoryField.relation.field,
+    final statusRelation = PurchaseStatus.values.asMap().map((i, role) {
+      return MapEntry(role.str, EntryPurchase(map: {'id': FieldValue(role.str), 'status': FieldValue(role.str)}));
+    },);
+    final purchaseField = _field(widget.fields, 'purchase_id');
+    final purchaseRelation = EditListEntry(
+      entries: widget.relations[purchaseField.relation.id] ?? [],
+      field: purchaseField.relation.field,
     );
-    _log.debug('.build | relation: $relation');
+    final productField = _field(widget.fields, 'product_id');
+    final productRelation = EditListEntry(
+      entries: widget.relations[productField.relation.id] ?? [],
+      field: productField.relation.field,
+    );
+    _log.debug('.build | purchaseRelation: $purchaseRelation');
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('${_entry.value('name').value}', style: Theme.of(context).textTheme.titleLarge,),
+          title: Text('${_entry.value('purchase').value}  >  ${_entry.value('product').value}', style: Theme.of(context).textTheme.titleLarge,),
         ),
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -95,67 +104,101 @@ class _EditProductFormState extends State<EditPurchaseItemForm> {
                     shrinkWrap: true,
                     children: [
                       EditListWidget(
-                        id: '${_entry.value('product_category_id').value}',
-                        relation: relation,
-                        editable: categoryField.isEditable,
+                        id: '${_entry.value('purchase_id').value}',
+                        relation: purchaseRelation,
+                        editable: true, //purchaseField.isEditable,
                         // style: textStyle,
-                        // labelText: field('category').title.inRu,
+                        labelText: purchaseField.title.inRu,
                         onComplete: (value) {
-                          _entry.update('product_category_id', value);
+                          _log.trace('build.onComplete | purchase_id: $value');
+                          _entry.update('purchase_id', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      EditListWidget(
+                        id: '${_entry.value('status').value}',
+                        relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
+                        editable: _field(widget.fields, 'status').isEditable,
+                        // style: textStyle,
+                        labelText: _field(widget.fields, 'status').title.inRu,
+                        onComplete: (id) {
+                          final status = statusRelation[id]?.value('status').value;
+                          _log.debug('build.onComplete | status: $status');
+                          if (status != null) {
+                            _entry.update('status', status);
+                            setState(() {return;});
+                          }
+                        },
+                      ),
+                      EditListWidget(
+                        id: '${_entry.value('product_id').value}',
+                        relation: productRelation,
+                        editable: true, //purchaseField.isEditable,
+                        // style: textStyle,
+                        labelText: productField.title.inRu,
+                        onComplete: (value) {
+                          _log.trace('build.onComplete | product_id: $value');
+                          _entry.update('product_id', value);
                           setState(() {return;});
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'name').title.inRu,
-                        value: '${_entry.value('name').value}',
+                        labelText: _field(widget.fields, 'product').title.inRu,
+                        value: '${_entry.value('product').value}',
                         onComplete: (value) {
-                          _entry.update('name', value);
+                          _entry.update('product', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'sale_price').title.inRu,
+                        value: '${_entry.value('sale_price').value}',
+                        editable: _field(widget.fields, 'sale_price').isEditable,
+                        onComplete: (value) {
+                          _entry.update('sale_price', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'sale_currency').title.inRu,
+                        value: '${_entry.value('sale_currency').value}',
+                        editable: _field(widget.fields, 'sale_currency').isEditable,
+                        onComplete: (value) {
+                          _entry.update('sale_currency', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'shipping').title.inRu,
+                        value: '${_entry.value('shipping').value}',
+                        editable: _field(widget.fields, 'shipping').isEditable,
+                        onComplete: (value) {
+                          _entry.update('shipping', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      TextEditWidget(
+                        labelText: _field(widget.fields, 'remains').title.inRu,
+                        value: '${_entry.value('remains').value}',
+                        editable: _field(widget.fields, 'remains').isEditable,
+                        onComplete: (value) {
+                          _entry.update('remains', value);
                           setState(() {return;});
                         },
                       ),
                       TextEditWidget(
                         labelText: _field(widget.fields, 'details').title.inRu,
                         value: '${_entry.value('details').value}',
+                        editable: _field(widget.fields, 'details').isEditable,
                         onComplete: (value) {
                           _entry.update('details', value);
                           setState(() {return;});
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'primary_price').title.inRu,
-                        value: '${_entry.value('primary_price').value}',
-                        onComplete: (value) {
-                          _entry.update('primary_price', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: _field(widget.fields, 'primary_currency').title.inRu,
-                        value: '${_entry.value('primary_currency').value}',
-                        onComplete: (value) {
-                          _entry.update('primary_currency', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: _field(widget.fields, 'primary_order_quantity').title.inRu,
-                        value: '${_entry.value('primary_order_quantity').value}',
-                        onComplete: (value) {
-                          _entry.update('primary_order_quantity', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: _field(widget.fields, 'order_quantity').title.inRu,
-                        value: '${_entry.value('order_quantity').value}',
-                        onComplete: (value) {
-                          _entry.update('order_quantity', value);
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
                         labelText: _field(widget.fields, 'description').title.inRu,
                         value: '${_entry.value('description').value}',
+                        editable: _field(widget.fields, 'description').isEditable,
                         onComplete: (value) {
                           _entry.update('description', value);
                           setState(() {return;});
@@ -173,7 +216,7 @@ class _EditProductFormState extends State<EditPurchaseItemForm> {
             children: [
               TextButton(
                 onPressed:  () {
-                  Navigator.pop(context, const Err<EntryProduct, void>(null));
+                  Navigator.pop(context, const Err<EntryPurchaseItem, void>(null));
                 },
                 child: const Text("Cancel"),
               ),
@@ -182,7 +225,7 @@ class _EditProductFormState extends State<EditPurchaseItemForm> {
                   ? () {
                     _log.debug('.TextButton.Yes | isChanged: ${_entry.isChanged}');
                     _log.debug('.TextButton.Yes | enrty: $_entry');
-                    Navigator.pop(context, Ok<EntryProduct, void>(_entry));
+                    Navigator.pop(context, Ok<EntryPurchaseItem, void>(_entry));
                   } 
                   : null,
                 child: const Text("Yes"),
