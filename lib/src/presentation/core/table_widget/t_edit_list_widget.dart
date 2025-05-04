@@ -2,86 +2,61 @@
 import 'package:flowers_admin/src/presentation/core/hover_builder.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flutter/material.dart';
+// import 'package:hmi_core/hmi_core_log.dart';
 ///
 /// Drop-downd editable list used in the form
 class TEditListWidget extends StatefulWidget {
-  final String? _id;
-  final EditListEntry _relation;
-  final TextStyle? _style;
-  final void Function(String value)? _onComplete;
+  final String? id;
+  final EditListEntry relation;
+  final TextStyle? style;
+  final TextAlign textAlign;
+  final void Function(String value)? onComplete;
   // final void Function(String value)? _onSelectionChange;
-  final String? _labelText;
-  final bool _editable;
+  final String? labelText;
+  final bool editable;
   ///
-  ///
-  TEditListWidget({
+  /// Drop-downd editable list used in the form
+  const TEditListWidget({
     super.key,
-    required String? id,
-    EditListEntry? relation,
-    TextStyle? style,
-    void Function(String value)? onComplete,
-    // void Function(String value)? onSelectionChange,
-    String? labelText,
-    bool editable = true,
-  }) :
-    _id = id,
-    _relation = relation ?? EditListEntry.empty(),
-    _style = style,
-    _onComplete = onComplete,
-    // _onSelectionChange = onSelectionChange,
-    _labelText = labelText,
-    _editable = editable;
-
+    required this.id,
+    this.relation = const EditListEntry.empty(),
+    this.style,
+    this.textAlign = TextAlign.justify,
+    this.onComplete,
+    // this.onSelectionChange,
+    this.labelText,
+    this.editable = true,
+  });
+  //
+  //
   @override
-  // ignore: no_logic_in_create_state
-  State<TEditListWidget> createState() => _TEditListWidgetState(
-    id: _id,
-    relation: _relation,
-    style: _style,
-    onComplete: _onComplete,
-    labelText: _labelText,
-    editable: _editable,
-  );
+  State<TEditListWidget> createState() => _TEditListWidgetState();
 }
 //
 //
 class _TEditListWidgetState extends State<TEditListWidget> {
-  // final _log = Log("$_EditListState._");
-  String _id;
-  final EditListEntry _relation;
-  final TextStyle? _style;
-  final void Function(String value)? _onComplete;
-  final bool _editable;
+  // late final Log _log;
+  String _id = '';
   final _textPaddingH = 0.0;
   final _textPaddingV = 8.0;
-  final _textAlign = TextAlign.justify;
-  final String? _labelText;
   bool _isEditing = false;
   bool _isChanged = false;
   //
   //
-  _TEditListWidgetState({
-    required String? id,
-    required EditListEntry relation,
-    required TextStyle? style,
-    required void Function(String value)? onComplete,
-    required String? labelText,
-    required bool editable,
-  }) :
-    _id = id ?? '',
-    _relation = relation,
-    _style = style,
-    _onComplete = onComplete,
-    _labelText = labelText,
-    _editable = editable;
+  @override
+  void initState() {
+    // _log = Log('$runtimeType');
+    _id = widget.id ?? '';
+    super.initState();
+  }
   //
   //
   @override
   Widget build(BuildContext context) {
     final defaultStyle = Theme.of(context).textTheme.bodyLarge;
-    final style = _editable
-      ? _style ?? defaultStyle
-      : (_style ?? defaultStyle)?.copyWith(color: (_style ?? defaultStyle)?.color?.withValues(alpha: 0.5));
+    final style = widget.editable
+      ? widget.style ?? defaultStyle
+      : (widget.style ?? defaultStyle)?.copyWith(color: (widget.style ?? defaultStyle)?.color?.withValues(alpha: 0.5));
     if (_isEditing) {
       return TapRegion(
         onTapOutside: (PointerDownEvent _) {
@@ -92,25 +67,25 @@ class _TEditListWidgetState extends State<TEditListWidget> {
           }
         },
         child: DropdownButtonFormField(
-              value: _relation.value(_id).isNotEmpty ? _id : '',
-              items: {...{'': ''}, ..._relation.entry}.entries.map((entry) {
+              value: widget.relation.value(_id).isNotEmpty ? _id : '',
+              items: {...{'': ''}, ...widget.relation.entry}.entries.map((entry) {
                 return DropdownMenuItem(
                   value: entry.key,
                   child: Text(
                     entry.value,
-                    style: _style,
+                    style: widget.style,
                   ),
                 );
               }).toList(),
               onChanged: (value) {
-                _applyNewValue(value);
+                _applyNewValue(value, widget.onComplete);
               },
-              style: _style,
+              style: widget.style,
               iconSize: 0.0,
               isDense: true,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.symmetric(vertical: _textPaddingV),
-                labelText: _labelText,
+                labelText: widget.labelText,
                 filled: true,
                 fillColor: Colors.transparent,
                 hoverColor: Theme.of(context).hoverColor,
@@ -126,14 +101,14 @@ class _TEditListWidgetState extends State<TEditListWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (!_isEditing && _labelText != null)
+              if (!_isEditing && widget.labelText != null)
                 Text(
-                  '$_labelText',
+                  '${widget.labelText}',
                   style: Theme.of(context).inputDecorationTheme.labelStyle ?? Theme.of(context).textTheme.bodySmall,
                 ),
               HoverBuilder(
                 builder: (BuildContext context, bool isHovered) {
-                  final rel = _relation.value(_id);
+                  final rel = widget.relation.value(_id);
                   return Text(
                     _id.isNotEmpty ? (rel.isNotEmpty ? rel : '') : '',
                     // _id.isNotEmpty ? (rel.isNotEmpty ? rel : '${InRu('Not sampled')}') : '${InRu('Not sampled')}',
@@ -143,7 +118,7 @@ class _TEditListWidgetState extends State<TEditListWidget> {
                         color: Theme.of(context).colorScheme.error,
                       )
                       : style,
-                    textAlign: _textAlign,
+                    textAlign: widget.textAlign,
                   );
                 }
               ),
@@ -155,7 +130,7 @@ class _TEditListWidgetState extends State<TEditListWidget> {
   ///
   ///
   void switchToEditing() {
-    if (_editable) {
+    if (widget.editable) {
       setState(() {
         _isEditing = true;
       });
@@ -163,15 +138,14 @@ class _TEditListWidgetState extends State<TEditListWidget> {
   }
   ///
   ///
-  _applyNewValue(id) {
+  _applyNewValue(String? id, void Function(String value)? onComplete) {
     setState(() {
       _isEditing = false;
       if (id != _id) {
         _isChanged = true;
-        _id = id;
+        _id = id ?? '';
       }
     });
-    final onComplete = _onComplete;
     if (onComplete != null) onComplete('$id');
   }
 }
