@@ -63,7 +63,7 @@ class _HomeBodyState extends State<HomeBody> {
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blueGrey,
+          backgroundColor: Theme.of(context).colorScheme.surface, //Colors.blueGrey,
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -71,13 +71,9 @@ class _HomeBodyState extends State<HomeBody> {
             )
           ],
           bottom: TabBar(
-            // indicatorColor: Colors.amber,
-            indicatorWeight: 8.0,
+            indicatorWeight: 4.0,
             indicatorSize: TabBarIndicatorSize.tab,
             isScrollable: true,
-            // indicator: BoxDecoration(
-            //   color: Theme.of(context).cardColor,
-            // ),
             tabs: tabs,
           ),
         ),
