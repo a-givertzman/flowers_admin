@@ -12,7 +12,7 @@ import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry
 import 'package:flowers_admin/src/presentation/core/table_widget/t_edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
-import 'package:flowers_admin/src/presentation/purchase_item_page/widgets/add_purchase_item_form.dart';
+import 'package:flowers_admin/src/presentation/purchase_item_page/widgets/edit_purchase_item_form.dart';
 import 'package:flowers_admin/src/presentation/purchase_item_page/widgets/edit_purchase_item_form.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
@@ -216,10 +216,10 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
             ),
             addAction: TableWidgetAction(
               onPressed: (schema) {
-                final entry = EntryPurchaseItem.from({'purchase_id': _purchaseId});
+                final entry = EntryPurchaseItem.from({'purchase_id': _purchaseId, 'sale_currency': 'RUB'});
                 return showDialog<Result<EntryPurchaseItem, void>?>(
                   context: context, 
-                  builder: (_) => AddPurchaseItemForm(fields: schema.fields, entry: entry, relations: schema.relations),
+                  builder: (_) => EditPurchaseItemForm(fields: schema.fields, entry: entry, relations: schema.relations),
                 ).then((result) {
                   // _log.debug('.build | new entry: $result');
                   return switch (result) {

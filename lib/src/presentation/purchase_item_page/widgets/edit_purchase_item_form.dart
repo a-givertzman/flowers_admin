@@ -29,11 +29,11 @@ class EditPurchaseItemForm extends StatefulWidget {
   //
   @override
   // ignore: no_logic_in_create_state
-  State<EditPurchaseItemForm> createState() => _EditProductFormState();
+  State<EditPurchaseItemForm> createState() => _EditPurchaseItemFormState();
 }
 //
 //
-class _EditProductFormState extends State<EditPurchaseItemForm> {
+class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
   late final Log _log;
   late EntryPurchaseItem _entry;
   //
@@ -48,7 +48,7 @@ class _EditProductFormState extends State<EditPurchaseItemForm> {
   ///
   Field _field(List<Field> fields, String key) {
     return fields.firstWhere((element) => element.key == key, orElse: () {
-      return Field(key: key) as Field<EntryPurchaseItem>;
+      return Field<EntryPurchaseItem>(key: key);
     },);
   }
   //
@@ -63,7 +63,14 @@ class _EditProductFormState extends State<EditPurchaseItemForm> {
       entries: widget.relations[purchaseField.relation.id] ?? [],
       field: purchaseField.relation.field,
     );
-    _log.debug('.build | purchaseRelation: $purchaseRelation');
+    final productField = _field(widget.fields, 'product_id');
+    final productRelation = EditListEntry(
+      entries: widget.relations[productField.relation.id] ?? [],
+      field: productField.relation.field,
+    );
+    _log.debug('.build | purchase_id: ${_entry.value('purchase_id').value}');
+    _log.trace('.build | purchaseRelation: $purchaseRelation');
+    final isValid = _entry.isValid;
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Scaffold(
@@ -99,6 +106,18 @@ class _EditProductFormState extends State<EditPurchaseItemForm> {
                     shrinkWrap: true,
                     children: [
                       EditListWidget(
+                        id: '${_entry.value('purchase_id').value}',
+                        relation: purchaseRelation,
+                        editable: true, //purchaseField.isEditable,
+                        // style: textStyle,
+                        labelText: purchaseField.title.inRu,
+                        onComplete: (value) {
+                          _log.trace('build.onComplete | purchase_id: $value');
+                          _entry.update('purchase_id', value);
+                          setState(() {return;});
+                        },
+                      ),
+                      EditListWidget(
                         id: '${_entry.value('status').value}',
                         relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
                         editable: _field(widget.fields, 'status').isEditable,
@@ -107,10 +126,20 @@ class _EditProductFormState extends State<EditPurchaseItemForm> {
                         onComplete: (id) {
                           final status = statusRelation[id]?.value('status').value;
                           _log.debug('build.onComplete | status: $status');
-                          if (status != null) {
-                            _entry.update('status', status);
-                            setState(() {return;});
-                          }
+                          _entry.update('status', status);
+                          setState(() {return;});
+                        },
+                      ),
+                      EditListWidget(
+                        id: '${_entry.value('product_id').value}',
+                        relation: productRelation,
+                        editable: true, //purchaseField.isEditable,
+                        // style: textStyle,
+                        labelText: productField.title.inRu,
+                        onComplete: (value) {
+                          _log.trace('build.onComplete | product_id: $value');
+                          _entry.update('product_id', value);
+                          setState(() {return;});
                         },
                       ),
                       TextEditWidget(
@@ -183,23 +212,38 @@ class _EditProductFormState extends State<EditPurchaseItemForm> {
           ],
         ),
         bottomNavigationBar: BottomAppBar(
-          child: OverflowBar(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              if (isValid != null) ...[
+                Text(
+                  isValid,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ) ?? TextStyle(color: Colors.red),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: VerticalDivider(),
+                ),
+              ],
               TextButton(
                 onPressed:  () {
                   Navigator.pop(context, const Err<EntryPurchaseItem, void>(null));
                 },
-                child: const Text("Cancel"),
+                child: Text('Cancel'.inRu),
               ),
               TextButton(
-                onPressed: _entry.isChanged 
+                onPressed: _entry.isChanged && (isValid == null)
                   ? () {
                     _log.debug('.TextButton.Yes | isChanged: ${_entry.isChanged}');
                     _log.debug('.TextButton.Yes | enrty: $_entry');
                     Navigator.pop(context, Ok<EntryPurchaseItem, void>(_entry));
                   } 
                   : null,
-                child: const Text("Yes"),
+                child: Text('Yes'.inRu),
               ),
             ],
           ),

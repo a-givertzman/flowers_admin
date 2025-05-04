@@ -18,7 +18,7 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
 	    'sale_price': FieldValue('0.00'),
 	    'sale_currency': FieldValue(''),
 	    'shipping': FieldValue('0.00'),
-	    'remains': FieldValue('0.00'),
+	    'remains': FieldValue('0'),
 	    'name': FieldValue(''),
 	    'details': FieldValue(''),
 	    'description': FieldValue(''),
@@ -98,7 +98,9 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   /// Returns true if all validators being passed
   String? get isValid {
     if (_isNullOrEmpty('purchase_id')) return 'Purchase can\'t be empty';
+    if (_isNullOrEmpty('status')) return 'Status can\'t be empty';
     if (_isNullOrEmpty('product') && _isNullOrEmpty('product_id')) return 'Product can\'t be empty';
+    if (_isNullOrEmpty('sale_currency')) return 'Currency can\'t be empty';
     return null;
   }
   ///
@@ -106,6 +108,9 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   bool _isNullOrEmpty(String key) {
     if (_entry.value(key).value == null) return true;
     if ('${_entry.value(key).value}'.isEmpty) return true;
+    if ('${_entry.value(key).value}' == "''") return true;
+    if ('${_entry.value(key).value}' == 'null') return true;
+    if ('${_entry.value(key).value}' == "'null'") return true;
     return false;
   }
   /// - if val is null  => 'null'
