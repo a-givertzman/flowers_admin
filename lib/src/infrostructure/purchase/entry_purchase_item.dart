@@ -138,11 +138,16 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
     };
     final keys = m.keys.toList().join(',');
     final values = m.values.toList().join(',');
-    return Sql(sql: """UPDATE public.purchase_item SET (
-        $keys
-      ) = (
-        $values
-      )
+    if (m.length > 1) {
+      return Sql(sql: """UPDATE public.purchase_item SET (
+          $keys
+        ) = (
+          $values
+        )
+        WHERE id = ${entry.value('id').str};
+      """);
+    }
+    return Sql(sql: """UPDATE public.purchase_item SET $keys = $values
       WHERE id = ${entry.value('id').str};
     """);
   }

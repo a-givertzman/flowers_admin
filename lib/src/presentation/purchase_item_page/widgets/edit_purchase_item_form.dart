@@ -1,5 +1,6 @@
 import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
+import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/entry_purchase_item.dart';
 import 'package:flowers_admin/src/infrostructure/purchase/purchase_status.dart';
@@ -36,13 +37,49 @@ class EditPurchaseItemForm extends StatefulWidget {
 class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
   late final Log _log;
   late EntryPurchaseItem _entry;
+  String? _purchase;
+  String? _product;
+  String? _details;
+  String? _description;
+  String? _picture;
   //
   //
   @override
   void initState() {
     _log = Log("$runtimeType");
     _entry = widget.entry ?? EntryPurchaseItem.empty();
+    _setPurchase();
+    _setProduct();
     super.initState();
+  }
+  ///
+  /// Updates [_purchase] value from relation by it's id
+  void _setPurchase() {
+    _purchase = widget
+      .relations['purchase_id']?.firstWhere(
+        (entry) => entry.value('id').value == _entry.value('purchase_id').value,
+        orElse: () => EntryPurchase.empty(),
+      ).value('name').value;
+  }
+  ///
+  /// Updates [_purchase] value from relation by it's id
+  void _setProduct([String? val]) {
+    if (val != null) {
+      _product = val;
+    } else {
+      final entry = widget.relations['product_id']?.firstWhere(
+        (entry) => entry.value('id').value == _entry.value('product_id').value,
+        orElse: () => EntryProduct.empty(),
+      );
+      _product = entry?.value('name').value;
+      _entry.update('name', null);
+      _details = entry?.value('details').value;
+      _entry.update('details', null);
+      _description = entry?.value('description').value;
+      _entry.update('description', null);
+      _picture = entry?.value('picture').value;
+      _entry.update('picture', null);
+    }
   }
   ///
   ///
@@ -76,7 +113,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('${_entry.value('purchase').value}  >  ${_entry.value('product').value}', style: Theme.of(context).textTheme.titleLarge,),
+          title: Text('$_purchase  >  $_product', style: Theme.of(context).textTheme.titleLarge,),
         ),
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -88,7 +125,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                   padding: const EdgeInsets.all(16.0),
                   child: LoadImageWidget(
                     labelText: _field(widget.fields, 'picture').title.inRu,
-                    src: '${_entry.value('picture').value}',
+                    src: _picture ?? '',
                     onComplete: (value) {
                       _entry.update('picture', value);
                       setState(() {return;});
@@ -114,6 +151,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         onComplete: (value) {
                           _log.trace('build.onComplete | purchase_id: $value');
                           _entry.update('purchase_id', value);
+                          _setPurchase();
                           setState(() {return;});
                         },
                       ),
@@ -139,14 +177,16 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         onComplete: (value) {
                           _log.trace('build.onComplete | product_id: $value');
                           _entry.update('product_id', value);
+                          _setProduct();
                           setState(() {return;});
                         },
                       ),
                       TextEditWidget(
                         labelText: _field(widget.fields, 'product').title.inRu,
-                        value: '${_entry.value('product').value}',
+                        value: _product,
                         onComplete: (value) {
                           _entry.update('product', value);
+                          _setProduct(value);
                           setState(() {return;});
                         },
                       ),
@@ -188,7 +228,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                       ),
                       TextEditWidget(
                         labelText: _field(widget.fields, 'details').title.inRu,
-                        value: '${_entry.value('details').value}',
+                        value: _details,
                         editable: _field(widget.fields, 'details').isEditable,
                         onComplete: (value) {
                           _entry.update('details', value);
@@ -197,7 +237,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                       ),
                       TextEditWidget(
                         labelText: _field(widget.fields, 'description').title.inRu,
-                        value: '${_entry.value('description').value}',
+                        value: _description,
                         editable: _field(widget.fields, 'description').isEditable,
                         onComplete: (value) {
                           _entry.update('description', value);

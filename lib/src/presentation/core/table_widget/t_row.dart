@@ -9,45 +9,30 @@ import 'package:hmi_core/hmi_core_log.dart';
 ///
 ///
 class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
-  final T? _entry;
-  final Map<String, List<SchemaEntryAbstract>> _relations;
-  final List<Field> _fields;
-  final void Function()? _onTap;
-  final void Function()? _onDoubleTap;
-  final void Function(T? entry)? _onSelectionChange;
-  final void Function(T entry)? _onEditingComplete;
+  final T? entry;
+  final Map<String, List<SchemaEntryAbstract>> relations;
+  final List<Field> fields;
+  final void Function()? onTap;
+  final void Function()? onDoubleTap;
+  final void Function(T? entry)? onSelectionChange;
+  final void Function(T entry)? onEditingComplete;
   ///
   ///
   const TRow({
     super.key,
-    T? entry,
-    Map<String, List<SchemaEntryAbstract>> relations = const {},
-    required List<Field> fields,
-    void Function()? onTap,
-    void Function()? onDoubleTap,
-    void Function(T? entry)? onSelectionChange,
-    void Function(T entry)? onEditingComplete,
-  }) :
-    _entry = entry,
-    _relations = relations,
-    _fields = fields,
-    _onTap = onTap,
-    _onDoubleTap = onDoubleTap,
-    _onSelectionChange = onSelectionChange,
-    _onEditingComplete = onEditingComplete;
+    this.entry,
+    this.relations = const {},
+    required this.fields,
+    this.onTap,
+    this.onDoubleTap,
+    this.onSelectionChange,
+    this.onEditingComplete,
+  });
   //
   //
   @override
   // ignore: no_logic_in_create_state
-  State<TRow<T>> createState() => _TRowState<T>(
-    entry: _entry,
-    relations: _relations,
-    fields: _fields,
-    onTap: _onTap,
-    onDoubleTap: _onDoubleTap,
-    onSelectionChange: _onSelectionChange,
-    onEditingComplete: _onEditingComplete,
-  );
+  State<TRow<T>> createState() => _TRowState<T>();
   ///
   ///
 }
@@ -55,50 +40,24 @@ class TRow<T extends SchemaEntryAbstract> extends StatefulWidget {
 //
 class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   late final Log _log;
-  final T? _entry;
-  final Map<String, List<SchemaEntryAbstract>> _relations;
-  final List<Field> _fields;
-  final void Function()? _onTap;
-  final void Function()? _onDoubleTap;
-  final void Function(T? entry)? _onSelectionChange;
-  final void Function(T entry)? _onEditingComplete;
   bool _onEnter = false;
   //
   //
   @override
   void initState() {
-    _entry?.selectionChanged((bool isSelected) {
-      _log.trace('.initState | selectionChanged: $_entry - ${isSelected ? 'isSelected' : 'isNotSelected'} ${_entry?.isSelected}');
+    _log = Log('$runtimeType');
+    widget.entry?.selectionChanged((bool isSelected) {
+      _log.trace('.initState | selectionChanged: ${widget.entry} - ${isSelected ? 'isSelected' : 'isNotSelected'} ${widget.entry?.isSelected}');
       if (mounted) setState(() {return;});
     });
     super.initState();
   }
-  ///
-  ///
-  _TRowState({
-    required T? entry,
-    required Map<String, List<SchemaEntryAbstract>> relations,
-    required List<Field> fields,
-    required void Function()? onTap,
-    void Function()? onDoubleTap,
-    required void Function(T? entry)? onSelectionChange,
-    required void Function(T entry)? onEditingComplete,
-  }):
-    _entry = entry,
-    _relations = relations,
-    _fields = fields,
-    _onTap = onTap,
-    _onDoubleTap = onDoubleTap,
-    _onSelectionChange = onSelectionChange,
-    _onEditingComplete = onEditingComplete {
-    _log = Log('$runtimeType');
-    }
   //
   //
   @override
   Widget build(BuildContext context) {
-    final isHeader = _entry == null;
-    final deleted = _entry?.value('deleted').str;
+    final isHeader = widget.entry == null;
+    final deleted = widget.entry?.value('deleted').str;
     final isDeleted = (deleted != null && deleted.isNotEmpty && deleted.toLowerCase() != 'null');
     final textStile = isHeader
       ? Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -116,20 +75,20 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
       // canRequestFocus: false,
       onTap: () {
         if (!isDeleted) {
-          _entry?.select(!(_entry?.isSelected ?? true));
-          final onSelectionChange = _onSelectionChange;
-          if (onSelectionChange != null) onSelectionChange(_entry);
-          final onTap = _onTap;
+          widget.entry?.select(!(widget.entry?.isSelected ?? true));
+          final onSelectionChange = widget.onSelectionChange;
+          if (onSelectionChange != null) onSelectionChange(widget.entry);
+          final onTap = widget.onTap;
           if (onTap != null) onTap();
         }
       },
       onDoubleTap: () {
         if (!isDeleted) {
-          _entry?.select(true);
-          final onSelectionChange = _onSelectionChange;
-          if (onSelectionChange != null) onSelectionChange(_entry);
+          widget.entry?.select(true);
+          final onSelectionChange = widget.onSelectionChange;
+          if (onSelectionChange != null) onSelectionChange(widget.entry);
           setState(() {return;});
-          final onDoubleTap = _onDoubleTap;
+          final onDoubleTap = widget.onDoubleTap;
           if (onDoubleTap != null) onDoubleTap();
         }
       },
@@ -144,42 +103,48 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
             _onEnter = false;
           });
         },
-        child: Stack(
-          children: [
-            if (isDeleted)
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Divider(
-                    color: Theme.of(context).colorScheme.error.withValues(alpha: 0.5),
+        child: TapRegion(
+          onTapOutside: (PointerDownEvent _) {
+            widget.entry?.select(false);
+            widget.onSelectionChange?.call(widget.entry);
+            // final onSelectionChange = widget.onSelectionChange;
+            // if (onSelectionChange != null) onSelectionChange(widget.entry);
+          },
+          child: Stack(
+            children: [
+              if (isDeleted)
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Divider(
+                      color: Theme.of(context).colorScheme.error.withValues(alpha: 0.5),
+                    ),
                   ),
                 ),
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: isHeader
+                    ? Theme.of(context).colorScheme.secondary
+                    : widget.entry?.isSelected ?? false ? Colors.blue.withAlpha(128) : null,
+                  border: (_onEnter && !isHeader)
+                    ? Border.all(color: Theme.of(context).primaryColor)
+                    : Border.all(color: Colors.transparent),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: _buildRow(context, widget.fields as List<Field<T>>, widget.entry, textStile, widget.onEditingComplete),
+                ),
               ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: isHeader
-                  ? Theme.of(context).colorScheme.secondary
-                  : _entry?.isSelected ?? false ? Colors.blue.withAlpha(128) : null,
-                border: (_onEnter && !isHeader)
-                  ? Border.all(color: Theme.of(context).primaryColor)
-                  : Border.all(color: Colors.transparent),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: _buildRow(context, _fields as List<Field<T>>, _entry, textStile),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
   ///
   /// On editing completed
-  void _onComplete(String value, Field field) {
-    final entry = _entry;
-    final onEditingComplete = _onEditingComplete;
+  void _onComplete(String value, Field field, T? entry, void Function(T entry)? onEditingComplete) {
     if (onEditingComplete != null && entry != null) {
       entry.update(field.key, value);
       onEditingComplete(entry);
@@ -187,18 +152,18 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   }
   ///
   ///
-  List<Widget> _buildRow(BuildContext context, List<Field<T>> fields, T? entry, textStyle) {
+  List<Widget> _buildRow(BuildContext context, List<Field<T>> fields, T? entry, textStyle, void Function(T entry)? onEditingComplete) {
     // _log.debug("._buildRow | entry: $entry");
     final cells = fields
       .where((field) => !field.isHidden)
       .map((field) {
-        return _cell(context, field, entry, textStyle);
+        return _cell(context, field, entry, textStyle, onEditingComplete);
       }).toList();
     return cells;
   }
   ///
   /// Returns built cell widget
-  Widget _cell(BuildContext context, Field<T> field, T? entry, textStyle) {
+  Widget _cell(BuildContext context, Field<T> field, T? entry, textStyle, void Function(T entry)? onEditingComplete) {
     final fieldValue = entry?.value(field.key);
     // _log.debug("._buildRow | \t value: $fieldValue");
     final builder = field.builder;
@@ -217,12 +182,12 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
         entry: entry,
         editable: field.isEditable,
         style: textStyle,
-        onComplete: (value) => _onComplete(value, field),
+        onComplete: (value) => _onComplete(value, field, entry, onEditingComplete),
         flex: field.flex,
       );
     }
     if (field.relation.isNotEmpty) {
-      final relation = EditListEntry(entries: _relations[field.relation.id] ?? [], field: field.relation.field);
+      final relation = EditListEntry(entries: widget.relations[field.relation.id] ?? [], field: field.relation.field);
       // _log.debug("._buildRow | \t fieldValue '$fieldValue");
       // _log.debug("._buildRow | \t relation '${field.relation.id}': $relation");
       return TCellListWidget(
@@ -230,7 +195,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
         relation: relation,
         editable: field.isEditable,
         style: textStyle,
-        onComplete: (value) => _onComplete(value, field),
+        onComplete: (value) => _onComplete(value, field, entry, onEditingComplete),
         flex: field.flex,
       );
     } else {
@@ -238,7 +203,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
         value: fieldValue?.value.toString() ?? field.title,
         editable: field.isEditable,
         style: textStyle,
-        onComplete: (value) => _onComplete(value, field),
+        onComplete: (value) => _onComplete(value, field, entry, onEditingComplete),
         flex: field.flex,
       );
     }
