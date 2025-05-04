@@ -98,7 +98,7 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   /// Returns true if all validators being passed
   String? get isValid {
     if (_isNullOrEmpty('purchase_id')) return 'Purchase can\'t be empty';
-    if (_isNullOrEmpty('status')) return 'Status can\'t be empty';
+    // if (_isNullOrEmpty('status')) return 'Status can\'t be empty';
     if (_isNullOrEmpty('product') && _isNullOrEmpty('product_id')) return 'Product can\'t be empty';
     if (_isNullOrEmpty('sale_currency')) return 'Currency can\'t be empty';
     return null;
@@ -122,38 +122,26 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   ///
   ///
   static Sql updateSqlBuilder(Sql sql, EntryPurchaseItem entry) {
+    final m = {
+      if (entry.value('purchase_id').isChanged) ...{'purchase_id': entry.value('purchase_id').str},
+      if (entry.value('status').isChanged) ...{'status': _nullIfEmpty(entry.value('status').value)},
+      if (entry.value('product_id').isChanged) ...{'product_id': entry.value('product_id').str},
+      if (entry.value('sale_price').isChanged) ...{'sale_price': entry.value('sale_price').str},
+      if (entry.value('sale_currency').isChanged) ...{'sale_currency': entry.value('sale_currency').str},
+      if (entry.value('shipping').isChanged) ...{'shipping': entry.value('shipping').str},
+      if (entry.value('remains').isChanged) ...{'remains': entry.value('remains').str},
+      if (entry.value('name').isChanged) ...{'name': _nullIfEmpty(entry.value('product').value)},
+      if (entry.value('details').isChanged) ...{'details': _nullIfEmpty(entry.value('details').value)},
+      if (entry.value('description').isChanged) ...{'description': _nullIfEmpty(entry.value('description').value)},
+      if (entry.value('picture').isChanged) ...{'picture': _nullIfEmpty(entry.value('picture').value)},
+      if (entry.value('deleted').isChanged) ...{'deleted': entry.value('deleted').str},
+    };
+    final keys = m.keys.toList().join(',');
+    final values = m.values.toList().join(',');
     return Sql(sql: """UPDATE public.purchase_item SET (
-        id,
-        purchase_id,
-        status,
-        product_id,
-        sale_price,
-        sale_currency,
-        shipping,
-        remains,
-        name,
-        details,
-        description,
-        picture,
-        created,
-        updated,
-        deleted
+        $keys
       ) = (
-        ${entry.value('id').str},
-        ${entry.value('purchase_id').str},
-        ${_nullIfEmpty(entry.value('status').value)},
-        ${entry.value('product_id').str},
-        ${entry.value('sale_price').str},
-        ${entry.value('sale_currency').str},
-        ${entry.value('shipping').str},
-        ${entry.value('remains').str},
-        ${_nullIfEmpty(entry.value('product').value)},
-        ${_nullIfEmpty(entry.value('details').value)},
-        ${_nullIfEmpty(entry.value('description').value)},
-        ${_nullIfEmpty(entry.value('picture').value)},
-        ${entry.value('created').str},
-        ${entry.value('updated').str},
-        ${entry.value('deleted').str}
+        $values
       )
       WHERE id = ${entry.value('id').str};
     """);
