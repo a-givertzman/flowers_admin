@@ -97,8 +97,16 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   ///
   /// Returns true if all validators being passed
   String? get isValid {
-    if (_entry.value('purchase_id').value == null) return 'Purchase can\'t be empty';
+    if (_isNullOrEmpty('purchase_id')) return 'Purchase can\'t be empty';
+    if (_isNullOrEmpty('product') && _isNullOrEmpty('product_id')) return 'Product can\'t be empty';
     return null;
+  }
+  ///
+  /// Returns true if value null or empty
+  bool _isNullOrEmpty(String key) {
+    if (_entry.value(key).value == null) return true;
+    if ('${_entry.value(key).value}'.isEmpty) return true;
+    return false;
   }
   /// - if val is null  => 'null'
   /// - if val is empty => 'null'

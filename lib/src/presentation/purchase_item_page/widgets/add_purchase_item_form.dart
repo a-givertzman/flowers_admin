@@ -68,7 +68,8 @@ class _AddPurchaseItemFormState extends State<AddPurchaseItemForm> {
       entries: widget.relations[productField.relation.id] ?? [],
       field: productField.relation.field,
     );
-    _log.debug('.build | purchaseRelation: $purchaseRelation');
+    _log.debug('.build | purchase_id: ${_entry.value('purchase_id').value}');
+    _log.trace('.build | purchaseRelation: $purchaseRelation');
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Scaffold(
@@ -218,7 +219,7 @@ class _AddPurchaseItemFormState extends State<AddPurchaseItemForm> {
                 onPressed:  () {
                   Navigator.pop(context, const Err<EntryPurchaseItem, void>(null));
                 },
-                child: const Text("Cancel"),
+                child: Text('Cancel'.inRu),
               ),
               TextButton(
                 onPressed: _entry.isChanged && (_entry.isValid == null)
@@ -228,9 +229,9 @@ class _AddPurchaseItemFormState extends State<AddPurchaseItemForm> {
                     Navigator.pop(context, Ok<EntryPurchaseItem, void>(_entry));
                   } 
                   : null,
-                child: const Text("Yes"),
+                child: Text('Yes'.inRu),
               ),
-              if (_entry.isValid != null) Text(
+              Text(
                 '${_entry.isValid}',
                 style: TextStyle(color: Colors.red),
                 // Theme.of(context).textTheme.bodyMedium?.copyWith(
