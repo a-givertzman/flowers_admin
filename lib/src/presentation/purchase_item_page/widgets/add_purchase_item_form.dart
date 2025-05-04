@@ -221,7 +221,7 @@ class _AddPurchaseItemFormState extends State<AddPurchaseItemForm> {
                 child: const Text("Cancel"),
               ),
               TextButton(
-                onPressed: _entry.isChanged 
+                onPressed: _entry.isChanged && (_entry.isValid == null)
                   ? () {
                     _log.debug('.TextButton.Yes | isChanged: ${_entry.isChanged}');
                     _log.debug('.TextButton.Yes | enrty: $_entry');
@@ -230,6 +230,13 @@ class _AddPurchaseItemFormState extends State<AddPurchaseItemForm> {
                   : null,
                 child: const Text("Yes"),
               ),
+              if (_entry.isValid != null) Text(
+                '${_entry.isValid}',
+                style: TextStyle(color: Colors.red),
+                // Theme.of(context).textTheme.bodyMedium?.copyWith(
+                //   color: Theme.of(context).colorScheme.error,
+                // ) ?? TextStyle(color: Colors.red),
+              )
             ],
           ),
         ),

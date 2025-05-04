@@ -95,7 +95,14 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   @override
   String toString() => _entry.toString();
   ///
-  ///
+  /// Returns true if all validators being passed
+  String? get isValid {
+    if (_entry.value('purchase_id').value == null) return 'Purchase can\'t be empty';
+    return null;
+  }
+  /// - if val is null  => 'null'
+  /// - if val is empty => 'null'
+  /// - otherwise       => 'val'
   static String _nullIfEmpty(dynamic val) {
     return (val == null) ? 'null' : ('$val'.isEmpty) ? 'null' : "'$val'";
   }
