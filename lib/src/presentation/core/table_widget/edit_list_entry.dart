@@ -2,13 +2,13 @@ import 'package:ext_rw/ext_rw.dart';
 ///
 /// Represents a `Map<String, String>` of key-value of specified field in the entries
 class EditListEntry {
-  final Map<String, String> _entry = const {};
+  final Map<String, String> _entry;
   ///
   /// Creates EditListEntry with [entries]
   EditListEntry({
     required String field,
     required List<SchemaEntryAbstract> entries,
-  }) {
+  }): _entry = {} {
     final map = entries.asMap().map((_, entry) {
       return MapEntry('${entry.value('id').value}', '${entry.value(field).value}');
     });
@@ -16,7 +16,7 @@ class EditListEntry {
   }
   ///
   /// Creates EditListEntry with empty `entries`
-  const EditListEntry.empty();
+  const EditListEntry.empty(): _entry = const {};
   ///
   /// Reterns all contained `entry`
   Map<String, String> get entry => _entry;

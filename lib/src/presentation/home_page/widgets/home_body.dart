@@ -31,9 +31,16 @@ class HomeBody extends StatefulWidget {
 //
 //
 class _HomeBodyState extends State<HomeBody> {
-  final _log = Log("$_HomeBodyState");
+  late final Log _log;
   final _paddingH = 8.0;
   final _paddingV = 8.0;
+  //
+  //
+  @override
+  void initState() {
+    _log = Log('$runtimeType');
+    super.initState();
+  }
   //
   //
   @override
@@ -64,7 +71,8 @@ class _HomeBodyState extends State<HomeBody> {
             )
           ],
           bottom: TabBar(
-            indicatorColor: Colors.amber,
+            // indicatorColor: Colors.amber,
+            indicatorWeight: 8.0,
             indicatorSize: TabBarIndicatorSize.tab,
             isScrollable: true,
             // indicator: BoxDecoration(
