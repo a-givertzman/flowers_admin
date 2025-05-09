@@ -122,18 +122,26 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   ///
   /// PerchaseStatus field builder
   Widget _detailsBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
-    final detailsRelation = PurchaseStatus.relation;
+    final productField = _field(_schema.fields, 'product_id');
+    final productRelation = _schema.relations[productField.relation.id] ?? [];
+    final productId = entry.value('product_id').value;
+    final product = productRelation.firstWhere((entry) => entry.value('product_id').value == productId, orElse: () => EntryProduct.empty());
+    final details = entry.value('details').value;
     return TEditWidget(
       hint: _field(_schema.fields, 'details').title.inRu,
-      value: '${entry.value('details').value}',
+      value: details ?? product.value('details').value,
+      style: details == null 
+        ? Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Theme.of(context).colorScheme.onSecondary.withValues(alpha: 0.5),
+        )
+        : Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Theme.of(context).colorScheme.onSecondaryFixed.withValues(alpha: 0.5),
+        ),
       editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
-      onComplete: (id) {
-        final details = detailsRelation[id]?.value('details').value;
+      onComplete: (details) {
         _log.debug('build.onComplete | details: $details');
-        if (details != null) {
-          entry.update('status', details);
-          if (onComplite != null) onComplite(details);
-        }
+        entry.update('details', details);
+        if (onComplite != null) onComplite(details);
       },
     );
   }

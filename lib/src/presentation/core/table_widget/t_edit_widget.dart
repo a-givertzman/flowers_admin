@@ -30,6 +30,7 @@ class TEditWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
 //
 //
 class _TEditWidgetState<T extends SchemaEntryAbstract> extends State<TEditWidget<T>> {
+  // ignore: unused_field
   late final Log _log;
   late final TextEditingController _controller;
   final _textPaddingV = 8.0;
