@@ -10,6 +10,7 @@ import 'package:flowers_admin/src/infrostructure/purchase/purchase_status.dart';
 import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/t_edit_list_widget.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/t_edit_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flowers_admin/src/presentation/purchase_item_page/widgets/edit_purchase_item_form.dart';
@@ -89,7 +90,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
                   Field(flex: 04, hidden: false, editable: currencyEditable, title: 'Currency'.inRu, key: 'sale_currency', hint:'Валюта цены'),
                   Field(flex: 05, hidden: false, editable: true, title: 'Shipping'.inRu, key: 'shipping', hint: 'Цена доставки за единицу товара'),
                   Field(flex: 05, hidden: false, editable: remainsEditable, title: 'Remains'.inRu, key: 'remains', hint: 'Остаток товара на данный момент. \nЕсли статус закупки "Active" может быстро меняться из-за поступления новых заказов'),
-                  Field(flex: 15, hidden: false, editable: true, title: 'Details'.inRu, key: 'details', hint: 'Короткое описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
+                  Field(flex: 15, hidden: false, editable: true, title: 'Details'.inRu, key: 'details', builder: _detailsBuilder, hint: 'Короткое описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
                   Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu, key: 'description', hint: 'Детальное описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
                   Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu, key: 'picture', hint: 'Ссылка на изображение. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
             const Field(flex: 05, hidden: true, editable: true, key: 'created'),
@@ -114,6 +115,24 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
         if (status != null) {
           entry.update('status', status);
           if (onComplite != null) onComplite(status);
+        }
+      },
+    );
+  }
+  ///
+  /// PerchaseStatus field builder
+  Widget _detailsBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
+    final detailsRelation = PurchaseStatus.relation;
+    return TEditWidget(
+      hint: _field(_schema.fields, 'details').title.inRu,
+      value: '${entry.value('details').value}',
+      editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
+      onComplete: (id) {
+        final details = detailsRelation[id]?.value('details').value;
+        _log.debug('build.onComplete | details: $details');
+        if (details != null) {
+          entry.update('status', details);
+          if (onComplite != null) onComplite(details);
         }
       },
     );

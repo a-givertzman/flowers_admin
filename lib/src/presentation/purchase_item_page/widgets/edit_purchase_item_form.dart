@@ -182,7 +182,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'product').title.inRu,
+                        labelText: _product ?? _field(widget.fields, 'product').title.inRu,
                         value: _product,
                         onComplete: (value) {
                           _entry.update('product', value);

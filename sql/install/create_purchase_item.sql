@@ -31,9 +31,9 @@ CREATE OR REPLACE VIEW public.purchase_item_view AS
         pui.sale_currency,
         pui.shipping,
         pui.remains,
-        coalesce(pui.details, p.details) as details,
-        coalesce(pui.description, p.description) as description,
-        coalesce(pui.picture, p.picture) as picture,
+        pui.details,        -- coalesce(pui.details, p.details) as details,
+        pui.description,        -- coalesce(pui.description, p.description) as description,
+        pui.picture,        -- coalesce(pui.picture, p.picture) as picture,
         pui.created,
         pui.updated,
         pui.deleted

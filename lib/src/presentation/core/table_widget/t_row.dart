@@ -166,7 +166,6 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   Widget _cell(BuildContext context, Field<T> field, T? entry, textStyle, void Function(T entry)? onEditingComplete) {
     final fieldValue = entry?.value(field.key);
     // _log.debug("._buildRow | \t value: $fieldValue");
-    final builder = field.builder;
     if (entry == null) {
       return TCell<T>(
         value: field.title,
@@ -176,6 +175,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
         flex: field.flex,
       );
     }
+    final builder = field.builder;
     if (builder != null) {
       return TCell<T>.builder(
         builder: builder,
