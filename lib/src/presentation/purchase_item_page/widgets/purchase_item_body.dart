@@ -91,8 +91,8 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
                   Field(flex: 05, hidden: false, editable: true, title: 'Shipping'.inRu, key: 'shipping', hint: 'Цена доставки за единицу товара'),
                   Field(flex: 05, hidden: false, editable: remainsEditable, title: 'Remains'.inRu, key: 'remains', hint: 'Остаток товара на данный момент. \nЕсли статус закупки "Active" может быстро меняться из-за поступления новых заказов'),
                   Field(flex: 15, hidden: false, editable: true, title: 'Details'.inRu, key: 'details', builder: _detailsBuilder, hint: 'Короткое описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
-                  Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu, key: 'description', hint: 'Детальное описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
-                  Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu, key: 'picture', hint: 'Ссылка на изображение. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
+                  Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu, key: 'description', builder: _descriptionBuilder, hint: 'Детальное описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
+                  Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu, key: 'picture', builder: _pictureBuilder, hint: 'Ссылка на изображение. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
             const Field(flex: 05, hidden: true, editable: true, key: 'created'),
             const Field(flex: 05, hidden: true, editable: true, key: 'updated'),
             const Field(flex: 05, hidden: true, editable: true, key: 'deleted'),
@@ -149,7 +149,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   }
   ///
   /// description field builder
-  Widget descriptionBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
+  Widget _descriptionBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
     final productRelation = _schema.relations['product_id'] ?? [];
     final productId = '${entry.value('product_id').value}';
     final product = productRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
@@ -176,7 +176,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   }
   ///
   /// picture field builder
-  Widget pictureBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
+  Widget _pictureBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
     final productRelation = _schema.relations['product_id'] ?? [];
     final productId = '${entry.value('product_id').value}';
     final product = productRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
