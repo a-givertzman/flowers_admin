@@ -105,9 +105,19 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   /// PerchaseStatus field builder
   Widget _statusBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
     final statusRelation = PurchaseStatus.relation;
+    final status = '${entry.value('status').value ?? ''}';
     return TEditListWidget(
       id: '${entry.value('status').value}',
       relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
+      style: status.isEmpty 
+        ? Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Colors.black.withValues(alpha: 0.5),
+          // color: Theme.of(context).colorScheme.onSecondary.withValues(alpha: 0.5),
+        )
+        : Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Colors.blue,
+          // color: Theme.of(context).colorScheme.onSecondaryFixed.withValues(alpha: 0.5),
+        ),
       editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
       onComplete: (id) {
         final status = statusRelation[id]?.value('status').value;
