@@ -104,10 +104,9 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   ///
   /// PerchaseStatus field builder
   Widget _statusBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
-    final statRelation = _schema.relations['product_id'] ?? [];
-    final productId = '${entry.value('product_id').value}';
-    final product = statRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
-
+    final purchaseRelation = _schema.relations['purchase_id'] ?? [];
+    final purchaseId = '${entry.value('product_id').value}';
+    final product = purchaseRelation.firstWhere((entry) => '${entry.value('id').value}' == purchaseId, orElse: () => EntryPurchase.empty());
     final statusRelation = PurchaseStatus.relation;
     final status = '${entry.value('status').value ?? ''}';
     return TEditListWidget(
@@ -225,7 +224,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
           authToken: widget.authToken,
           database: _database,
           sqlBuilder: (sql, params) {
-            return Sql(sql: 'select id, name from purchase order by id;');
+            return Sql(sql: 'select id, name, status from purchase order by id;');
           },
           entryBuilder: (row) => EntryPurchase.from(row),
           debug: true,
@@ -233,6 +232,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
         fields: [
           const Field(key: 'id'),
           const Field(key: 'name'),
+          const Field(key: 'status'),
         ],
       ),
       'product_id': TableSchema<EntryProduct, void>(
