@@ -104,10 +104,14 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   ///
   /// PerchaseStatus field builder
   Widget _statusBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
+    final statRelation = _schema.relations['product_id'] ?? [];
+    final productId = '${entry.value('product_id').value}';
+    final product = statRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
+
     final statusRelation = PurchaseStatus.relation;
     final status = '${entry.value('status').value ?? ''}';
     return TEditListWidget(
-      id: '${entry.value('status').value}',
+      id: status.isEmpty ? '${product.value('status').value}' : status,
       relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
       style: status.isEmpty 
         ? Theme.of(context).textTheme.bodyMedium?.copyWith(

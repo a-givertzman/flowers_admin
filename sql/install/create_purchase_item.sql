@@ -25,7 +25,7 @@ CREATE OR REPLACE VIEW public.purchase_item_view AS
         pui.purchase_id,
         pu.name as purchase,
         coalesce(pui.name, p.name) as product,
-        pui.status          -- coalesce(pui.status, pu.status) as status,
+        pui.status,         -- coalesce(pui.status, pu.status) as status,
         pui.product_id,
         pui.sale_price,
         pui.sale_currency,
