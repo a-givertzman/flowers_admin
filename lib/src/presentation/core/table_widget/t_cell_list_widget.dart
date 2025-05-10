@@ -5,34 +5,25 @@ import 'package:flutter/material.dart';
 ///
 ///
 class TCellListWidget extends StatelessWidget {
-  final String? _id;
-  final EditListEntry _relation;
-  final TextStyle? _style;
-  final void Function(String value)? _onComplete;
-  // final void Function(String value)? _onSelectionChange;
-  final String? _labelText;
-  final bool _editable;
+  final String? id;
+  final EditListEntry relation;
+  final TextStyle? style;
+  final void Function(String? value)? onComplete;
+  final String? labelText;
+  final bool editable;
   final int flex;
   ///
   ///
-  TCellListWidget({
+  const TCellListWidget({
     super.key,
-    required String? id,
-    EditListEntry? relation,
-    TextStyle? style,
-    void Function(String value)? onComplete,
-    // void Function(String value)? onSelectionChange,
-    String? labelText,
-    bool editable = true,
+    required this.id,
+    this.relation = const EditListEntry.empty(),
+    this.style,
+    this.onComplete,
+    this.labelText,
+    this.editable = true,
     this.flex = 1,
-  }) :
-    _id = id,
-    _relation = relation ?? EditListEntry.empty(),
-    _style = style,
-    _onComplete = onComplete,
-    // _onSelectionChange = onSelectionChange,
-    _labelText = labelText,
-    _editable = editable;
+  });
   //
   //
   @override
@@ -40,12 +31,12 @@ class TCellListWidget extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: TEditListWidget(
-        id: _id,
-        relation: _relation,
-        onComplete: _onComplete,
-        labelText: _labelText,
-        editable: _editable,
-        style: _style,
+        id: id,
+        relation: relation,
+        onComplete: onComplete,
+        labelText: labelText,
+        editable: editable,
+        style: style,
       ),
     );
   }

@@ -10,7 +10,7 @@ class TEditListWidget extends StatefulWidget {
   final EditListEntry relation;
   final TextStyle? style;
   final TextAlign textAlign;
-  final void Function(String value)? onComplete;
+  final void Function(String? value)? onComplete;
   // final void Function(String value)? _onSelectionChange;
   final String? labelText;
   final bool editable;
@@ -138,14 +138,14 @@ class _TEditListWidgetState extends State<TEditListWidget> {
   }
   ///
   ///
-  _applyNewValue(String? id, void Function(String value)? onComplete) {
+  _applyNewValue(String? id, void Function(String? value)? onComplete) {
     setState(() {
       _isEditing = false;
       if (id != _id) {
         _isChanged = true;
         _id = id ?? '';
       }
+      if (onComplete != null) onComplete(id);
     });
-    if (onComplete != null) onComplete('$id');
   }
 }
