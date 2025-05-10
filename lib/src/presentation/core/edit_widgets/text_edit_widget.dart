@@ -57,7 +57,7 @@ class _TextEditWidgetState extends State<TextEditWidget> {
         enabled: widget.editable,
         style: _isChanged 
           ? (widget.style ?? Theme.of(context).textTheme.titleMedium)?.copyWith(color: Colors.blue)
-          : null,
+          : widget.style,
         // textAlign: _textAlign,
         decoration: InputDecoration(
           // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withValue(alpha: 0.5) : Colors.black.withValue(alpha: 0.5))),
