@@ -8,8 +8,8 @@ class TCell<T extends SchemaEntryAbstract> extends StatelessWidget {
   final String value;
   final String hint;
   final TextStyle? style;
-  final void Function(String value)? onComplete;
-  final Widget Function(BuildContext ctx, T entry, Function(String)? onComplete)? _builder;
+  final void Function(String? value)? onComplete;
+  final Widget Function(BuildContext ctx, T entry, Function(String?)? onComplete)? builder;
   final T? entry;
   final bool editable;
   final int flex;
@@ -25,7 +25,7 @@ class TCell<T extends SchemaEntryAbstract> extends StatelessWidget {
     this.editable = true,
     this.flex = 1,
   }) :
-    _builder = null;
+    builder = null;
   ///
   ///
   const TCell.builder({
@@ -34,17 +34,16 @@ class TCell<T extends SchemaEntryAbstract> extends StatelessWidget {
     this.hint = '',
     this.style,
     this.onComplete,
-    required Widget Function(BuildContext ctx, T entry, Function(String)? onComplete)? builder,
+    this.builder,
     required T this.entry,
     this.editable = true,
     this.flex = 1,
-  }) :
-    _builder = builder;
+  });
   //
   //
   @override
   Widget build(BuildContext context) {
-    final builder = _builder;
+    final builder = this.builder;
     final entry_ = entry;
     if (builder != null && entry_ != null) {
       return Expanded(

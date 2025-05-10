@@ -77,8 +77,8 @@ class _PurchaseBodyState extends State<PurchaseBody> {
               Field(flex: 10, hidden: false, editable: true, title: 'Name'.inRu,          key: 'name'),
               Field(flex: 20, hidden: false, editable: true, title: 'Details'.inRu,       key: 'details'),
               Field(flex: 07, hidden: false, editable: true, title: 'Status'.inRu,        key: 'status', builder: _statusBuilder),
-              Field(flex: 10, hidden: false, editable: true, title: 'Date of start'.inRu, key: 'date_of_start', builder: _dateOfStartBuilder),
-              Field(flex: 10, hidden: false, editable: true, title: 'Date of end'.inRu,   key: 'date_of_end', builder: _dateOfEndBuilder),
+              Field(flex: 10, hidden: false, editable: true, title: 'Date of start'.inRu, key: 'date_of_start', builder: (ctx, entry, onComplite) => _dateBuilder(ctx, entry, onComplite, 'date_of_start')),
+              Field(flex: 10, hidden: false, editable: true, title: 'Date of end'.inRu,   key: 'date_of_end', builder: (ctx, entry, onComplite) => _dateBuilder(ctx, entry, onComplite, 'date_of_end')),
               Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu,   key: 'description'),
               Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu,       key: 'picture'),
         const Field(flex: 05, hidden: true, editable: true, title: 'created',             key: 'created'),
@@ -106,25 +106,13 @@ class _PurchaseBodyState extends State<PurchaseBody> {
     );
   }
   ///
-  /// Purchase start date field builder
-  Widget _dateOfStartBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
+  /// Purchase start/end date field builder
+  Widget _dateBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite, String field) {
     return TEditDateWidget(
-      value: '${entry.value('date_of_start').value}',
+      value: '${entry.value(field).value}',
       onComplete: (value) {
         final date = DateFormat('dd-MM-yyyy').tryParse(value);
-        entry.update('date_of_start', value);
-        if (onComplite != null) onComplite(date?.toIso8601String() ?? '');
-      },
-    );
-  }
-  ///
-  /// Purchase end date field builder
-  Widget _dateOfEndBuilder(BuildContext ctx, EntryPurchase entry, Function(String)? onComplite) {
-    return TEditDateWidget(
-      value: '${entry.value('date_of_end').value}',
-      onComplete: (value) {
-        final date = DateFormat('dd-MM-yyyy').tryParse(value);
-        entry.update('date_of_end', value);
+        entry.update(field, value);
         if (onComplite != null) onComplite(date?.toIso8601String() ?? '');
       },
     );

@@ -90,9 +90,9 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
                   Field(flex: 04, hidden: false, editable: currencyEditable, title: 'Currency'.inRu, key: 'sale_currency', hint:'Валюта цены'),
                   Field(flex: 05, hidden: false, editable: true, title: 'Shipping'.inRu, key: 'shipping', hint: 'Цена доставки за единицу товара'),
                   Field(flex: 05, hidden: false, editable: remainsEditable, title: 'Remains'.inRu, key: 'remains', hint: 'Остаток товара на данный момент. \nЕсли статус закупки "Active" может быстро меняться из-за поступления новых заказов'),
-                  Field(flex: 15, hidden: false, editable: true, title: 'Details'.inRu, key: 'details', builder: _detailsBuilder, hint: 'Короткое описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
-                  Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu, key: 'description', builder: _descriptionBuilder, hint: 'Детальное описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
-                  Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu, key: 'picture', builder: _pictureBuilder, hint: 'Ссылка на изображение. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
+                  Field(flex: 15, hidden: false, editable: true, title: 'Details'.inRu, key: 'details', builder: (ctx, entry, onComplite) => _productFieldBuilder(ctx, entry, onComplite, 'details'), hint: 'Короткое описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
+                  Field(flex: 20, hidden: false, editable: true, title: 'Description'.inRu, key: 'description', builder: (ctx, entry, onComplite) => _productFieldBuilder(ctx, entry, onComplite, 'description'), hint: 'Детальное описание. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
+                  Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu, key: 'picture', builder: (ctx, entry, onComplite) => _productFieldBuilder(ctx, entry, onComplite, 'picture'), hint: 'Ссылка на изображение. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
             const Field(flex: 05, hidden: true, editable: true, key: 'created'),
             const Field(flex: 05, hidden: true, editable: true, key: 'updated'),
             const Field(flex: 05, hidden: true, editable: true, key: 'deleted'),
@@ -103,15 +103,15 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   }
   ///
   /// PerchaseStatus field builder
-  Widget _statusBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
+  Widget _statusBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String?)? onComplite) {
     final purchaseRelation = _schema.relations['purchase_id'] ?? [];
-    final purchaseId = '${entry.value('product_id').value}';
-    final product = purchaseRelation.firstWhere((entry) => '${entry.value('id').value}' == purchaseId, orElse: () => EntryPurchase.empty());
-    final statusRelation = PurchaseStatus.relation;
+    final purchaseId = '${entry.value('purchase_id').value}';
+    final purchase = purchaseRelation.firstWhere((entry) => '${entry.value('id').value}' == purchaseId, orElse: () => EntryPurchase.empty());
+    final statuses = PurchaseStatus.relation;
     final status = '${entry.value('status').value ?? ''}';
     return TEditListWidget(
-      id: status.isEmpty ? '${product.value('status').value}' : status,
-      relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
+      id: status.isEmpty ? '${purchase.value('status').value}' : status,
+      relation: EditListEntry(field: 'status', entries: statuses.values.toList()),
       style: status.isEmpty 
         ? Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: Colors.black.withValues(alpha: 0.5),
@@ -123,27 +123,25 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
         ),
       editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
       onComplete: (id) {
-        final status = statusRelation[id]?.value('status').value;
+        final status = statuses[id]?.value('status').value;
         _log.debug('build.onComplete | status: $status');
-        if (status != null) {
-          entry.update('status', status);
-          if (onComplite != null) onComplite(status);
-        }
+        entry.update('status', status);
+        if (onComplite != null) onComplite(status);
       },
     );
   }
   ///
   /// details field builder
-  Widget _detailsBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
+  Widget _productFieldBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite, String field) {
     final productField = _field(_schema.fields, 'product_id');
     final productRelation = _schema.relations[productField.relation.id] ?? [];
     final productId = '${entry.value('product_id').value}';
     final product = productRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
-    final details = '${entry.value('details').value ?? ''}';
+    final fieldValue = '${entry.value(field).value ?? ''}';
     return TEditWidget(
-      hint: _field(_schema.fields, 'details').title.inRu,
-      value: details.isEmpty ? '${product.value('details').value}' : details,
-      style: details.isEmpty 
+      hint: _field(_schema.fields, field).title.inRu,
+      value: fieldValue.isEmpty ? '${product.value(field).value}' : fieldValue,
+      style: fieldValue.isEmpty 
         ? Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: Colors.black.withValues(alpha: 0.5),
           // color: Theme.of(context).colorScheme.onSecondary.withValues(alpha: 0.5),
@@ -152,65 +150,11 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
           color: Colors.blue,
           // color: Theme.of(context).colorScheme.onSecondaryFixed.withValues(alpha: 0.5),
         ),
-      editable: _field(_schema.fields, 'details').isEditable,
-      onComplete: (details) {
-        _log.debug('_detailsBuilder.onComplete | details: $details');
-        entry.update('details', details);
-        if (onComplite != null) onComplite(details);
-      },
-    );
-  }
-  ///
-  /// description field builder
-  Widget _descriptionBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
-    final productRelation = _schema.relations['product_id'] ?? [];
-    final productId = '${entry.value('product_id').value}';
-    final product = productRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
-    final description = '${entry.value('description').value ?? ''}';
-    return TEditWidget(
-      hint: _field(_schema.fields, 'description').title.inRu,
-      value: description.isEmpty ? '${product.value('description').value}' : description,
-      style: description.isEmpty 
-        ? Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Colors.black.withValues(alpha: 0.5),
-          // color: Theme.of(context).colorScheme.onSecondary.withValues(alpha: 0.5),
-        )
-        : Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Colors.blue,
-          // color: Theme.of(context).colorScheme.onSecondaryFixed.withValues(alpha: 0.5),
-        ),
-      editable: _field(_schema.fields, 'description').isEditable,
-      onComplete: (description) {
-        _log.debug('_descriptionBuilder.onComplete | description: $description');
-        entry.update('description', description);
-        if (onComplite != null) onComplite(description);
-      },
-    );
-  }
-  ///
-  /// picture field builder
-  Widget _pictureBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
-    final productRelation = _schema.relations['product_id'] ?? [];
-    final productId = '${entry.value('product_id').value}';
-    final product = productRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
-    final picture = '${entry.value('picture').value ?? ''}';
-    return TEditWidget(
-      hint: _field(_schema.fields, 'picture').title.inRu,
-      value: picture.isEmpty ? '${product.value('picture').value}' : picture,
-      style: picture.isEmpty 
-        ? Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Colors.black.withValues(alpha: 0.5),
-          // color: Theme.of(context).colorScheme.onSecondary.withValues(alpha: 0.5),
-        )
-        : Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Colors.blue,
-          // color: Theme.of(context).colorScheme.onSecondaryFixed.withValues(alpha: 0.5),
-        ),
-      editable: _field(_schema.fields, 'picture').isEditable,
-      onComplete: (details) {
-        _log.debug('_detailsBuilder.onComplete | picture: $details');
-        entry.update('picture', picture);
-        if (onComplite != null) onComplite(picture);
+      editable: _field(_schema.fields, field).isEditable,
+      onComplete: (val) {
+        _log.debug('_detailsBuilder.onComplete | val: $val');
+        entry.update(field, val);
+        if (onComplite != null) onComplite(val);
       },
     );
   }

@@ -144,7 +144,7 @@ class _TRowState<T extends SchemaEntryAbstract> extends State<TRow<T>> {
   }
   ///
   /// On editing completed
-  void _onComplete(String value, Field field, T? entry, void Function(T entry)? onEditingComplete) {
+  void _onComplete(String? value, Field field, T? entry, void Function(T entry)? onEditingComplete) {
     if (onEditingComplete != null && entry != null) {
       entry.update(field.key, value);
       onEditingComplete(entry);
