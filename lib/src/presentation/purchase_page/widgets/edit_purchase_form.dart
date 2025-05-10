@@ -64,6 +64,7 @@ class _EditPurchaseFormState extends State<EditPurchaseForm> {
       return MapEntry(role.str, EntryPurchase(map: {'id': FieldValue(role.str), 'status': FieldValue(role.str)}));
     },);
     _log.debug('.build | statusRelation: $statusRelation');
+    final isValid = _entry.isValid;
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Scaffold(
@@ -163,23 +164,38 @@ class _EditPurchaseFormState extends State<EditPurchaseForm> {
           ],
         ),
         bottomNavigationBar: BottomAppBar(
-          child: OverflowBar(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              if (isValid != null) ...[
+                Text(
+                  isValid,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ) ?? TextStyle(color: Colors.red),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: VerticalDivider(),
+                ),
+              ],
               TextButton(
                 onPressed:  () {
                   Navigator.pop(context, const Err<EntryPurchase, void>(null));
                 },
-                child: const Text("Cancel"),
+                child: Text('Cancel'.inRu),
               ),
               TextButton(
-                onPressed: _entry.isChanged 
+                onPressed: _entry.isChanged && (isValid == null)
                   ? () {
                     _log.debug('.TextButton.Yes | isChanged: ${_entry.isChanged}');
                     _log.debug('.TextButton.Yes | enrty: $_entry');
                     Navigator.pop(context, Ok<EntryPurchase, void>(_entry));
                   } 
                   : null,
-                child: const Text("Yes"),
+                child: Text('Yes'.inRu),
               ),
             ],
           ),

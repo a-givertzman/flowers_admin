@@ -95,7 +95,7 @@ class EntryPurchaseItem implements SchemaEntryAbstract {
   @override
   String toString() => _entry.toString();
   ///
-  /// Returns true if all validators being passed
+  /// Returns null if all validators being passed
   String? get isValid {
     if (_isNullOrEmpty('purchase_id')) return 'Purchase can\'t be empty';
     // if (_isNullOrEmpty('status')) return 'Status can\'t be empty';

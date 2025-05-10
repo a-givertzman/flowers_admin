@@ -37,49 +37,34 @@ class EditPurchaseItemForm extends StatefulWidget {
 class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
   late final Log _log;
   late EntryPurchaseItem _entry;
-  String? _purchase;
-  String? _product;
-  String? _details;
-  String? _description;
-  String? _picture;
+  String _details = '';
+  String _description = '';
+  String _picture = '';
   //
   //
   @override
   void initState() {
     _log = Log("$runtimeType");
     _entry = widget.entry ?? EntryPurchaseItem.empty();
-    _setPurchase();
-    _setProduct();
+    // _setPurchase();
+    // _setProduct();
     super.initState();
   }
   ///
-  /// Updates [_purchase] value from relation by it's id
-  void _setPurchase() {
-    _purchase = widget
-      .relations['purchase_id']?.firstWhere(
-        (entry) => entry.value('id').value == _entry.value('purchase_id').value,
-        orElse: () => EntryPurchase.empty(),
-      ).value('name').value;
+  /// Returns current purchase corresponding to [_entry]
+  dynamic get _purchase {
+    return widget.relations['purchase_id']?.firstWhere(
+      (entry) => entry.value('id').value == _entry.value('purchase_id').value,
+      orElse: () => EntryPurchase.empty(),
+    ).value('name').value;
   }
   ///
-  /// Updates [_purchase] value from relation by it's id
-  void _setProduct([String? val]) {
-    if (val != null) {
-      _product = val;
-    } else {
-      final entry = widget.relations['product_id']?.firstWhere(
-        (entry) => entry.value('id').value == _entry.value('product_id').value,
-        orElse: () => EntryProduct.empty(),
-      );
-      _product = entry?.value('name').value;
-      _entry.update('name', null);
-      _details = entry?.value('details').value;
-      _entry.update('details', null);
-      _description = entry?.value('description').value;
-      _entry.update('description', null);
-      _picture = entry?.value('picture').value;
-      _entry.update('picture', null);
-    }
+  /// Returns current purchase corresponding to [_entry]
+  dynamic get _product {
+    return widget.relations['product_id']?.firstWhere(
+      (entry) => entry.value('id').value == _entry.value('product_id').value,
+      orElse: () => EntryProduct.empty(),
+    ).value('name').value;
   }
   ///
   ///
@@ -92,6 +77,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
   //
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.titleMedium;
     final statusRelation = PurchaseStatus.values.asMap().map((i, role) {
       return MapEntry(role.str, EntryPurchase(map: {'id': FieldValue(role.str), 'status': FieldValue(role.str)}));
     },);
@@ -101,10 +87,16 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
       field: purchaseField.relation.field,
     );
     final productField = _field(widget.fields, 'product_id');
-    final productRelation = EditListEntry(
+    final productRelation = widget.relations[productField.relation.id] ?? [];
+    final products = EditListEntry(
       entries: widget.relations[productField.relation.id] ?? [],
       field: productField.relation.field,
     );
+    final productId = '${_entry.value('product_id').value}';
+    final relProduct = productRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
+    _details = _entry.value('details').value ?? '';
+    _description = _entry.value('description').value ?? '';
+    _picture = _entry.value('picture').value ?? '';
     _log.debug('.build | purchase_id: ${_entry.value('purchase_id').value}');
     _log.trace('.build | purchaseRelation: $purchaseRelation');
     final isValid = _entry.isValid;
@@ -125,7 +117,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                   padding: const EdgeInsets.all(16.0),
                   child: LoadImageWidget(
                     labelText: _field(widget.fields, 'picture').title.inRu,
-                    src: _picture ?? '',
+                    src: _picture.isEmpty ? '${relProduct.value('picture').value}' : _picture,
                     onComplete: (value) {
                       _entry.update('picture', value);
                       setState(() {return;});
@@ -151,7 +143,9 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         onComplete: (value) {
                           _log.trace('build.onComplete | purchase_id: $value');
                           _entry.update('purchase_id', value);
-                          _setPurchase();
+                          _entry.update('details', null);
+                          _entry.update('description', null);
+                          _entry.update('picture', null);
                           setState(() {return;});
                         },
                       ),
@@ -170,23 +164,16 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                       ),
                       EditListWidget(
                         id: '${_entry.value('product_id').value}',
-                        relation: productRelation,
-                        editable: true, //purchaseField.isEditable,
+                        relation: products,
+                        editable: productField.isEditable,
                         // style: textStyle,
                         labelText: productField.title.inRu,
                         onComplete: (value) {
                           _log.trace('build.onComplete | product_id: $value');
                           _entry.update('product_id', value);
-                          _setProduct();
-                          setState(() {return;});
-                        },
-                      ),
-                      TextEditWidget(
-                        labelText: _product ?? _field(widget.fields, 'product').title.inRu,
-                        value: _product,
-                        onComplete: (value) {
-                          _entry.update('product', value);
-                          _setProduct(value);
+                          _entry.update('', value);
+                          _entry.update('', value);
+                          _entry.update('', value);
                           setState(() {return;});
                         },
                       ),
@@ -227,8 +214,11 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'details').title.inRu,
-                        value: _details,
+                        labelText: _details.isEmpty ? _field(widget.fields, 'details').title.inRu : _details,
+                        value: _details.isEmpty ? '${relProduct.value('details').value}' : _details,
+                        style: _details.isEmpty 
+                          ? textStyle?.copyWith(color: textStyle.color?.withValues(alpha: 0.5))
+                          : null,
                         editable: _field(widget.fields, 'details').isEditable,
                         onComplete: (value) {
                           _entry.update('details', value);
@@ -236,8 +226,12 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'description').title.inRu,
-                        value: _description,
+                        // labelText: _field(widget.fields, 'description').title.inRu,
+                        labelText: _description.isEmpty ? _field(widget.fields, 'description').title.inRu : _description,
+                        value: _description.isEmpty ? '${relProduct.value('description').value}' : _description,
+                        style: _description.isEmpty 
+                          ? textStyle?.copyWith(color: textStyle.color?.withValues(alpha: 0.5))
+                          : null,
                         editable: _field(widget.fields, 'description').isEditable,
                         onComplete: (value) {
                           _entry.update('description', value);

@@ -1,8 +1,11 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:hmi_core/hmi_core_log.dart';
 
 ///
 /// Single row of table "Purchase"
 class EntryPurchase implements SchemaEntryAbstract {
+  static final Log _log = Log('EntryPurchase');
+
   final SchemaEntry _entry;
   bool _isEmpty;
   ///
@@ -89,6 +92,20 @@ class EntryPurchase implements SchemaEntryAbstract {
   //
   @override
   String toString() => _entry.toString();
+  ///
+  /// Returns null if all validators being passed
+  String? get isValid {
+    final start = DateTime.tryParse('${_entry.value('date_of_start').value}');
+    final end = DateTime.tryParse('${_entry.value('date_of_end').value}');
+    _log.trace('.isValid | start: $start');
+    _log.trace('.isValid |   end: $end');
+    if (start == null) return 'Date of start can\'t be empty';
+    if (end == null) return 'Date of end can\'t be empty';
+    _log.trace('.isValid | compare: ${start.compareTo(end)}');
+    if (start.compareTo(end) >= 0) 'Date of start must be before the end date';
+    return null;
+  }
+
   ///
   ///
   static Sql updateSqlBuilder(Sql sql, EntryPurchase entry) {

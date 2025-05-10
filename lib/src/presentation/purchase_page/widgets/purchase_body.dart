@@ -113,7 +113,7 @@ class _PurchaseBodyState extends State<PurchaseBody> {
       onComplete: (value) {
         final date = DateFormat('dd-MM-yyyy').tryParse(value);
         entry.update(field, value);
-        if (onComplite != null) onComplite(date?.toIso8601String() ?? '');
+        if (entry.isValid == null && onComplite != null) onComplite(date?.toIso8601String() ?? '');
       },
     );
   }

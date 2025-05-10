@@ -133,8 +133,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   ///
   /// details field builder
   Widget _productFieldBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite, String field) {
-    final productField = _field(_schema.fields, 'product_id');
-    final productRelation = _schema.relations[productField.relation.id] ?? [];
+    final productRelation = _schema.relations['product_id'] ?? [];
     final productId = '${entry.value('product_id').value}';
     final product = productRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
     final fieldValue = '${entry.value(field).value ?? ''}';
