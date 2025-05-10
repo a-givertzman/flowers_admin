@@ -133,9 +133,16 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   ///
   /// Product field properties builder
   Widget _productBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
+    final productField = _field(_schema.fields, 'product_id');
+    final products = EditListEntry(
+      entries: _schema.relations[productField.relation.id] ?? [],
+      field: productField.relation.field,
+    );
+
     return TEditListWidget(
       labelText: _field(_schema.fields, 'product_id').title.inRu,
       id: '${entry.value('product_id').value ?? ''}',
+      relation: products,
       editable: _field(_schema.fields, 'product_id').isEditable,
       onComplete: (id) {
         _log.debug('_detailsBuilder.onComplete | product_id: $id');
