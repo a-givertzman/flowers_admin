@@ -85,7 +85,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
                   Field(flex: 15, hidden: false, editable: false, title: 'Purchase'.inRu, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
                   Field(flex: 05, hidden: false, editable: true, title: 'Status'.inRu, key: 'status', builder: _statusBuilder, hint: 'Статус закупки. \nНаследуется от закупки, если оставить поле пустым, можно изменить для отдельной позиции'),
                   // Field(flex: 15, hidden: false, editable: true, title: 'Prodict'.inRu, key: 'product'),
-                  Field(flex: 15, hidden: false, editable: true, title: 'Product'.inRu, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
+                  Field(flex: 15, hidden: false, editable: false, title: 'Product'.inRu, key: 'product_id', relation: Relation(id: 'product_id', field: 'name')),
                   Field(flex: 05, hidden: false, editable: true, title: 'Price'.inRu, key: 'sale_price', hint: 'Цена за единицу товара'),
                   Field(flex: 04, hidden: false, editable: currencyEditable, title: 'Currency'.inRu, key: 'sale_currency', hint:'Валюта цены'),
                   Field(flex: 05, hidden: false, editable: true, title: 'Shipping'.inRu, key: 'shipping', hint: 'Цена доставки за единицу товара'),
