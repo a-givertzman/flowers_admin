@@ -214,11 +214,9 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: _details.isEmpty ? _field(widget.fields, 'details').title.inRu : _details,
+                        labelText: _field(widget.fields, 'details').title.inRu,
                         value: _details.isEmpty ? '${relProduct.value('details').value}' : _details,
-                        style: _details.isEmpty 
-                          ? textStyle?.copyWith(color: textStyle.color?.withValues(alpha: 0.5))
-                          : null,
+                        style: _details.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
                         editable: _field(widget.fields, 'details').isEditable,
                         onComplete: (value) {
                           _entry.update('details', value);
@@ -226,12 +224,9 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         },
                       ),
                       TextEditWidget(
-                        // labelText: _field(widget.fields, 'description').title.inRu,
-                        labelText: _description.isEmpty ? _field(widget.fields, 'description').title.inRu : _description,
+                        labelText: _field(widget.fields, 'description').title.inRu,
                         value: _description.isEmpty ? '${relProduct.value('description').value}' : _description,
-                        style: _description.isEmpty 
-                          ? textStyle?.copyWith(color: textStyle.color?.withValues(alpha: 0.5))
-                          : null,
+                        style: _description.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
                         editable: _field(widget.fields, 'description').isEditable,
                         onComplete: (value) {
                           _entry.update('description', value);
