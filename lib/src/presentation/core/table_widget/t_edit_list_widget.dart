@@ -144,8 +144,8 @@ class _TEditListWidgetState extends State<TEditListWidget> {
       if (id != _id) {
         _isChanged = true;
         _id = id ?? '';
+        if (onComplete != null) onComplete(id);
       }
-      if (onComplete != null) onComplete(id);
     });
   }
 }
