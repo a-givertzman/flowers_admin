@@ -133,7 +133,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
   ///
   /// Product field properties builder
   Widget _productBuilder(BuildContext ctx, EntryPurchaseItem entry, Function(String)? onComplite) {
-    return EditListWidget(
+    return TEditListWidget(
       labelText: _field(_schema.fields, 'product_id').title.inRu,
       id: '${entry.value('product_id').value ?? ''}',
       editable: _field(_schema.fields, 'product_id').isEditable,
@@ -143,7 +143,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
         entry.update('details', null);
         entry.update('description', null);
         entry.update('picture', null);
-        if (onComplite != null) onComplite(id);
+        if (onComplite != null) onComplite('$id');
       },
     );
   }
