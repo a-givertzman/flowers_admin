@@ -21,12 +21,13 @@ CREATE OR REPLACE VIEW public.customer_order_view AS
     SELECT 
         cord.id,
         cord.customer_id as customer_id,
-        puc.purchase_id as purchase_id,
+        pui.purchase_id as purchase_id,
         cord.purchase_item_id as purchase_item_id,
-        puc.sale_price as price,
-        puc.shipping as shipping,
+        pui.sale_price as price,
+        pui.shipping as shipping,
+        pui.status as status,
         cord.count as count,
-        cord.count * (puc.sale_price + puc.shipping) as cost,
+        cord.count * (pui.sale_price + pui.shipping) as cost,
         cord.paid as paid,
         cord.distributed as distributed,
         cord.to_refound as to_refound,
@@ -40,9 +41,9 @@ CREATE OR REPLACE VIEW public.customer_order_view AS
         pu.name AS purchase
     FROM customer_order cord
         JOIN customer cu ON cord.customer_id = cu.id
-        JOIN purchase_item puc ON cord.purchase_item_id = puc.id
-        JOIN purchase pu ON puc.purchase_id = pu.id
-        JOIN product p ON puc.product_id = p.id;
+        JOIN purchase_item pui ON cord.purchase_item_id = pui.id
+        JOIN purchase pu ON pui.purchase_id = pu.id
+        JOIN product p ON pui.product_id = p.id;
 --
 -- Testing public.customer_order table
 insert into public.customer_order (id, customer_id, purchase_item_id, count, paid, distributed, to_refound, refounded, description, created, updated, deleted) values 
