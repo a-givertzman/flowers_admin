@@ -64,9 +64,9 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
             database: _database,
             sqlBuilder: (sql, PurchaseItemSqlParam? params) {
               if (_purchaseId.isNotEmpty) {
-                return Sql(sql: 'select * from purchase_item_view where purchase_id = $_purchaseId order by id;');
+                return Sql(sql: 'select * from purchase_item where purchase_id = $_purchaseId order by id;');
               }
-              return Sql(sql: 'select * from purchase_item_view order by id;');
+              return Sql(sql: 'select * from purchase_item order by id;');
             },
             entryBuilder: (row) => EntryPurchaseItem.from(row),
             debug: true,

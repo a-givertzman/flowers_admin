@@ -78,9 +78,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.titleMedium;
-    final statusRelation = PurchaseStatus.values.asMap().map((i, role) {
-      return MapEntry(role.str, EntryPurchase(map: {'id': FieldValue(role.str), 'status': FieldValue(role.str)}));
-    },);
+    final statusRelation = PurchaseStatus.relation;
     final purchaseField = _field(widget.fields, 'purchase_id');
     final purchaseRelation = EditListEntry(
       entries: widget.relations[purchaseField.relation.id] ?? [],
@@ -150,7 +148,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         },
                       ),
                       EditListWidget(
-                        id: '${_entry.value('status').value}',
+                        id: '${_entry.value('status').value ?? '${relProduct.value('status').value ?? ''}'}',
                         relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
                         editable: _field(widget.fields, 'status').isEditable,
                         // style: textStyle,
