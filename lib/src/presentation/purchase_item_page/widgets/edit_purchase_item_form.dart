@@ -37,17 +37,15 @@ class EditPurchaseItemForm extends StatefulWidget {
 class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
   late final Log _log;
   late EntryPurchaseItem _entry;
-  String _details = '';
-  String _description = '';
-  String _picture = '';
+  // String _details = '';
+  // String _description = '';
+  // String _picture = '';
   //
   //
   @override
   void initState() {
     _log = Log("$runtimeType");
     _entry = widget.entry ?? EntryPurchaseItem.empty();
-    // _setPurchase();
-    // _setProduct();
     super.initState();
   }
   ///
@@ -86,7 +84,8 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
       field: purchaseField.relation.field,
     );
     final purchaseId = '${_entry.value('purchase_id').value}';
-    final relPurchase = purchaseRelation.firstWhere((entry) => '${entry.value('id').value}' == purchaseId, orElse: () => EntryProduct.empty());
+    final relPurchase = purchaseRelation.firstWhere((entry) => '${entry.value('id').value}' == purchaseId, orElse: () => EntryPurchase.empty());
+    final status = _entry.value('status').value ?? '';
     final productField = _field(widget.fields, 'product_id');
     final productRelation = widget.relations[productField.relation.id] ?? [];
     final products = EditListEntry(
@@ -95,9 +94,9 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
     );
     final productId = '${_entry.value('product_id').value}';
     final relProduct = productRelation.firstWhere((entry) => '${entry.value('id').value}' == productId, orElse: () => EntryProduct.empty());
-    _details = _entry.value('details').value ?? '';
-    _description = _entry.value('description').value ?? '';
-    _picture = _entry.value('picture').value ?? '';
+    final details = _entry.value('details').value ?? '';
+    final description = _entry.value('description').value ?? '';
+    final picture = _entry.value('picture').value ?? '';
     _log.debug('.build | purchase_id: ${_entry.value('purchase_id').value}');
     _log.trace('.build | purchaseRelation: $purchases');
     final isValid = _entry.isValid;
@@ -118,7 +117,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                   padding: const EdgeInsets.all(16.0),
                   child: LoadImageWidget(
                     labelText: _field(widget.fields, 'picture').title.inRu,
-                    src: _picture.isEmpty ? '${relProduct.value('picture').value}' : _picture,
+                    src: picture.isEmpty ? '${relProduct.value('picture').value}' : picture,
                     onComplete: (value) {
                       _entry.update('picture', value);
                       setState(() {return;});
@@ -151,10 +150,10 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         },
                       ),
                       EditListWidget(
-                        id: '${_entry.value('status').value ?? '${relPurchase.value('status').value ?? ''}'}',
+                        id: status.isEmpty ? '${relPurchase.value('status').value}' : status,
                         relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
                         editable: _field(widget.fields, 'status').isEditable,
-                        // style: textStyle,
+                        style: status.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
                         labelText: _field(widget.fields, 'status').title.inRu,
                         onComplete: (id) {
                           final status = statusRelation[id]?.value('status').value;
@@ -216,8 +215,8 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                       ),
                       TextEditWidget(
                         labelText: _field(widget.fields, 'details').title.inRu,
-                        value: _details.isEmpty ? '${relProduct.value('details').value}' : _details,
-                        style: _details.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
+                        value: details.isEmpty ? '${relProduct.value('details').value}' : details,
+                        style: details.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
                         editable: _field(widget.fields, 'details').isEditable,
                         onComplete: (value) {
                           _entry.update('details', value);
@@ -226,8 +225,8 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                       ),
                       TextEditWidget(
                         labelText: _field(widget.fields, 'description').title.inRu,
-                        value: _description.isEmpty ? '${relProduct.value('description').value}' : _description,
-                        style: _description.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
+                        value: description.isEmpty ? '${relProduct.value('description').value}' : description,
+                        style: description.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
                         editable: _field(widget.fields, 'description').isEditable,
                         onComplete: (value) {
                           _entry.update('description', value);
