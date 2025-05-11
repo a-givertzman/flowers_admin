@@ -169,11 +169,9 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
       style: fieldValue.isEmpty 
         ? Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: Colors.black.withValues(alpha: 0.5),
-          // color: Theme.of(context).colorScheme.onSecondary.withValues(alpha: 0.5),
         )
         : Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: Colors.blue,
-          // color: Theme.of(context).colorScheme.onSecondaryFixed.withValues(alpha: 0.5),
         ),
       editable: _field(_schema.fields, field).isEditable,
       onComplete: (val) {
