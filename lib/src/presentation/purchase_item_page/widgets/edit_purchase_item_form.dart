@@ -80,10 +80,13 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
     final textStyle = Theme.of(context).textTheme.titleMedium;
     final statusRelation = PurchaseStatus.relation;
     final purchaseField = _field(widget.fields, 'purchase_id');
-    final purchaseRelation = EditListEntry(
-      entries: widget.relations[purchaseField.relation.id] ?? [],
+    final purchaseRelation = widget.relations[purchaseField.relation.id] ?? [];
+    final purchases = EditListEntry(
+      entries: purchaseRelation,
       field: purchaseField.relation.field,
     );
+    final purchaseId = '${_entry.value('purchase_id').value}';
+    final relPurchase = purchaseRelation.firstWhere((entry) => '${entry.value('id').value}' == purchaseId, orElse: () => EntryProduct.empty());
     final productField = _field(widget.fields, 'product_id');
     final productRelation = widget.relations[productField.relation.id] ?? [];
     final products = EditListEntry(
@@ -96,7 +99,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
     _description = _entry.value('description').value ?? '';
     _picture = _entry.value('picture').value ?? '';
     _log.debug('.build | purchase_id: ${_entry.value('purchase_id').value}');
-    _log.trace('.build | purchaseRelation: $purchaseRelation');
+    _log.trace('.build | purchaseRelation: $purchases');
     final isValid = _entry.isValid;
     return Padding(
       padding: const EdgeInsets.all(64.0),
@@ -134,7 +137,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                     children: [
                       EditListWidget(
                         id: '${_entry.value('purchase_id').value}',
-                        relation: purchaseRelation,
+                        relation: purchases,
                         editable: true, //purchaseField.isEditable,
                         // style: textStyle,
                         labelText: purchaseField.title.inRu,
@@ -148,7 +151,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         },
                       ),
                       EditListWidget(
-                        id: '${_entry.value('status').value ?? '${relProduct.value('status').value ?? ''}'}',
+                        id: '${_entry.value('status').value ?? '${relPurchase.value('status').value ?? ''}'}',
                         relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
                         editable: _field(widget.fields, 'status').isEditable,
                         // style: textStyle,
