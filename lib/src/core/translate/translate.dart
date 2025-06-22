@@ -68,6 +68,7 @@ const tr = {
   'Purchase': {Lang.en: 'Purchase', Lang.ru: 'Закупка'},
   'Purchases': {Lang.en: 'Purchases', Lang.ru: 'Закупки'},
   'PurchaseItems': {Lang.en: 'Purchase Items', Lang.ru: 'Позиции закупок'},
+  'Purchase Item': {Lang.en: 'Purchase Item', Lang.ru: 'Позиция в закупке'},
   'Orders': {Lang.en: 'Orders', Lang.ru: 'Заказы'},
   'Count': {Lang.en: 'Count', Lang.ru: 'Кол-во'},
   'Paid': {Lang.en: 'Paid', Lang.ru: 'Оплачено'},
