@@ -16,8 +16,8 @@ class HomePage extends StatelessWidget {
   }): 
     _authToken = authToken,
     _user = user;
-  ///
-  ///
+  //
+  //
   @override
   Widget build(BuildContext context) {
     return HomeBody(

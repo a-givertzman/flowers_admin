@@ -1,0 +1,8 @@
+{
+    "api-auth-token": "---",
+    "api-database": "flowers_app",
+    "api-host": "0.0.0.0",
+    "api-host_": "127.0.0.1",
+    "api-host__": "172.20.10.8",
+    "api-port": 8080
+}

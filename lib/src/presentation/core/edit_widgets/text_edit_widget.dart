@@ -3,100 +3,94 @@ import 'package:flutter/material.dart';
 ///
 ///
 class TextEditWidget extends StatefulWidget {
-  final String _value;
-  final Function(String)? _onComplete;
-  final String? _labelText;
-  final String? _errorText;
-  final bool _editable;
+  final String value;
+  final Function(String)? onComplete;
+  final String? labelText;
+  final String? errorText;
+  final bool editable;
+  final TextStyle? style;
   ///
   ///
   const TextEditWidget({
     super.key,
-    String? value = '',
-    Function(String)? onComplete,
-    String? labelText,
-    String? errorText,
-    bool editable = true,
-  }):
-    _value = value ?? '',
-    _onComplete = onComplete,
-    _labelText = labelText,
-    _errorText = errorText,
-    _editable = editable;
+    this.value = '',
+    this.onComplete,
+    this.labelText,
+    this.errorText,
+    this.editable = true,
+    this.style,
+  });
   //
   //
   @override
-  // ignore: no_logic_in_create_state
-  State<TextEditWidget> createState() => _TextEditWidgetState(
-    value: _value,
-    onComplete: _onComplete,
-    labelText: _labelText,
-    errorText: _errorText,
-    editable: _editable,
-  );
+  State<TextEditWidget> createState() => _TextEditWidgetState();
 }
-///
-///
+//
+//
 class _TextEditWidgetState extends State<TextEditWidget> {
-  final Function(String)? _onComplete;
-  final TextEditingController _controller;
-  final String? _labelText;
-  final String? _errorText;
-  final String _value;
-  final bool _editable;
+  late final TextEditingController _controller;
   bool _isChanged = false;
-  ///
-  ///
-  _TextEditWidgetState({
-    required String value,
-    required Function(String)? onComplete,
-    required String? labelText,
-    required String? errorText,
-    required bool editable,
-  }):
-    _value = value,
-    _controller = TextEditingController.fromValue(TextEditingValue(text: value)),
-    _onComplete = onComplete,
-    _labelText = labelText,
-    _errorText = errorText,
-    _editable = editable;
+  //
+  //
+  @override
+  void initState() {
+    _controller = TextEditingController.fromValue(TextEditingValue(text: widget.value));
+    super.initState();
+  }
+  //
+  //
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
   //
   //
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      enabled: _editable,
-      style: _isChanged 
-        ? Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error)
-        : null,
-      // textAlign: _textAlign,
-      decoration: InputDecoration(
-        // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withOpacity(0.5) : Colors.black.withOpacity(0.5))),
-        // border: const OutlineInputBorder(),
-        isDense: true,
-        labelText: _labelText,
-        errorText: _errorText,
-        contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+    return TapRegion(
+      onTapOutside: (PointerDownEvent _) {
+        _onEditingComplete(_controller.text);
+      },
+      child: TextField(
+        controller: _controller,
+        enabled: widget.editable,
+        style: _isChanged 
+          ? (widget.style ?? Theme.of(context).textTheme.titleMedium)?.copyWith(color: Colors.blue)
+          : widget.style,
+        // textAlign: _textAlign,
+        decoration: InputDecoration(
+          // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withValue(alpha: 0.5) : Colors.black.withValue(alpha: 0.5))),
+          // border: const OutlineInputBorder(),
+          isDense: true,
+          labelText: widget.labelText,
+          filled: true,
+          fillColor: Colors.transparent,
+          hoverColor: Theme.of(context).hoverColor,
+          errorText: widget.errorText,
+          contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+        ),
+        onChanged: (value) {
+          final isChanged = value != widget.value;
+          if (_isChanged != isChanged) {
+            _isChanged = isChanged;
+            setState(() {return;});
+          }
+        },
+        onTapOutside: (_) {
+          _onEditingComplete(_controller.text);
+        },
+        onEditingComplete: () {
+          _onEditingComplete(_controller.text);
+        },
       ),
-      onChanged: (value) {
-        setState(() {
-          _isChanged = value != _value;
-        });
-      },
-      onTapOutside: (_) {
-        _onEditingComplete(_controller.text);
-      },
-      onEditingComplete: () {
-        _onEditingComplete(_controller.text);
-      },
     );
   }
   ///
   ///
   _onEditingComplete(String value) {
-    if (value != _value) {
-      final onComplete = _onComplete;
+    if (value != widget.value) {
+      final onComplete = widget.onComplete;
       if (onComplete != null) onComplete(value);
     }
   }

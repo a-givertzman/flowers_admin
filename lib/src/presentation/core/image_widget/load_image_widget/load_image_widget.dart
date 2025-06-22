@@ -2,7 +2,7 @@ import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 
 ///
 ///
@@ -35,8 +35,8 @@ class LoadImageWidget extends StatefulWidget {
     errorText: _errorText,
   );
 }
-///
-///
+//
+//
 class _LoadImageWidgetState extends State<LoadImageWidget> {
   String _src;
   final Function(String)? _onComplete;
@@ -59,6 +59,7 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Row(
           children: [
@@ -88,11 +89,11 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
             ),
           ],
         ),
-        SizedBox(
-          width: 300.0,
-          height: 300.0,
+        Divider(indent: 16.0, color: Colors.transparent,),
+        Expanded(
           child: Image.network(
             _src,
+            fit: BoxFit.contain,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress != null) {
                 return Center(
@@ -107,10 +108,14 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
             },
             errorBuilder: (context, error, stackTrace) {
               return Center(
-                child: Text(
-                  'Invalid link'.inRu(),
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.error),
+                child: Image.asset(
+                  'assets/images/indoor-plants.png',
+                  fit: BoxFit.contain,
                 ),
+                // Text(
+                //   'Invalid link'.inRu,
+                //   style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.error),
+                // ),
               );
             },
           ),
@@ -129,7 +134,7 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
       return Ok('https://drive.google.com/uc?export=view&id=$fileId');
     }
     return Err(Failure(
-      message: '${'Invalid Google Drive url'.inRu()} $url',
+      message: '${'Invalid Google Drive url'.inRu} $url',
       stackTrace: StackTrace.current,
     ));
   }

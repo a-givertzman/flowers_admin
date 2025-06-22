@@ -19,18 +19,18 @@ declare
 	delta int8;
 	remains int8;
 begin
-	call raise_notice(format('start with new_count: ' || count_));	
+	call log_info(format('start with new_count: ' || count_));	
 	delta = (select count_ - co.count from public.customer_order co
 	 	where co.customer_id = customer_id_
 	 	and co.purchase_item_id = purchase_item_id_);
 	if delta is null then
-		call raise_notice('order not found, creating new one...');
+		call log_info('order not found, creating new one...');
 		delta = count_;
 	end if;
 	remains = (select pc.remains from public.purchase_item pc
 	 	where pc.id = purchase_item_id_);
 	if delta != 0  and delta <= remains then
-		call raise_notice('delta ' || delta);
+		call log_info('delta ' || delta);
 		execute 'update public.purchase_item SET remains = remains - ' || delta
 			|| ' where id = ' || purchase_item_id_;
 		execute 'insert into public.customer_order as co (customer_id, purchase_item_id, count, paid, distributed, to_refound, refounded, description)' 
@@ -50,21 +50,21 @@ begin
 	         	|| ' where co.customer_id = ' || customer_id_
 	         	|| ' and co.purchase_item_id = ' || purchase_item_id_;
 		if count_ = 0 then
-			call raise_notice('Deleting order...');
+			call log_info('Deleting order...');
 			execute 'update public.customer_order as co' 
 		        	|| ' SET deleted = ''' || CURRENT_TIMESTAMP || ''''
 		         	|| ' where co.customer_id = ' || customer_id_
 		         	|| ' and co.purchase_item_id = ' || purchase_item_id_;
-			call raise_notice('Deleting order - Ok');
+			call log_info('Deleting order - Ok');
 		end if;
 	end if;
 	count_ = (select co.count from public.customer_order co
 	 	where co.customer_id = customer_id_
 	 	and co.purchase_item_id = purchase_item_id_);
-	call raise_notice('new order count: ' || count_);
+	call log_info('new order count: ' || count_);
 	remains = (select pc.remains from public.purchase_item pc
 	 	where pc.id = purchase_item_id_);
-	call raise_notice('new purchase item remains: ' || remains);
+	call log_info('new purchase item remains: ' || remains);
 	return count_;
 end
 $$;

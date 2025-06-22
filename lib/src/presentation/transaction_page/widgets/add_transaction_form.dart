@@ -2,13 +2,13 @@ import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_transaction.dart';
+import 'package:flowers_admin/src/infrostructure/transaction/entry_transaction.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
+import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
-import 'package:flowers_admin/src/presentation/core/table_widget/t_cell_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 ///
 ///
 class AddTransactionForm extends StatefulWidget {
@@ -40,8 +40,8 @@ class AddTransactionForm extends StatefulWidget {
     relations: _relations,
   );
 }
-///
-///
+//
+//
 class _AddProductFormState extends State<AddTransactionForm> {
   final _log = Log("$_AddProductFormState._");
   final AppUser _user;
@@ -64,9 +64,9 @@ class _AddProductFormState extends State<AddTransactionForm> {
     _relations = relations;
   ///
   ///
-  Field field(String key) {
+  Field _field(String key) {
     return _fields.firstWhere((element) => element.key == key, orElse: () {
-      return Field(key: key);
+      return Field(key: key) as Field<EntryTransaction>;
     },);
   }
   //
@@ -74,7 +74,8 @@ class _AddProductFormState extends State<AddTransactionForm> {
   @override
   Widget build(BuildContext context) {
     _entry.update('author_id', _user.id);
-    final customerField = field('customer_id');
+    _log.debug('.build | Fields: $_fields');
+    final customerField = _field('customer_id');
     _log.debug('.build | customerField: $customerField');
     _log.debug('.build | _relations: $_relations');
     EditListEntry customerRelation = EditListEntry(entries: _relations[customerField.relation.id] ?? [], field: customerField.relation.field);
@@ -91,6 +92,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
             children: [
               Text('${InRu('New transaction')}', style: Theme.of(context).textTheme.titleLarge,),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
@@ -103,7 +105,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           editable: false,
                         ),
                         TextEditWidget(
-                          labelText: field('value').title.inRu(),
+                          labelText: _field('value').title.inRu,
                           value: '${_entry.value('value').value}',
                           onComplete: (value) {
                             _entry.update('value', value);
@@ -111,14 +113,14 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           },
                         ),
                         TextEditWidget(
-                          labelText: field('details').title.inRu(),
+                          labelText: _field('details').title.inRu,
                           value: '${_entry.value('details').value}',
                           onComplete: (value) {
                             _entry.update('details', value);
                             setState(() {return;});
                           },
                         ),
-                        TCellList(
+                        EditListWidget(
                           labelText: '${InRu('Customer')}',
                           id: (_entry.value('customer_id').value != null && '${_entry.value('customer_id').value}'.isNotEmpty) ? '${_entry.value('customer_id').value}' : null,
                           relation: customerRelation,
@@ -133,12 +135,12 @@ class _AddProductFormState extends State<AddTransactionForm> {
                         ),
                         textWithLabel(
                           context: context,
-                          labelText: field('customer_account').title.inRu(),
+                          labelText: _field('customer_account').title.inRu,
                           value:_customerAccount ?? '',
                           enable: false,
                         ),
                         // TextEditWidget(
-                        //   labelText: field('primary_currency').title.inRu(),
+                        //   labelText: field('primary_currency').title.inRu,
                         //   value: '${_entry.value('primary_currency').value}',
                         //   onComplete: (value) {
                         //     _entry.update('primary_currency', value);
@@ -146,7 +148,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                         //   },
                         // ),
                         TextEditWidget(
-                          labelText: field('description').title.inRu(),
+                          labelText: _field('description').title.inRu,
                           value: '${_entry.value('description').value}',
                           onComplete: (value) {
                             _entry.update('description', value);
@@ -154,28 +156,29 @@ class _AddProductFormState extends State<AddTransactionForm> {
                           },
                         ),
                         if ([AppUserRole.admin].contains(_user.role))
-                          Checkbox(
-                            semanticLabel: 'Allow indebted'.inRu(),
+                          CheckboxListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text('Allow indebted'.inRu),
                             value: _entry.value('allow_indebted').value ?? false, 
                             onChanged: (value) {
                               _entry.update('allow_indebted', value ?? false);
                               setState(() {return;});
                             },
                           ),
-
+                                    
                         // TextEditWidget(
-                        //   labelText: field('created').title.inRu(),
+                        //   labelText: field('created').title.inRu,
                         //   value: '${_entry.value('created').value}',
                         //   editable: field('created').isEditable,
                         // ),
                         // TextEditWidget(
-                        //   labelText: field('updated').title.inRu(),
+                        //   labelText: field('updated').title.inRu,
                         //   value: '${_entry.value('updated').value}',
                         //   editable: field('updated').isEditable,
                         // ),
                         // if (_entry.value('deleted').value != null)
                         //   TextEditWidget(
-                        //     labelText: field('deleted').title.inRu(),
+                        //     labelText: field('deleted').title.inRu,
                         //     value: '${_entry.value('deleted').value}',
                         //     editable: field('deleted').isEditable,
                         //   ),           
@@ -196,6 +199,7 @@ class _AddProductFormState extends State<AddTransactionForm> {
                   TextButton(
                     onPressed: _entry.isChanged 
                       ? () {
+                        _log.debug('.TextButton.Yes | _isEmpty: ${_entry.isEmpty}');
                         _log.debug('.TextButton.Yes | _isChanged: ${_entry.isChanged}');
                         _log.debug('.TextButton.Yes | enrty: $_entry');
                         Navigator.pop(context, Ok<EntryTransaction, void>(_entry));

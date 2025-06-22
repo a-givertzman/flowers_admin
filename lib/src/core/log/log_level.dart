@@ -6,7 +6,7 @@ import 'package:logging/logging.dart';
 /// follows (in descending order): 
 /// - [LogLevel.off], 
 /// - [LogLevel.error], [LogLevel.warning], 
-/// - [LogLevel.info], [LogLevel.config], [LogLevel.debug],
+/// - [LogLevel.info], [LogLevel.config], [LogLevel.debug], [LogLevel.trace],
 /// - [LogLevel.all].
 ///
 /// We recommend using one of the predefined logging levels. If you define your
@@ -16,6 +16,9 @@ class LogLevel extends Level {
   const LogLevel(super.name, super.value);
   /// Special key to turn on logging for all levels ([value] = 0).
   static const LogLevel all = LogLevel('ALL', 0);
+  ///
+  /// Key for detailed tracing information ([value] = 400).
+  static const LogLevel trace = LogLevel('TRACE', 400);// Level.FINER;
   ///
   /// Key for tracing information ([value] = 500).
   static const LogLevel debug = LogLevel('DEBUG', 500);// Level.FINE;
@@ -61,6 +64,7 @@ class LogLevel extends Level {
   ///
   static const List<LogLevel> levels = [
     all,
+    trace,
     debug,
     config,
     info,

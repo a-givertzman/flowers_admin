@@ -1,74 +1,42 @@
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
+import 'package:flowers_admin/src/presentation/auth_page/auth_page.dart';
 import 'package:flowers_admin/src/presentation/home_page/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-
 ///
 ///
 class AppWidget extends StatefulWidget {
-  // final AppThemeSwitch _themeSwitch;
-  final String _authToken;
+  // final AppThemeSwitch themeSwitch;
+  final String authToken;
   ///
   ///
   const AppWidget({
     super.key,
-    // required AppThemeSwitch themeSwitch,
-    required String authToken,
-  }) : 
-    // _themeSwitch = themeSwitch,
-    _authToken = authToken;
+    // required this.themeSwitch,
+    required this.authToken,
+  });
   //
   //
   @override
-  // ignore: no_logic_in_create_state
-  State<AppWidget> createState() => _AppWidgetState(
-    // themeSwitch: _themeSwitch,
-      authToken: _authToken,
-  );
+  State<AppWidget> createState() => _AppWidgetState();
 }
 
 ///
 class _AppWidgetState extends State<AppWidget> {
-  // final AppThemeSwitch _themeSwitch;
-  final String _authToken;
-  ///
-  ///
-  _AppWidgetState({
-    required String authToken,
-  }) : 
-    // _themeSwitch = themeSwitch,
-    _authToken = authToken,
-    super();
-  //
-  //
-  @override
-  void dispose() {
-    // _themeSwitch.removeListener(_themeSwitchListener);
-    super.dispose();
-  }
+  AppUser _user = AppUser.empty();
   //
   //
   @override
   void initState() {
     super.initState();
     // _themeSwitch.addListener(_themeSwitchListener);
-    if (!kIsWeb) {
-      Future.delayed(
-        Duration.zero,
-        () async {
-          await windowManager.ensureInitialized();
-          // windowManager.setFullScreen(true);
-          // windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-          // windowManager.setBackgroundColor(Colors.transparent);
-          // windowManager.setSize(const Size(1024, 768));
-          // windowManager.center();
-          windowManager.focus();
-          WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {true;}));
-        },
-      );
-    }
+  }
+  //
+  //
+  @override
+  void dispose() {
+    // _themeSwitch.removeListener(_themeSwitchListener);
+    super.dispose();
   }
   ///
   // void _themeSwitchListener() {
@@ -80,19 +48,24 @@ class _AppWidgetState extends State<AppWidget> {
   @override
   Widget build(BuildContext context) {
     final homePage = HomePage(
-      authToken: _authToken,
-      user: AppUser(id: '15', name: 'Anton Lobanov', role: AppUserRole.admin),
+      authToken: widget.authToken,
+      user: AppUser(id: '1', name: 'Anton Lobanov', role: AppUserRole.admin),
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: homePage, 
+      // home: _user.isEmpty
+      //   ? 
+      //   : homePage, 
       theme: ThemeData(useMaterial3: true),
-          // themeSwitch: _themeSwitch,
-      initialRoute: 'homePage',
+          // themeSwitch: widget.themeSwitch,
+      initialRoute: _user.isEmpty ? 'authPage' : 'homePage',
       routes: {
-        'homePahe': (context) => homePage,
+        'authPage': (context) => AuthPage(
+          authToken: widget.authToken,
+        ),
+        'homePage': (context) => homePage,
       },
-      // theme: _themeSwitch.themeData,
+      // theme: widget.themeSwitch.themeData,
     );
   }
 }

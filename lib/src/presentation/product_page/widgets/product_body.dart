@@ -1,57 +1,135 @@
 import 'package:ext_rw/ext_rw.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_product.dart';
-import 'package:flowers_admin/src/infrostructure/schamas/entry_product_category.dart';
+import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
+import 'package:flowers_admin/src/infrostructure/product/entry_product.dart';
+import 'package:flowers_admin/src/infrostructure/product/entry_product_category.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flowers_admin/src/presentation/product_page/widgets/edit_product_form.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
-
+import 'package:hmi_core/hmi_core_result.dart';
 ///
-///
+/// View / Edit the dictionary of `Product`'s
 class ProductBody extends StatefulWidget {
-  final String _authToken;
+  final String authToken;
+  final AppUser user;
   ///
   ///
+  /// View / Edit the dictionary of `Product`'s
   const ProductBody({
     super.key,
-    required String authToken,
-  }):
-    _authToken = authToken;
-  ///
-  ///
+    required this.authToken,
+    required this.user,
+  });
+  //
+  //
   @override
   // ignore: no_logic_in_create_state
-  State<ProductBody> createState() => _ProductBodyState(
-    authToken: _authToken,
-  );
+  State<ProductBody> createState() => _ProductBodyState();
 }
-///
-///
+//
+//
 class _ProductBodyState extends State<ProductBody> {
   late final Log _log;
-  final String _authToken;
-  final _database = 'flowers_app_server';
-  final _apiAddress = const ApiAddress(host: '127.0.0.1', port: 8080);
+  final _database = Setting('api-database').toString();
+  final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
+  late final RelationSchema<EntryProduct, void> _schema;
+  //
+  //
+  @override
+  void initState() {
+    _log = Log("$runtimeType");
+    _schema = _buildSchema();
+    super.initState();
+  }
   ///
+  /// Returns TableSchema
+  RelationSchema<EntryProduct, void> _buildSchema() {
+    return RelationSchema<EntryProduct, void>(
+      schema: TableSchema<EntryProduct, void>(
+        read: SqlRead<EntryProduct, void>.keep(
+          address: _apiAddress, 
+          authToken: widget.authToken, 
+          database: _database, 
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select * from product_view order by id;');
+          },
+          entryBuilder: (row) => EntryProduct.from(row),
+          debug: true,
+        ),
+        write: SqlWrite<EntryProduct>.keep(
+          address: _apiAddress, 
+          authToken: widget.authToken, 
+          database: _database, 
+          updateSqlBuilder: EntryProduct.updateSqlBuilder,
+          insertSqlBuilder: EntryProduct.insertSqlBuilder,
+          deleteSqlBuilder: EntryProduct.deleteSqlBuilder,
+          emptyEntryBuilder: EntryProduct.empty, 
+          debug: true,
+        ),
+        fields: [
+          const Field(flex: 03, hidden: false, editable: false, key: 'id'),
+                Field(flex: 10, hidden: false, editable: true, title: 'Category'.inRu,                key: 'product_category_id', relation: Relation(id: 'product_category_id', field: 'name')),
+                Field(flex: 10, hidden: false, editable: true, title: 'Name'.inRu,                    key: 'name'),
+                Field(flex: 20, hidden: false, editable: true, title: 'Details'.inRu,                 key: 'details'),
+                Field(flex: 05, hidden: false, editable: true, title: 'Primary price'.inRu,           key: 'primary_price'),
+                Field(flex: 05, hidden: false, editable: true, title: 'Primary currency'.inRu,        key: 'primary_currency'),
+                Field(flex: 05, hidden: false, editable: true, title: 'Primary order quantity'.inRu,  key: 'primary_order_quantity'),
+                Field(flex: 05, hidden: false, editable: true, title: 'Order quantity'.inRu,          key: 'order_quantity'),
+                Field(flex: 10, hidden: false, editable: true, title: 'Description'.inRu,             key: 'description'),
+                Field(flex: 10, hidden: false, editable: true, title: 'Picture'.inRu,                 key: 'picture'),
+          const Field(flex: 05, hidden: true, editable: true, key: 'created'),
+          const Field(flex: 05, hidden: true, editable: true, key: 'updated'),
+          const Field(flex: 05, hidden: true, editable: true, key: 'deleted'),
+        ],
+      ),
+      relations: _buildRelations(),
+    );
+  }
   ///
-  _ProductBodyState({
-    required String authToken,
-  }):
-    _authToken = authToken {
-      _log = Log("$runtimeType");
-    }
-  ///
-  ///
+  /// Returns Relations
+  Map<String, TableSchemaAbstract<SchemaEntryAbstract, dynamic>> _buildRelations() {
+    return {
+      'product_category_id': TableSchema<EntryProductCategory, void>(
+        read: SqlRead<EntryProductCategory, void>.keep(
+          address: _apiAddress, 
+          authToken: widget.authToken, 
+          database: _database, 
+          sqlBuilder: (sql, params) {
+            return Sql(sql: 'select id, name from product_category order by id;');
+          },
+          entryBuilder: (row) => EntryProductCategory.from(row),
+          debug: true,
+        ),
+        fields: [
+          const Field(key: 'id'),
+          const Field(key: 'name'),
+        ],
+      ),
+    };
+  }
+  //
+  //
   @override
   Widget build(BuildContext context) {
+    _log.debug('.build | ');
     return TableWidget<EntryProduct, void>(
+      schema: _schema,
+      showDeleted: [AppUserRole.admin].contains(widget.user.role) ? false : null,
+      fetchAction: TableWidgetAction(
+        onPressed: (schema) {
+          return Future.value(Ok(EntryProduct.empty()));
+        }, 
+        icon: const Icon(Icons.add),
+      ),
       addAction: TableWidgetAction(
         onPressed: (schema) {
           return showDialog<Result<EntryProduct, void>?>(
             context: context, 
-            builder: (_) => EditProductForm(fields: schema.fields,),
+            builder: (_) => EditProductForm(fields: schema.fields, relations: schema.relations),
           ).then((result) {
             _log.debug('.build | new entry: $result');
             return switch (result) {
@@ -65,24 +143,27 @@ class _ProductBodyState extends State<ProductBody> {
       ),
       editAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeUpdated = schema.entries.where((e) => e.isSelected).toList();
-          return showDialog<Result<EntryProduct, void>?>(
-            context: context, 
-            builder: (_) => EditProductForm(fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
-          ).then((result) {
-            _log.debug('.build | edited entry: $result');
-            return switch (result) {
-              Ok(:final value) => Ok(value),
-              Err(:final error) => Err(error),
-              _ => const Err(null),
-            };
-          });
+          final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
+          if (toBeUpdated.isNotEmpty) {
+            return showDialog<Result<EntryProduct, void>?>(
+              context: context, 
+              builder: (_) => EditProductForm(fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
+            ).then((result) {
+              _log.debug('.build | edited entry: $result');
+              return switch (result) {
+                Ok(:final value) => Ok(value),
+                Err(:final error) => Err(error),
+                _ => const Err(null),
+              };
+            });
+          }
+          return Future.value(Err(null));
         }, 
         icon: const Icon(Icons.add),
       ),      
       delAction: TableWidgetAction(
         onPressed: (schema) {
-          final toBeDeleted = schema.entries.firstWhere(
+          final toBeDeleted = schema.entries.values.firstWhere(
             (e) {
               return e.isSelected;
             },
@@ -101,63 +182,14 @@ class _ProductBodyState extends State<ProductBody> {
         },
         icon: const Icon(Icons.add),
       ),
-      schema: RelationSchema<EntryProduct, void>(
-        schema: TableSchema<EntryProduct, void>(
-          read: SqlRead<EntryProduct, void>(
-            address: _apiAddress, 
-            authToken: _authToken, 
-            database: _database, 
-            sqlBuilder: (sql, params) {
-              return Sql(sql: 'select * from product_view order by id;');
-            },
-            entryBuilder: (row) => EntryProduct.from(row),
-            debug: true,
-          ),
-          write: SqlWrite<EntryProduct>(
-            address: _apiAddress, 
-            authToken: _authToken, 
-            database: _database, 
-            updateSqlBuilder: updateSqlBuilderProduct,
-            // insertSqlBuilder: insertSqlBuilderProduct,
-            emptyEntryBuilder: EntryProduct.empty, 
-            debug: true,
-          ),
-          fields: [
-            const Field(hidden: false, editable: false, key: 'id'),
-            const Field(hidden: false, editable: true, title: 'Category', key: 'product_category_id', relation: Relation(id: 'product_category_id', field: 'name')),
-            const Field(hidden: false, editable: true, title: 'Name', key: 'name'),
-            const Field(hidden: false, editable: true, key: 'details'),
-            const Field(hidden: false, editable: true, key: 'primary_price'),
-            const Field(hidden: false, editable: true, key: 'primary_currency'),
-            const Field(hidden: false, editable: true, key: 'primary_order_quantity'),
-            const Field(hidden: false, editable: true, key: 'order_quantity'),
-            const Field(hidden: false, editable: true, key: 'description'),
-            const Field(hidden: false, editable: true, key: 'picture'),
-            const Field(hidden: true, editable: true, key: 'created'),
-            const Field(hidden: true, editable: true, key: 'updated'),
-            const Field(hidden: true, editable: true, key: 'deleted'),
-          ],
-        ),
-        relations: {
-          'product_category_id': TableSchema<EntryProductCategory, void>(
-            read: SqlRead<EntryProductCategory, void>(
-              address: _apiAddress, 
-              authToken: _authToken, 
-              database: _database, 
-              sqlBuilder: (sql, params) {
-                return Sql(sql: 'select id, name from product_category order by id;');
-              },
-              entryBuilder: (row) => EntryProductCategory.from(row),
-              debug: true,
-            ),
-            fields: [
-              const Field(key: 'id'),
-              const Field(key: 'name'),
-            ],
-          ),
-        },
-      ),
     );
+  }
+  //
+  //
+  @override
+  void dispose() {
+    _schema.close();
+    super.dispose();
   }
 }
 ///
@@ -185,72 +217,3 @@ Future<Result<void, void>> showConfirmDialog(BuildContext context, title, conten
     ),
   ).then((value) => value ?? const Err(null));
 }
-
-///
-///
-Sql updateSqlBuilderProduct(Sql sql, EntryProduct entry) {
-  final m = {
-    if (entry.value('id').isChanged) ...{'id': entry.value('id').str},
-    if (entry.value('product_category_id').isChanged) ...{'product_category_id': entry.value('product_category_id').str},
-    if (entry.value('name').isChanged) ...{'name': entry.value('name').str},
-    if (entry.value('details').isChanged) ...{'details': entry.value('details').str},
-    if (entry.value('primary_price').isChanged) ...{'primary_price': entry.value('primary_price').str},
-    if (entry.value('primary_currency').isChanged) ...{'primary_currency': entry.value('primary_currency').str},
-    if (entry.value('primary_order_quantity').isChanged) ...{'primary_order_quantity': entry.value('primary_order_quantity').str},
-    if (entry.value('order_quantity').isChanged) ...{'order_quantity': entry.value('order_quantity').str},
-    if (entry.value('description').isChanged) ...{'description': entry.value('description').str},
-    if (entry.value('picture').isChanged) ...{'picture': entry.value('picture').str},
-    if (entry.value('deleted').isChanged) ...{'deleted': entry.value('deleted').str},
-  };
-  final keys = m.keys.toList().join(',');
-  final values = m.values.toList().join(',');
-  return Sql(sql: """UPDATE product SET (
-    $keys
-  ) = (
-    $values
-  )
-  WHERE id = ${entry.value('id').str};
-""");
-}
-
-
-
-
-
-
-
-// ///
-// /// === ORIGINAL ===
-// Sql updateSqlBuilderProduct(Sql sql, EntryProduct entry) {
-//   return Sql(sql: """UPDATE product SET (
-//     id,
-//     product_category_id,
-//     name,
-//     details,
-//     primary_price,
-//     primary_currency,
-//     primary_order_quantity,
-//     order_quantity,
-//     description,
-//     picture,
-//     created,
-//     updated,
-//     deleted
-//   ) = (
-//     ${entry.value('id').str},
-//     ${entry.value('product_category_id').str},
-//     ${entry.value('name').str},
-//     ${entry.value('details').str},
-//     ${entry.value('primary_price').str},
-//     ${entry.value('primary_currency').str},
-//     ${entry.value('primary_order_quantity').str},
-//     ${entry.value('order_quantity').str},
-//     ${entry.value('description').str},
-//     ${entry.value('picture').str},
-//     ${entry.value('created').str},
-//     ${entry.value('updated').str},
-//     ${entry.value('deleted').str}
-//   )
-//   WHERE id = ${entry.value('id').str};
-// """);
-// }

@@ -5,92 +5,80 @@ import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_ad
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_failure.dart';
 import 'package:hmi_core/hmi_core_log.dart';
-import 'package:hmi_core/hmi_core_result_new.dart';
+import 'package:hmi_core/hmi_core_result.dart';
 ///
 ///
 class TableWidget<T extends SchemaEntryAbstract, P> extends StatefulWidget {
-  final TableSchemaAbstract<T, P> _schema;
-  final TableWidgetAction<T, P> _addAction;
-  final TableWidgetAction<T, P> _editAction;
-  final TableWidgetAction<T, P> _delAction;
-  final TableWidgetAction<T, P> _fetchAction;
-  final bool? _showDeleted;
+  final TableSchemaAbstract<T, P> schema;
+  final TableWidgetAction<T, P> addAction;
+  final TableWidgetAction<T, P> editAction;
+  final TableWidgetAction<T, P> delAction;
+  final TableWidgetAction<T, P> fetchAction;
+  final void Function(bool? value)? onShowDeletedChanged;
+  final bool? showDeleted;
   ///
   ///
   const TableWidget({
     super.key,
-    required TableSchemaAbstract<T, P> schema,
-    TableWidgetAction<T, P>? addAction,
-    TableWidgetAction<T, P>? editAction,
-    TableWidgetAction<T, P>? delAction,
-    TableWidgetAction<T, P>? fetchAction,
-    bool? showDeleted,
-  }) :
-    _schema = schema,
-    _addAction = addAction ?? const TableWidgetAction.empty(),
-    _editAction = editAction ?? const TableWidgetAction.empty(),
-    _delAction = delAction ?? const TableWidgetAction.empty(),
-    _fetchAction = fetchAction ?? const TableWidgetAction.empty(),
-    _showDeleted = showDeleted;
-  ///
-  ///
+    required this. schema,
+    this.addAction = const TableWidgetAction.empty(),
+    this.editAction = const TableWidgetAction.empty(),
+    this.delAction = const TableWidgetAction.empty(),
+    this.fetchAction = const TableWidgetAction.empty(),
+    this.onShowDeletedChanged,
+    this.showDeleted,
+  });
+  //
+  //
   @override
-  // ignore: no_logic_in_create_state
-  State<TableWidget<T, P>> createState() => _TableWidgetState(
-    schema: _schema,
-    addAction: _addAction,
-    editAction: _editAction,
-    delAction: _delAction,
-    fetchAction: _fetchAction,
-    showDeleted: _showDeleted,
-  );
+  State<TableWidget<T, P>> createState() => _TableWidgetState();
 }
-///
-///
+//
+//
 class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWidget<T, P>> {
-  final _log = Log("$_TableWidgetState");
-  final TableSchemaAbstract<T, P> _schema;
-  final TableWidgetAction<T, P> _addAction;
-  final TableWidgetAction<T, P> _editAction;
-  final TableWidgetAction<T, P> _delAction;
-  final TableWidgetAction<T, P> _fetchAction;
+  late final Log _log;
+  final ScrollController _controller = ScrollController();
   bool? _showDeleted;
-  ///
-  ///
-  _TableWidgetState({
-    required TableSchemaAbstract<T, P> schema,
-    required TableWidgetAction<T, P> addAction,
-    required TableWidgetAction<T, P> editAction,
-    required TableWidgetAction<T, P> delAction,
-    required TableWidgetAction<T, P> fetchAction,
-    required bool? showDeleted,
-  }) :
-    _schema = schema,
-    _addAction = addAction,
-    _editAction = editAction,
-    _delAction = delAction,
-    _fetchAction = fetchAction,
-    _showDeleted = showDeleted;
-  ///
-  ///
+  //
+  //
+  @override
+  void initState() {
+    _log = Log('$runtimeType');
+    _showDeleted = widget.showDeleted;
+    super.initState();
+  }
+  //
+  //
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  //
+  //
   @override
   Widget build(BuildContext context) {
-    final editOnPressed = _editAction.onPressed;
-    final addOnPressed = _addAction.onPressed;
-    final delOnPressed = _delAction.onPressed;
-    final fetchOnPressed = _fetchAction.onPressed;
-    final showDeleted = _showDeleted;
+    final onShowDeletedChanged = widget.onShowDeletedChanged;
+    final editOnPressed = widget.editAction.onPressed;
+    final addOnPressed = widget.addAction.onPressed;
+    final delOnPressed = widget.delAction.onPressed;
+    final fetchOnPressed = widget.fetchAction.onPressed;
+    final showDeleted = _showDeleted ?? false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(children: [
           const Expanded(child: SizedBox.shrink()),
-          if (showDeleted != null)
+          if (_showDeleted != null)
             Tooltip(
-              message: 'Show deleted'.inRu(),
+              message: 'Show deleted'.inRu,
               child: Checkbox(
+                // title: Text(InRu('Show deleted').toString()),
                 value: showDeleted,
-                onChanged: (value) {
+                onChanged: (value) async {
+                  if (onShowDeletedChanged != null) {
+                    onShowDeletedChanged(value);
+                  }
                   setState(() {
                     _showDeleted = value;
                   });
@@ -100,10 +88,10 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
           if (editOnPressed != null)
             IconButton(
               onPressed: () async {
-                switch (await editOnPressed(_schema)) {
+                switch (await editOnPressed(widget.schema)) {
                   case Ok(value: final entry): () {
                     if (entry.isChanged) {
-                      _schema.update(entry).then((result) {
+                      widget.schema.update(entry).then((result) {
                         if (result case Err error) {
                           showDialog(
                             context: context,
@@ -126,9 +114,9 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
           if (addOnPressed != null)
             IconButton(
               onPressed: () async {
-                switch (await addOnPressed(_schema)) {
+                switch (await addOnPressed(widget.schema)) {
                   case Ok(value: final entry): () {
-                    _schema.insert(entry: entry).then((result) {
+                    widget.schema.insert(entry: entry).then((result) {
                       if (result case Err error) {
                         showDialog(
                           context: context,
@@ -150,9 +138,9 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
           if (delOnPressed != null)
             IconButton(
               onPressed: () async {
-                switch (await delOnPressed(_schema)) {
+                switch (await delOnPressed(widget.schema)) {
                   case Ok(value: final entry): () {
-                    _schema.delete(entry).then((result) {
+                    widget.schema.delete(entry).then((result) {
                       if (result case Err error) {
                         showDialog(
                           context: context,
@@ -174,9 +162,9 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
           if (fetchOnPressed != null)
             IconButton(
               onPressed: () async {
-                switch (await fetchOnPressed(_schema)) {
+                switch (await fetchOnPressed(widget.schema)) {
                   case Ok(value: final _): () {
-                    _schema.fetch(null).then((result) {
+                    widget.schema.fetch(null).then((result) {
                       if (result case Err error) {
                         showDialog(
                           context: context,
@@ -197,7 +185,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
             ),
         ]),
         FutureBuilder<Result<List<T>, Failure>>(
-          future: _schema.fetch(null),
+          future: widget.schema.fetch(null),
           builder: (BuildContext context, AsyncSnapshot<Result<List<T>, Failure>> snapshot) {
             final textStile = Theme.of(context).textTheme.bodyMedium;
             if (snapshot.connectionState != ConnectionState.done) {
@@ -209,24 +197,22 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
               if (result != null) {
                 return switch(result) {
                   Ok(value: final entries) => () {
-                    _log.debug(".build | snapshot entries: $entries");
+                    // _log.debug(".build | snapshot entries: $entries");
                     if (entries.isNotEmpty) {
-                      // final rows = entries;
                       return Expanded(
-                        child: ListView(
-                          shrinkWrap: true,
-                          // defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                          // border: TableBorder.all(),
-                          // columnWidths: { for (var i in [for (var i = 0; i <= 14; i++) i]) i : const IntrinsicColumnWidth() },
-                          // {
-                          //   0: IntrinsicColumnWidth(),
-                          //   1: FlexColumnWidth(),
-                          // },
-                          children: _buildRows(_schema),
+                        child: Scrollbar(
+                          thumbVisibility: true,
+                          trackVisibility: true,
+                          controller: _controller,
+                          child: ListView(
+                            shrinkWrap: true,
+                            controller: _controller,
+                            children: _buildRows(widget.schema, showDeleted, widget.editAction.onPressed),
+                          ),
                         ),
                       );
                     } else {
-                      return Center(child: Text("No orders received", style: textStile,));
+                      return Center(child: Text("No items received", style: textStile,));
                     }
                   }(),
                   Err(:final error) => () {
@@ -236,7 +222,7 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
                 };
               }
             }
-            return Center(child: Text("No orders received", style: textStile,));
+            return Center(child: Text("No items received", style: textStile,));
           },
         ),
       ],
@@ -244,31 +230,30 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
   }
   ///
   ///
-  List<Widget> _buildRows(TableSchemaAbstract<T, void> schema) {
+  List<Widget> _buildRows(TableSchemaAbstract<T, P> schema, bool showDeleted, Future<Result<T, void>> Function(TableSchemaAbstract<T, P>)? onDoubleTap) {
     // final textStile = Theme.of(context).textTheme.bodyMedium;
     final rows = [TRow<T>(fields: schema.fields)];
-    final showDeleted = _showDeleted ?? false;
     rows.addAll(
-      schema.entries
+      schema.entries.values
       .where((entry) {
-        final deleted = entry.value('deleted').str;
-        final isDeleted = deleted != null && deleted.isNotEmpty && deleted.toLowerCase() != 'null';
+        final deleted = '${entry.value('deleted').value ?? ''}'.toLowerCase();
+        final isDeleted = deleted.isNotEmpty && deleted != 'null';
         return showDeleted || (!showDeleted && !isDeleted);
       })
       .map((entry) {
-        _log.debug("._buildRows | entry: $entry");
+        // _log.debug("._buildRows | entry: $entry");
         return TRow<T>(
           entry: entry,
           fields: schema.fields,
           relations: schema.relations,
-          onEditingComplete: _updateEntry,
+          onSelectionChange: (entry) {},
+          onEditingComplete: (entry) => _updateEntry(schema, entry),
           onDoubleTap: () async {
-            final onPressed = _editAction.onPressed;
-            if (onPressed != null) {
-              switch (await onPressed(_schema)) {
+            if (onDoubleTap != null) {
+              switch (await onDoubleTap(schema)) {
                 case Ok(value: final entry): () {
                   if (entry.isChanged) {
-                    _schema.update(entry).then((result) {
+                    schema.update(entry).then((result) {
                       if (result case Err error) {
                         showDialog(
                           context: context,
@@ -294,9 +279,9 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
   }
   ///
   ///
-  _updateEntry(T entry) {
+  _updateEntry(TableSchemaAbstract<T, P> schema, T entry) {
     if (entry.isChanged) {
-      _schema.update(entry).then((result) {
+      schema.update(entry).then((result) {
         if (result is Err) {
           showDialog(
             context: context,
@@ -310,31 +295,3 @@ class _TableWidgetState<T extends SchemaEntryAbstract, P> extends State<TableWid
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ///
-  // ///
-  // List<Widget> _buildHead(List<Field> fields, textStyle) {
-  //   final cells = fields
-  //     .where((field) => !field.hidden)
-  //     .map((field) {
-  //       return TCell(
-  //         value: field.name,
-  //         style: textStyle,
-  //         editable: false,
-  //       );
-  //     }).toList();
-  //   return cells;
-  // }

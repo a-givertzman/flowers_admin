@@ -21,15 +21,15 @@ declare
 	result_account numeric(20, 2);
 	result_error text = null;
 begin
-	call raise_notice(format('edit_transaction | start with:'));	
-	call raise_notice(format('edit_transaction | 	value  : ' || value_));	
+	call log_info(format('edit_transaction | start with:'));	
+	call log_info(format('edit_transaction | 	value  : ' || value_));	
 	select tr.customer_account into account_before from public.transaction tr
 	 	where tr.id = id_;
 	select c.account, c.name into account_, name_ from public.customer c
 	 	where c.id = customer_id_;
-	call raise_notice(format('edit_transaction | 	name_         : ' || name_));	
-	call raise_notice(format('edit_transaction | 	account_before: ' || account_before));	
-	call raise_notice(format('edit_transaction | 	account_      : ' || account_));	
+	call log_info(format('edit_transaction | 	name_         : ' || name_));	
+	call log_info(format('edit_transaction | 	account_before: ' || account_before));	
+	call log_info(format('edit_transaction | 	account_      : ' || account_));	
     if (not allow_indebted and account_before + value_ > 0.0) or (allow_indebted and account_before > 0.0) THEN
 		-- revert customer account 
 		execute 'update public.customer SET account = ' || account_before 
@@ -62,39 +62,39 @@ begin
 				|| 'where id = ' || id_ || ';';
 		end if;
 	else
-		select 'Error: Insufficient funds' into result_error;
+		select 'Err: Insufficient funds' into result_error;
     end if;
 	select c.account into result_account from public.customer c
 	 	where c.id = customer_id_;
-	call raise_notice('edit_transaction | result_account: ' || result_account);
-	call raise_notice('edit_transaction | result_error  : ' || coalesce(result_error, ''));
+	call log_info('edit_transaction | result_account: ' || result_account);
+	call log_info('edit_transaction | result_error  : ' || coalesce(result_error, ''));
 	return query values (result_account, result_error);
 end
 $$;
-
+--
 -- Testing
-select * from edit_transaction(4, 15, 2, -33.33, 'Testing transaction - 33.33', null, 'Empty description', false);
-select * from edit_transaction(4, 15, 2,  11.11, 'Testing transaction + 11.11', null, 'Empty description', false);
-select * from edit_transaction(4, 15, 2, 100.33, 'Testing transaction +100.33', null, 'Empty description', false);
-select * from edit_transaction(4, 15, 2, -430.33, 'Testing transaction -430.33', null, 'Empty description', false);
-select * from edit_transaction(4, 15, 2, -330.34, 'Testing transaction -330.34', null, 'Empty description', false);
-
-select
-    t.id,
-    t.author_id,
-    t.customer_id,
-    t.customer_account,
-    t.value,
-    t.customer_account + t.value as after,
-    c.account,
-    t.details,
-    t.order_id,
-    t.description,
-    t.created,
-    t.updated,
-    t.deleted
-from public."transaction" t
-join customer c on c.id = t.customer_id;
+-- select * from edit_transaction(4, 15, 2, -33.33, 'Testing transaction - 33.33', null, 'Empty description', false);
+-- select * from edit_transaction(4, 15, 2,  11.11, 'Testing transaction + 11.11', null, 'Empty description', false);
+-- select * from edit_transaction(4, 15, 2, 100.33, 'Testing transaction +100.33', null, 'Empty description', false);
+-- select * from edit_transaction(4, 15, 2, -430.33, 'Testing transaction -430.33', null, 'Empty description', false);
+-- select * from edit_transaction(4, 15, 2, -330.34, 'Testing transaction -330.34', null, 'Empty description', false);
+--
+-- select
+--     t.id,
+--     t.author_id,
+--     t.customer_id,
+--     t.customer_account,
+--     t.value,
+--     t.customer_account + t.value as after,
+--     c.account,
+--     t.details,
+--     t.order_id,
+--     t.description,
+--     t.created,
+--     t.updated,
+--     t.deleted
+-- from public."transaction" t
+-- join customer c on c.id = t.customer_id;
 
 
 
