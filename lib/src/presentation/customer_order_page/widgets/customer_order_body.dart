@@ -11,6 +11,7 @@ import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget
 import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
+import 'package:flowers_admin/src/presentation/customer_order_page/widgets/edit_customer_order_form.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 import 'package:hmi_core/hmi_core_result.dart';
@@ -101,7 +102,7 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
           // const Field(hidden: false, editable: true, key: 'purchase'),
           // const Field(hidden: false, editable: true, key: 'product'),
                 Field(flex: 05, hidden: false, editable: true, title: 'Count'.inRu, key: 'count', hint: 'Количество единиц товара по позиции'.inRu),
-                Field(flex: 05, hidden: false, editable: true, title: 'Cost'.inRu, key: 'cost', hint: 'Цена заказа с учетом количества единиц товара и стоимости доставки'.inRu),
+                Field(flex: 05, hidden: false, editable: false, title: 'Cost'.inRu, key: 'cost', hint: 'Цена заказа с учетом количества единиц товара и стоимости доставки'.inRu),
                 Field(flex: 05, hidden: false, editable: true, title: 'Paid'.inRu, key: 'paid', hint: 'Сумма уже оплаченная клиентом по позиции'.inRu),
                 Field(flex: 05, hidden: false, editable: true, title: 'Distributed'.inRu, key: 'distributed', hint: 'Количество единиц товара, выданных клиенту'.inRu),
                 Field(flex: 05, hidden: false, editable: true, title: 'To refound'.inRu, key: 'to_refound', hint: 'Сумма подлежащщая к возврату по позиции'.inRu),
@@ -263,7 +264,26 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
               }, 
               icon: const Icon(Icons.add),
             ),
-          
+            editAction: TableWidgetAction(
+              onPressed: (schema) {
+                final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
+                if (toBeUpdated.isNotEmpty) {
+                  return showDialog<Result<EntryCustomerOrder, void>?>(
+                    context: context, 
+                    builder: (_) => EditCustomerOrderForm(fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
+                  ).then((result) {
+                    _log.debug('.build | edited entry: $result');
+                    return switch (result) {
+                      Ok(:final value) => Ok(value),
+                      Err(:final error) => Err(error),
+                      _ => const Err(null),
+                    };
+                  });
+                }
+                return Future.value(Err(null));
+              }, 
+              icon: const Icon(Icons.add),
+            ),      
           ),
         ),
       ],
