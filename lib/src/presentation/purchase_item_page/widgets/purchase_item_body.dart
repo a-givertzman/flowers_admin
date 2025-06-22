@@ -224,7 +224,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
     };
   }
   ///
-  ///
+  /// Returns [Field] by it's key
   Field _field(List<Field> fields, String key) {
     return fields.firstWhere((element) => element.key == key, orElse: () {
       return Field<EntryPurchaseItem>(key: key);
@@ -379,8 +379,8 @@ Future<Result<void, void>> showConfirmDialog(BuildContext context, title, conten
 ///
 ///
 class PurchaseItemSqlParam {
-  String? purchase_id;
+  String? purchaseId;
   PurchaseItemSqlParam({
-    this.purchase_id,
+    this.purchaseId,
   });
 }
