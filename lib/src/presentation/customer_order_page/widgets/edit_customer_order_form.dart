@@ -199,6 +199,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
                       TextEditWidget(
                         labelText: _field('description').title.inRu,
                         value: '${_entry.value('description').value}',
+                        editable: false,
                         onComplete: (value) {
                           _entry.update('description', value);
                           setState(() {return;});
