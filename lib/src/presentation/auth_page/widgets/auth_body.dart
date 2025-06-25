@@ -135,13 +135,13 @@ class AuthBodyState extends State<AuthBody> {
                             ),
                           );
                         case Err(:final error):
-                          _log.debug(".build | result has error: $error");
+                          _log.warn(".build | result has error: $error");
                           return FailureWidget(
                             onReload: () => setState(() {}),
                             error: '$error',
                           );
                         case null:
-                          _log.debug(".build | snapshot has error: ${snapshot.error}");
+                          _log.warn(".build | snapshot has error: ${snapshot.error}");
                           return FailureWidget(
                             onReload: () => setState(() {}),
                             error: '${snapshot.error}',
