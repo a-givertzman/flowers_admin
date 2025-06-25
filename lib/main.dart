@@ -19,7 +19,7 @@ import 'package:window_size/window_size.dart';
 void main() async {
   runZonedGuarded(
     () async {
-      Log.initialize(level: LogLevel.trace);
+      Log.initialize(level: LogLevel.debug);
       WidgetsFlutterBinding.ensureInitialized();
       if (!kIsWeb) {
         if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
