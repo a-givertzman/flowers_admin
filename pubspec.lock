@@ -260,7 +260,7 @@ packages:
     description:
       path: "."
       ref: "2.2.0"
-      resolved-ref: "545288bee07307fb7e5c5703dd0c07fbf4f675e3"
+      resolved-ref: c643690a81123bba93b84057a561f702acdf0738
       url: "https://github.com/a-givertzman/hmi_core.git"
     source: git
     version: "2.1.6"
