@@ -19,7 +19,7 @@ dependencies:
     # path: ../hmi_core
     git:
       url: https://github.com/a-givertzman/hmi_core.git
-      ref: 2.1.6
+      ref: 2.2.0
   ext_rw:
     path: ../ext_rw
     # git:
