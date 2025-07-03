@@ -196,6 +196,7 @@ class _EditProductFormState extends State<EditTransactionForm> {
         ),
         bottomNavigationBar: BottomAppBar(
           child: OverflowBar(
+            alignment: MainAxisAlignment.end,
             children: [
               TextButton(
                 onPressed:  () {

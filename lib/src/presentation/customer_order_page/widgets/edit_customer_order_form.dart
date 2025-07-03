@@ -214,6 +214,7 @@ class _EditCustomerOrderFormState extends State<EditCustomerOrderForm> {
         ),
         bottomNavigationBar: BottomAppBar(
           child: OverflowBar(
+            alignment: MainAxisAlignment.end,
             children: [
               TextButton(
                 onPressed:  () {
