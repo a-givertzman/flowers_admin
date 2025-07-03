@@ -3,6 +3,7 @@ import 'package:flowers_admin/src/core/settings/settings.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/user_password.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/presentation/auth_page/widgets/enter_pass_widget.dart';
 import 'package:flowers_admin/src/presentation/core/error/failure_widget.dart';
@@ -68,7 +69,6 @@ class AuthBodyState extends State<AuthBody> {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        backgroundColor: Colors.blueGrey,
         body: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -121,18 +121,25 @@ class AuthBodyState extends State<AuthBody> {
                                     });
                                     showDialog<Result<void, void>?>(
                                       context: context, 
-                                      builder: (_) => EnterPassWidget(user: _user),
-                                    ).then((result) {
-                                      _log.debug('.build | Password: $result');
-                                      if (result case Ok(:final value)) {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) => HomePage(
-                                            authToken: authToken,
-                                            user: _user,
-                                          )),
-                                        );
-                                      }
-                                    });
+                                      builder: (BuildContext context) => EnterPassWidget(
+                                        user: _user,
+                                        onComplete: (val) {
+                                          final pass = UserPassword(value: val);
+                                          if (pass.encrypted() == user.value('pass').value) {
+                                            _log.debug('.build | Password: Ok');
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(builder: (context) => HomePage(
+                                                authToken: authToken,
+                                                user: _user,
+                                              )),
+                                            );
+                                          } else {
+                                            _log.debug('.build | Password: wrong');
+                                          }
+                                        },
+                                      ),
+                                    );
                                   },
                                   tileColor: index.isOdd ? oddItemColor : evenItemColor,
                                   leading: Text('$userId'),

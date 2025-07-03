@@ -25,8 +25,8 @@ class _EnterPassWidgetState extends State<EnterPassWidget> {
   //
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(64.0),
+    return SafeArea(
+      minimum: EdgeInsets.symmetric(horizontal: 512, vertical: 256),
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -36,11 +36,10 @@ class _EnterPassWidgetState extends State<EnterPassWidget> {
           padding: const EdgeInsets.all(16.0),
           child: Center(
             child: Card(
-              margin: const EdgeInsets.only(top: 16.0, right: 16.0, bottom: 16.0),
+              margin: const EdgeInsets.symmetric(horizontal: 64.0, vertical: 16.0),
               child: TextEditWidget(
                 labelText: 'Enter your password'.inRu,
                 value: '',
-                editable: false,
                 onComplete: (value) {
                   _val = value;
                   widget.onComplete?.call(value);

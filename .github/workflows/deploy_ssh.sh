@@ -4,7 +4,6 @@ RED='\033[0;31m'          # Red
 GREEN='\033[0;32m'        # Green
 
 targetUser='root'
-targetPass='36du6dA6GEoD'
 targetHost='95.142.42.240'
 targetPath='/var/www/html/'
 
