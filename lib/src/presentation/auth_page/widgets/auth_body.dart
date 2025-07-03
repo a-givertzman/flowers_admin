@@ -4,6 +4,7 @@ import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
+import 'package:flowers_admin/src/presentation/auth_page/widgets/enter_pass_widget.dart';
 import 'package:flowers_admin/src/presentation/core/error/failure_widget.dart';
 import 'package:flowers_admin/src/presentation/home_page/home_page.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +108,7 @@ class AuthBodyState extends State<AuthBody> {
                                 final user = users[index];
                                 final userId = user.value('id').value;
                                 final userName = '${user.value('name').value}';
-                                final userPhone = '${user.value('phone').value}';
+                                // final userPhone = '${user.value('phone').value}';
                                 final userRole = AppUserRole.from('${user.value('role').value}');
                                 return ListTile(
                                   onTap: () {
@@ -118,18 +119,26 @@ class AuthBodyState extends State<AuthBody> {
                                         role: userRole,
                                       );
                                     });
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) => HomePage(
-                                        authToken: authToken,
-                                        user: _user,
-                                      )),
-                                    );
+                                    showDialog<Result<void, void>?>(
+                                      context: context, 
+                                      builder: (_) => EnterPassWidget(user: _user),
+                                    ).then((result) {
+                                      _log.debug('.build | Password: $result');
+                                      if (result case Ok(:final value)) {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) => HomePage(
+                                            authToken: authToken,
+                                            user: _user,
+                                          )),
+                                        );
+                                      }
+                                    });
                                   },
                                   tileColor: index.isOdd ? oddItemColor : evenItemColor,
                                   leading: Text('$userId'),
                                   title: Text(userName),
-                                  subtitle: Text(userPhone),
-                                  trailing: Text('$userRole'),
+                                  // subtitle: Text(userPhone),
+                                  trailing: Text(userRole.str),
                                 );
                               },
                             ),
