@@ -137,14 +137,19 @@ class AuthBodyState extends State<AuthBody> {
                                           } else {
                                             showDialog<Result<void, void>?>(
                                               context: context, 
-                                              builder: (_) => AlertDialog.adaptive(
-                                                title: Text('Error'.inRu),
-                                                icon: Icon(Icons.cancel_outlined),
-                                                content: Text('Wrong password'.inRu),
-                                                // child: Card(
-                                                //   child: ListTile(
-                                                //   )
-                                                // ),
+                                              builder: (_) => AlertDialog(
+                                                title: Text('Wrong password'.inRu),
+                                                // icon: Icon(Icons.cancel_outlined),
+                                                // iconColor: Theme.of(context).colorScheme.error,
+                                                content: Text('Please check your password and try again'.inRu),
+                                                shadowColor: Theme.of(context).colorScheme.error,
+                                                actionsAlignment: MainAxisAlignment.end,
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () => Navigator.of(context).pop(),
+                                                    child: Text('Ok'.inRu),
+                                                  ),
+                                                ],
                                               ),
                                             );
                                             _log.debug('.build | Password: wrong');
