@@ -135,6 +135,15 @@ class AuthBodyState extends State<AuthBody> {
                                               )),
                                             );
                                           } else {
+                                            showDialog<Result<void, void>?>(
+                                              context: context, 
+                                              builder: (_) => Card(
+                                                child: ListTile(
+                                                  leading: Icon(Icons.cancel_outlined),
+                                                  title: Text('Wrong password'.inRu),
+                                                )
+                                              ),
+                                            );
                                             _log.debug('.build | Password: wrong');
                                           }
                                         },
