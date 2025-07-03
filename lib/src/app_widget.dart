@@ -23,7 +23,7 @@ class AppWidget extends StatefulWidget {
 
 ///
 class _AppWidgetState extends State<AppWidget> {
-  AppUser _user = AppUser.empty();
+  final AppUser _user = AppUser.empty();
   //
   //
   @override
