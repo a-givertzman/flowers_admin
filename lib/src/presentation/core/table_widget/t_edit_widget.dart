@@ -73,6 +73,7 @@ class _TEditWidgetState<T extends SchemaEntryAbstract> extends State<TEditWidget
         },
         child: TextField(
           controller: _controller,
+          enabled: widget.editable,
           style: style,
           textAlign: _textAlign,
             decoration: InputDecoration(
@@ -122,7 +123,11 @@ class _TEditWidgetState<T extends SchemaEntryAbstract> extends State<TEditWidget
               child: widget.hint.isEmpty
                 ? Text(
                   _controller.text,
-                  style: style?.copyWith(color: _isChanged ? Colors.blue : null),
+                  style: style?.copyWith(
+                    color: editable 
+                      ? (_isChanged ? Colors.blue : null)
+                      : Theme.of(context).disabledColor,
+                  ),
                   textAlign: _textAlign,
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,

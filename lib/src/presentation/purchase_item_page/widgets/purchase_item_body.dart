@@ -224,7 +224,7 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
     };
   }
   ///
-  ///
+  /// Returns [Field] by it's key
   Field _field(List<Field> fields, String key) {
     return fields.firstWhere((element) => element.key == key, orElse: () {
       return Field<EntryPurchaseItem>(key: key);
@@ -250,7 +250,6 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
                     entries: _schema.relations[purchaseField.relation.id] ?? [],
                     field: purchaseField.relation.field,
                   ),
-                  editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
                   style: Theme.of(context).textTheme.bodyLarge,
                   labelText: _field(_schema.fields, 'purchase_id').title.inRu,
                   onComplete: (purchaseId) {
@@ -379,8 +378,8 @@ Future<Result<void, void>> showConfirmDialog(BuildContext context, title, conten
 ///
 ///
 class PurchaseItemSqlParam {
-  String? purchase_id;
+  String? purchaseId;
   PurchaseItemSqlParam({
-    this.purchase_id,
+    this.purchaseId,
   });
 }

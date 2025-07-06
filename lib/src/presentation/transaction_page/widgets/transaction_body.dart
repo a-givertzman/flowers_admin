@@ -5,6 +5,8 @@ import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/transaction/entry_transaction.dart';
+import 'package:flowers_admin/src/presentation/core/form_widget/edit_list_widget.dart';
+import 'package:flowers_admin/src/presentation/core/table_widget/edit_list_entry.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget.dart';
 import 'package:flowers_admin/src/presentation/core/table_widget/table_widget_add_action.dart';
 import 'package:flowers_admin/src/presentation/transaction_page/widgets/add_transaction_form.dart';
@@ -46,6 +48,9 @@ class _TransactionBodyState extends State<TransactionBody> {
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   late final RelationSchema<EntryTransaction, void> _schema;
+  String _authorId = '';
+  String _customerId = '';
+
   ///
   ///
   _TransactionBodyState({
@@ -77,7 +82,14 @@ class _TransactionBodyState extends State<TransactionBody> {
           authToken: _authToken, 
           database: _database, 
           sqlBuilder: (sql, params) {
-            return Sql(sql: 'select * from transaction order by id;');
+            if (_authorId.isNotEmpty && _customerId.isNotEmpty) {
+              return Sql(sql: 'select * from transaction where author_id = $_authorId and customer_id = $_customerId order by created;');
+            } else if (_authorId.isNotEmpty) {
+              return Sql(sql: 'select * from transaction where author_id = $_authorId order by created;');
+            } else if (_customerId.isNotEmpty) {
+              return Sql(sql: 'select * from transaction where customer_id = $_customerId order by created;');
+            }
+            return Sql(sql: 'select * from transaction order by created;');
           },
           entryBuilder: (row) => EntryTransaction.from(row.cast()),
           debug: true,
@@ -168,82 +180,157 @@ class _TransactionBodyState extends State<TransactionBody> {
       ),
     };
   }
+  ///
+  /// Returns [Field] by it's key
+  Field _field(List<Field> fields, String key) {
+    return fields.firstWhere((element) => element.key == key, orElse: () {
+      return Field<EntryTransaction>(key: key);
+    },);
+  }
   //
   //
   @override
   Widget build(BuildContext context) {
-    return TableWidget<EntryTransaction, void>(
-      showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
-      fetchAction: TableWidgetAction(
-        onPressed: (schema) {
-          return Future.value(Ok(EntryTransaction.empty()));
-        }, 
-        icon: const Icon(Icons.add),
-      ),
-      addAction: TableWidgetAction(
-        onPressed: (schema) {
-          return showDialog<Result<EntryTransaction, void>?>(
-            context: context, 
-            builder: (_) => AddTransactionForm(user: _user, fields: schema.fields, relations: schema.relations,),
-          ).then((result) {
-            _log.debug('.build | new entry: $result');
-            return switch (result) {
-              Ok(:final value) => Ok(value),
-              Err(:final error) => Err(error),
-              _ => const Err(null),
-            };
-          });
-        }, 
-        icon: const Icon(Icons.add),
-      ),
-      editAction: TableWidgetAction(
-        onPressed: (schema) {
-          final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
-          if (toBeUpdated.isNotEmpty) {
-            return showDialog<Result<EntryTransaction, void>?>(
-              context: context, 
-              builder: (_) => EditTransactionForm(user: _user, fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
-            ).then((result) {
-              _log.debug('.build | edited entry: $result');
-              return switch (result) {
-                Ok(:final value) => Ok(value),
-                Err(:final error) => Err(error),
-                _ => const Err(null),
-              };
-            });
+    final authorField = _field(_schema.fields, 'author_id');
+    final customerField = _field(_schema.fields, 'customer_id');
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        StreamBuilder(
+          stream: _schema.stream,
+          builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+            switch (snapshot.data) {
+              case Ok(value: _):
+                return EditListWidget(
+                  id: _authorId,
+                  relation: EditListEntry(
+                    entries: _schema.relations[authorField.relation.id] ?? [],
+                    field: authorField.relation.field,
+                  ),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  labelText: _field(_schema.fields, 'author_id').title.inRu,
+                  onComplete: (authorId) {
+                    if (authorId != _authorId) {
+                      setState(() {
+                        _authorId = authorId;
+                      });
+                    }
+                  },
+                );
+              case Err(error: _):                
+                return CircularProgressIndicator();
+              case null:                
+                return CircularProgressIndicator();
+            }
+            return CircularProgressIndicator.adaptive();
           }
-          return Future.value(Err(null));
-        }, 
-        icon: const Icon(Icons.add),
-      ),      
-      delAction: TableWidgetAction(
-        onPressed: (schema) {
-          final toBeDeleted = schema.entries.values.firstWhereOrNull((e) {
-            return e.isSelected;
-          });
-          if (toBeDeleted != null) {
-            return showConfirmDialog(
-              context, 
-              const Text('Delete Product'), 
-              Text('Are you sure want to delete transaction:\n${'amount'.inRu}: ${toBeDeleted.value('value').str}\n${'of'.inRu}: ${toBeDeleted.value('updated').str}'),
-              [AppUserRole.admin].contains(_user.role),
-            ).then((value) {
-              return switch (value) {
-                Ok(value :final allowIndebted) => Ok((bool allowIndebted, EntryTransaction toBeDeleted) {
-                  if (allowIndebted) {
-                    toBeDeleted.update('allow_indebted', true);
-                  }
-                  return toBeDeleted;
-                }(allowIndebted ?? false, toBeDeleted)),
-                Err(:final error) => Err(error),
-              };
-            });
+        ),
+        StreamBuilder(
+          stream: _schema.stream,
+          builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+            switch (snapshot.data) {
+              case Ok(value: _):
+                return EditListWidget(
+                  id: _customerId,
+                  relation: EditListEntry(
+                    entries: _schema.relations[customerField.relation.id] ?? [],
+                    field: customerField.relation.field,
+                  ),
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  labelText: customerField.title.inRu,
+                  onComplete: (customerId) {
+                    if (customerId != _customerId) {
+                      setState(() {
+                        _customerId = customerId;
+                        _log.debug('.build.onComplete | _customerId: $_customerId');
+                      });
+                    }
+                  },
+                );
+              case Err(error: _):                
+                return CircularProgressIndicator();
+              case null:                
+                return CircularProgressIndicator();
+            }
+            return CircularProgressIndicator.adaptive();
           }
-          return Future.value(const Err(null));
-        },
-        icon: const Icon(Icons.add),
-      ),
-      schema: _schema,
+        ),
+        Expanded(
+          child: TableWidget<EntryTransaction, void>(
+            showDeleted: [AppUserRole.admin].contains(_user.role) ? false : null,
+            fetchAction: TableWidgetAction(
+              onPressed: (schema) {
+                return Future.value(Ok(EntryTransaction.empty()));
+              }, 
+              icon: const Icon(Icons.add),
+            ),
+            addAction: TableWidgetAction(
+              onPressed: (schema) {
+                return showDialog<Result<EntryTransaction, void>?>(
+                  context: context, 
+                  builder: (_) => AddTransactionForm(user: _user, fields: schema.fields, relations: schema.relations,),
+                ).then((result) {
+                  _log.debug('.build | new entry: $result');
+                  return switch (result) {
+                    Ok(:final value) => Ok(value),
+                    Err(:final error) => Err(error),
+                    _ => const Err(null),
+                  };
+                });
+              }, 
+              icon: const Icon(Icons.add),
+            ),
+            editAction: TableWidgetAction(
+              onPressed: (schema) {
+                final toBeUpdated = schema.entries.values.where((e) => e.isSelected).toList();
+                if (toBeUpdated.isNotEmpty) {
+                  return showDialog<Result<EntryTransaction, void>?>(
+                    context: context, 
+                    builder: (_) => EditTransactionForm(user: _user, fields: schema.fields, entry: toBeUpdated.lastOrNull, relations: schema.relations),
+                  ).then((result) {
+                    _log.debug('.build | edited entry: $result');
+                    return switch (result) {
+                      Ok(:final value) => Ok(value),
+                      Err(:final error) => Err(error),
+                      _ => const Err(null),
+                    };
+                  });
+                }
+                return Future.value(Err(null));
+              }, 
+              icon: const Icon(Icons.add),
+            ),      
+            delAction: TableWidgetAction(
+              onPressed: (schema) {
+                final toBeDeleted = schema.entries.values.firstWhereOrNull((e) {
+                  return e.isSelected;
+                });
+                if (toBeDeleted != null) {
+                  return showConfirmDialog(
+                    context, 
+                    const Text('Delete Product'), 
+                    Text('Are you sure want to delete transaction:\n${'amount'.inRu}: ${toBeDeleted.value('value').str}\n${'of'.inRu}: ${toBeDeleted.value('updated').str}'),
+                    [AppUserRole.admin].contains(_user.role),
+                  ).then((value) {
+                    return switch (value) {
+                      Ok(value :final allowIndebted) => Ok((bool allowIndebted, EntryTransaction toBeDeleted) {
+                        if (allowIndebted) {
+                          toBeDeleted.update('allow_indebted', true);
+                        }
+                        return toBeDeleted;
+                      }(allowIndebted ?? false, toBeDeleted)),
+                      Err(:final error) => Err(error),
+                    };
+                  });
+                }
+                return Future.value(const Err(null));
+              },
+              icon: const Icon(Icons.add),
+            ),
+            schema: _schema,
+          ),
+        ),
+      ],
     );
   }
   //

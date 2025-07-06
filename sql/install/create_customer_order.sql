@@ -38,6 +38,7 @@ CREATE OR REPLACE VIEW public.customer_order_view AS
         cord.deleted as deleted,
         cu.name AS customer,
         p.name AS product,
+        p.picture AS picture,
         pu.name AS purchase
     FROM customer_order cord
         JOIN customer cu ON cord.customer_id = cu.id

@@ -68,6 +68,7 @@ const tr = {
   'Purchase': {Lang.en: 'Purchase', Lang.ru: 'Закупка'},
   'Purchases': {Lang.en: 'Purchases', Lang.ru: 'Закупки'},
   'PurchaseItems': {Lang.en: 'Purchase Items', Lang.ru: 'Позиции закупок'},
+  'Purchase Item': {Lang.en: 'Purchase Item', Lang.ru: 'Позиция в закупке'},
   'Orders': {Lang.en: 'Orders', Lang.ru: 'Заказы'},
   'Count': {Lang.en: 'Count', Lang.ru: 'Кол-во'},
   'Paid': {Lang.en: 'Paid', Lang.ru: 'Оплачено'},
@@ -77,6 +78,11 @@ const tr = {
   'Refounded': {Lang.en: 'Refounded', Lang.ru: 'Возвращено'},
   'No date': {Lang.en: 'No date', Lang.ru: 'Нет даты'},
   'Allow indebted': {Lang.en: 'Allow indebted', Lang.ru: 'Разрешить долг'},
+  'Perform payments': {Lang.en: 'Perform payments', Lang.ru: 'Провести платежи'},
+  'Payments will be performed for selected Customers by selected Purchase items': {
+    Lang.en: 'Payments will be performed for selected Customers by selected Purchase items',
+    Lang.ru: 'Платежи будут проведены для выбранных Клиентов по выбранным позициям закупок',
+  },
 };
 ///
 /// Simple translate

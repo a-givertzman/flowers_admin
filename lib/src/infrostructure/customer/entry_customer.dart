@@ -99,42 +99,35 @@ class EntryCustomer implements SchemaEntryAbstract {
     if (entry.isEmpty) {
       return Sql(sql: "select ;");
     } else {
-      return Sql(sql: """UPDATE customer SET (
-          id,
-          role,
-          email,
-          phone,
-          name,
-          location,
-          login,
-          pass,
-          account,
-          last_act,
-          blocked,
-          picture
-          created,
-          updated,
-          deleted
-        ) = (
-          ${entry.value('id').str},
-          ${entry.value('role').str},
-          ${entry.value('email').str},
-          ${entry.value('phone').str},
-          ${entry.value('name').str},
-          ${entry.value('location').str},
-          ${entry.value('login').str},
-          ${entry.value('pass').str},
-          ${entry.value('account').str},
-          ${entry.value('last_act').str},
-          ${entry.value('blocked').str},
-          ${entry.value('picture').str},
-          ${entry.value('created').str},
-          ${entry.value('updated').str},
-          ${entry.value('deleted').str}
-        )
+      final m = {
+        if (entry.value('id').isChanged) ...{'id': entry.value('id').str},
+        if (entry.value('role').isChanged) ...{'role': entry.value('role').str},
+        if (entry.value('email').isChanged) ...{'email': entry.value('email').str},
+        if (entry.value('phone').isChanged) ...{'phone': entry.value('phone').str},
+        if (entry.value('name').isChanged) ...{'name': entry.value('name').str},
+        if (entry.value('location').isChanged) ...{'location': entry.value('location').str},
+        if (entry.value('login').isChanged) ...{'login': entry.value('login').str},
+        if (entry.value('pass').isChanged) ...{'pass': entry.value('pass').str},
+        if (entry.value('account').isChanged) ...{'account': entry.value('account').str},
+        if (entry.value('last_act').isChanged) ...{'last_act': entry.value('last_act').str},
+        if (entry.value('blocked').isChanged) ...{'blocked': entry.value('blocked').str},
+        if (entry.value('picture').isChanged) ...{'picture': entry.value('picture').str},
+        if (entry.value('deleted').isChanged) ...{'deleted': entry.value('deleted').str},
+      };
+      final keys = m.keys.toList().join(',');
+      final values = m.values.toList().join(',');
+      if (m.length > 1) {
+        return Sql(sql: """UPDATE public.customer SET (
+            $keys
+          ) = (
+            $values
+          )
+          WHERE id = ${entry.value('id').str};
+        """);
+      }
+      return Sql(sql: """UPDATE public.customer SET $keys = $values
         WHERE id = ${entry.value('id').str};
-        """,
-      );
+      """);
     }
   }
   ///

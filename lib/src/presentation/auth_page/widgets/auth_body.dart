@@ -3,7 +3,9 @@ import 'package:flowers_admin/src/core/settings/settings.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
+import 'package:flowers_admin/src/infrostructure/app_user/user_password.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
+import 'package:flowers_admin/src/presentation/auth_page/widgets/enter_pass_widget.dart';
 import 'package:flowers_admin/src/presentation/core/error/failure_widget.dart';
 import 'package:flowers_admin/src/presentation/home_page/home_page.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +35,7 @@ class AuthBodyState extends State<AuthBody> {
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   AppUser _user = AppUser.empty();
+  bool isAuthenticated = false;
   //
   //
   @override
@@ -67,7 +70,6 @@ class AuthBodyState extends State<AuthBody> {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        backgroundColor: Colors.blueGrey,
         body: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,7 +109,7 @@ class AuthBodyState extends State<AuthBody> {
                                 final user = users[index];
                                 final userId = user.value('id').value;
                                 final userName = '${user.value('name').value}';
-                                final userPhone = '${user.value('phone').value}';
+                                // final userPhone = '${user.value('phone').value}';
                                 final userRole = AppUserRole.from('${user.value('role').value}');
                                 return ListTile(
                                   onTap: () {
@@ -118,30 +120,62 @@ class AuthBodyState extends State<AuthBody> {
                                         role: userRole,
                                       );
                                     });
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) => HomePage(
-                                        authToken: authToken,
+                                    showDialog<Result<void, void>?>(
+                                      context: context, 
+                                      builder: (BuildContext context) => EnterPassWidget(
                                         user: _user,
-                                      )),
+                                        onComplete: (val) async {
+                                          final pass = UserPassword(value: val);
+                                          if (pass.encrypted() == user.value('pass').value) {
+                                            _log.debug('.build | Password: Ok');
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(builder: (context) => HomePage(
+                                                authToken: authToken,
+                                                user: _user,
+                                              )),
+                                            );
+                                          } else {
+                                            await showDialog<Result<void, void>?>(
+                                              context: context, 
+                                              builder: (_) => AlertDialog(
+                                                title: Text('Wrong password'.inRu),
+                                                // icon: Icon(Icons.cancel_outlined),
+                                                // iconColor: Theme.of(context).colorScheme.error,
+                                                content: Text('Please check your password and try again'.inRu),
+                                                shadowColor: Theme.of(context).colorScheme.error,
+                                                actionsAlignment: MainAxisAlignment.end,
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () => Navigator.of(context).pop(),
+                                                    child: Text('Ok'.inRu),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                            _log.debug('.build | Password: wrong');
+                                          }
+                                        },
+                                      ),
                                     );
                                   },
                                   tileColor: index.isOdd ? oddItemColor : evenItemColor,
                                   leading: Text('$userId'),
                                   title: Text(userName),
-                                  subtitle: Text(userPhone),
-                                  trailing: Text('$userRole'),
+                                  // subtitle: Text(userPhone),
+                                  trailing: Text(userRole.str),
                                 );
                               },
                             ),
                           );
                         case Err(:final error):
-                          _log.debug(".build | result has error: $error");
+                          _log.warn(".build | result has error: $error");
                           return FailureWidget(
                             onReload: () => setState(() {}),
                             error: '$error',
                           );
                         case null:
-                          _log.debug(".build | snapshot has error: ${snapshot.error}");
+                          _log.warn(".build | snapshot has error: ${snapshot.error}");
                           return FailureWidget(
                             onReload: () => setState(() {}),
                             error: '${snapshot.error}',

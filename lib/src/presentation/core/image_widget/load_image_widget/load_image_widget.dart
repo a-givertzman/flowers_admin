@@ -133,10 +133,7 @@ class _LoadImageWidgetState extends State<LoadImageWidget> {
     if (fileId != null) {
       return Ok('https://drive.google.com/uc?export=view&id=$fileId');
     }
-    return Err(Failure(
-      message: '${'Invalid Google Drive url'.inRu} $url',
-      stackTrace: StackTrace.current,
-    ));
+    return Err(Failure('$runtimeType._fromGoogleDrive | ${'Invalid Google Drive url'.inRu} $url'));
   }
 }
 

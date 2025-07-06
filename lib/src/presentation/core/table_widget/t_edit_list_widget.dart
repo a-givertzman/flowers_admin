@@ -56,7 +56,7 @@ class _TEditListWidgetState extends State<TEditListWidget> {
     final defaultStyle = Theme.of(context).textTheme.bodyLarge;
     final style = widget.editable
       ? widget.style ?? defaultStyle
-      : (widget.style ?? defaultStyle)?.copyWith(color: (widget.style ?? defaultStyle)?.color?.withValues(alpha: 0.5));
+      : (widget.style ?? defaultStyle)?.copyWith(color: Theme.of(context).disabledColor);
     if (_isEditing) {
       return TapRegion(
         onTapOutside: (PointerDownEvent _) {
