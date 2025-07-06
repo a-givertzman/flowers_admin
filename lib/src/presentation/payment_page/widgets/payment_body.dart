@@ -141,7 +141,7 @@ class _PaymentBodyState extends State<PaymentBody> {
               _purchases[item.value('id').value] = EntryPayPurchase.from({
                 'pay': true,
                 'id': item.value('purchase_id').value,
-                'name': '${item.value('purchase').value} | ${item.value('product').value}',
+                'name': '${item.value('purchase').value}  |  ${item.value('product').value}',
               });
             });
             _purchasesStream.add(0);
