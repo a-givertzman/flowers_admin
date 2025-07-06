@@ -35,6 +35,7 @@ class AuthBodyState extends State<AuthBody> {
   final _database = Setting('api-database').toString();
   final _apiAddress = ApiAddress(host: Setting('api-host').toString(), port: Setting('api-port').toInt);
   AppUser _user = AppUser.empty();
+  bool isAuthenticated = false;
   //
   //
   @override
@@ -123,7 +124,7 @@ class AuthBodyState extends State<AuthBody> {
                                       context: context, 
                                       builder: (BuildContext context) => EnterPassWidget(
                                         user: _user,
-                                        onComplete: (val) {
+                                        onComplete: (val) async {
                                           final pass = UserPassword(value: val);
                                           if (pass.encrypted() == user.value('pass').value) {
                                             _log.debug('.build | Password: Ok');
@@ -135,7 +136,7 @@ class AuthBodyState extends State<AuthBody> {
                                               )),
                                             );
                                           } else {
-                                            showDialog<Result<void, void>?>(
+                                            await showDialog<Result<void, void>?>(
                                               context: context, 
                                               builder: (_) => AlertDialog(
                                                 title: Text('Wrong password'.inRu),

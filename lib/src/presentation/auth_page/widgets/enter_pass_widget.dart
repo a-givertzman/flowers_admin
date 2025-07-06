@@ -2,6 +2,7 @@ import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
 import 'package:flowers_admin/src/presentation/core/edit_widgets/text_edit_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 ///
 /// Widget for enter and check password
@@ -21,7 +22,15 @@ class EnterPassWidget extends StatefulWidget {
 }
 //
 class _EnterPassWidgetState extends State<EnterPassWidget> {
+  final FocusNode _focusNode = FocusNode();
   String _val = '';
+  bool _listenKeyPress = true;
+  //
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
   //
   @override
   Widget build(BuildContext context) {
@@ -37,14 +46,30 @@ class _EnterPassWidgetState extends State<EnterPassWidget> {
           child: Center(
             child: Card(
               margin: const EdgeInsets.symmetric(horizontal: 64.0, vertical: 16.0),
-              child: TextEditWidget(
-                labelText: 'Enter your password'.inRu,
-                value: '',
-                onComplete: (value) {
-                  _val = value;
-                  widget.onComplete?.call(value);
-                  // setState(() {return;});
+              child: KeyboardListener(
+                focusNode: _focusNode,
+                autofocus: true,
+                onKeyEvent: (KeyEvent event) {
+                    if (event.logicalKey == LogicalKeyboardKey.enter) {
+                      _listenKeyPress = false;
+                      widget.onComplete?.call(_val);
+                    } else if (_listenKeyPress && event.logicalKey == LogicalKeyboardKey.escape) {
+                      Navigator.pop(context);
+                    } else if (!_listenKeyPress) {
+                      _listenKeyPress = true;
+                    }
                 },
+                child: TextEditWidget(
+                  labelText: 'Enter your password'.inRu,
+                  value: '',
+                  obscureText: true,
+                  onChange: (value) {
+                    _val = value;
+                    _listenKeyPress = true;
+                  }
+                  // onComplete: (value) {
+                  // },
+                ),
               ),
             ),
           ),
@@ -59,11 +84,12 @@ class _EnterPassWidgetState extends State<EnterPassWidget> {
                 child: const Text("Cancel"),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () => widget.onComplete?.call(_val),
+                  // {
                     // _log.debug('.TextButton.Yes | isChanged: ${_entry.isChanged}');
                     // _log.debug('.TextButton.Yes | enrty: $_entry');
-                    widget.onComplete?.call(_val);
-                  },
+                    // widget.onComplete?.call(_val);
+                  // },
                 child: const Text("Yes"),
               ),
             ],
