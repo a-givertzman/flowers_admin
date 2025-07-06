@@ -71,13 +71,13 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
           database: _database,
           sqlBuilder: (sql, params) {
             if (_customerId.isNotEmpty && _purchaseId.isNotEmpty) {
-              return Sql(sql: 'select * from customer_order_view where customer_id = $_customerId and purchase_id = $_purchaseId order by id;');
+              return Sql(sql: 'select * from customer_order_view where customer_id = $_customerId and purchase_id = $_purchaseId order by created;');
             } else if (_customerId.isNotEmpty) {
-              return Sql(sql: 'select * from customer_order_view where customer_id = $_customerId order by id;');
+              return Sql(sql: 'select * from customer_order_view where customer_id = $_customerId order by created;');
             } else if (_purchaseId.isNotEmpty) {
-              return Sql(sql: 'select * from customer_order_view where purchase_id = $_purchaseId order by id;');
+              return Sql(sql: 'select * from customer_order_view where purchase_id = $_purchaseId order by created;');
             }
-            return Sql(sql: 'select * from customer_order_view order by id;');
+            return Sql(sql: 'select * from customer_order_view order by created;');
           },
           entryBuilder: (row) => EntryCustomerOrder.from(row),
           debug: true,
@@ -161,7 +161,7 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
           authToken: widget.authToken,
           database: _database,
           sqlBuilder: (sql, params) {
-            return Sql(sql: 'select id, name, status from purchase order by id;');
+            return Sql(sql: 'select id, name, status from public.purchase order by id;');
           },
           entryBuilder: (row) => EntryPurchase.from(row),
           debug: true,
@@ -227,13 +227,15 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
           builder: (BuildContext ctx, AsyncSnapshot snapshot) {
             switch (snapshot.data) {
               case Ok(value: _):
+                final purchases = _schema.relations['purchase_id'];
+                _log.debug('.build | purchases: $purchases');
+
                 return EditListWidget(
                   id: _purchaseId,
                   relation: EditListEntry(
                     entries: _schema.relations[purchaseField.relation.id] ?? [],
-                    field: purchaseField.relation.field,
+                    field: 'name', //purchaseField.relation.field,
                   ),
-                  editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
                   style: Theme.of(context).textTheme.bodyLarge,
                   labelText: purchaseField.title.inRu,
                   onComplete: (purchaseId) {

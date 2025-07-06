@@ -332,10 +332,10 @@ class _PaymentBodyState extends State<PaymentBody> {
             Row(
               children: [
                 Tooltip(
-                  message: 'Perform payments',
+                  message: 'Payments will be performed for selected Customers by selected Purchase items'.inRu,
                   child: TextButton.icon(
                     onPressed: _paymentRequest,
-                    label: Text('Payments'),
+                    label: Text('Perform payments'.inRu),
                     icon: Icon(Icons.payments),
                   ),
                 ),

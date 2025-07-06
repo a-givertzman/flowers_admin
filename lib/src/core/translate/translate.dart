@@ -78,6 +78,11 @@ const tr = {
   'Refounded': {Lang.en: 'Refounded', Lang.ru: 'Возвращено'},
   'No date': {Lang.en: 'No date', Lang.ru: 'Нет даты'},
   'Allow indebted': {Lang.en: 'Allow indebted', Lang.ru: 'Разрешить долг'},
+  'Perform payments': {Lang.en: 'Perform payments', Lang.ru: 'Провести платежи'},
+  'Payments will be performed for selected Customers by selected Purchase items': {
+    Lang.en: 'Payments will be performed for selected Customers by selected Purchase items',
+    Lang.ru: 'Платежи будут проведены для выбранных Клиентов по выбранным позициям закупок',
+  },
 };
 ///
 /// Simple translate

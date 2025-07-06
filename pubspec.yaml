@@ -21,10 +21,10 @@ dependencies:
       url: https://github.com/a-givertzman/hmi_core.git
       ref: 2.2.0
   ext_rw:
-    path: ../ext_rw
-    # git:
-    #   url: https://github.com/a-givertzman/dart_ext_rw
-    #   ref: 1.2.5
+    # path: ../ext_rw
+    git:
+      url: https://github.com/a-givertzman/dart_ext_rw
+      ref: 1.2.5
   uuid: ^4.5.1
   resizable_widget: ^1.0.5
   mask_text_input_formatter: ^2.9.0
