@@ -203,7 +203,6 @@ class _CustomerOrderBodyState extends State<CustomerOrderBody> {
                     entries: _schema.relations[customerField.relation.id] ?? [],
                     field: customerField.relation.field,
                   ),
-                  editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
                   style: Theme.of(context).textTheme.bodyLarge,
                   labelText: customerField.title.inRu,
                   onComplete: (customerId) {

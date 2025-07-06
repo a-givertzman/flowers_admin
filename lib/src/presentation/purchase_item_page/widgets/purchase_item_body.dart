@@ -250,7 +250,6 @@ class _PurchaseItemBodyState extends State<PurchaseItemBody> {
                     entries: _schema.relations[purchaseField.relation.id] ?? [],
                     field: purchaseField.relation.field,
                   ),
-                  editable: [AppUserRole.admin, AppUserRole.operator].contains(widget.user.role),
                   style: Theme.of(context).textTheme.bodyLarge,
                   labelText: _field(_schema.fields, 'purchase_id').title.inRu,
                   onComplete: (purchaseId) {
