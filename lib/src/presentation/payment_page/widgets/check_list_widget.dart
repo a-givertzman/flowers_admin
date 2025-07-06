@@ -3,38 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 ///
 /// Check list
-class CheckListWidget extends StatefulWidget {
-  late final Log _log;
-  final Map<int, SchemaEntryAbstract> _items;
-  // final Widget Function(SchemaEntryAbstract) _builder;
-  final void Function(Map<int, SchemaEntryAbstract> entries)? _onChanged;
+class CheckListWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
+  final Map<int, T> items;
+  final Widget Function(T entry)? builder;
+  final void Function(Map<int, T> entries)? onChanged;
   ///
   ///
-  CheckListWidget({
+  const CheckListWidget({
     super.key,
-    required Map<int, SchemaEntryAbstract> items,
-    // required Widget Function(SchemaEntryAbstract) builder,
-    void Function(Map<int, SchemaEntryAbstract>)? onChanged,
-  }):
-    _items = items,
-    // _builder = builder,
-    _onChanged = onChanged {
-      _log = Log("$runtimeType");
-    }
+    required this.items,
+    this.builder,
+    this.onChanged,
+  });
   //
   //
   @override
-  State<CheckListWidget> createState() => _CheckListWidgetState();
+  State<CheckListWidget> createState() => _CheckListWidgetState<T>();
 }
 //
 //
-class _CheckListWidgetState extends State<CheckListWidget> {
+class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<CheckListWidget> {
+  late final Log _log;
   final ScrollController _controller = ScrollController();
   //
   //
   @override
+  void initState() {
+    _log = Log("$runtimeType");
+    super.initState();
+  }
+  //
+  //
+  @override
   Widget build(BuildContext context) {
-    widget._log.trace('.build | Customer`s (${widget._items.length}): ${widget._items.map((id, c) => MapEntry(id, c.value('name').value))}');
+    _log.trace('.build | Customer`s (${widget.items.length}): ${widget.items.map((id, c) => MapEntry(id, c.value('name').value))}');
     return Scrollbar(
       thumbVisibility: true,
       trackVisibility: true,
@@ -42,20 +44,20 @@ class _CheckListWidgetState extends State<CheckListWidget> {
       child: ListView(
         controller: _controller,
         shrinkWrap: true,
-        children: widget._items.values.map((item) {
+        children: widget.items.values.map((item) {
           return ListTile(
             leading: Checkbox(
               value: item.value('pay').value,
               onChanged: (value) {
                 item.update('pay', value);
                 setState(() {return;});
-                final onChanged = widget._onChanged;
+                final onChanged = widget.onChanged;
                 if (onChanged != null) {
-                  onChanged(widget._items);
+                  onChanged(widget.items);
                 }
               },
             ),
-            title: Text('${item.value('name').value}'),
+            title: widget.builder?.call(item) ?? Text('${item.value('name').value}'),
           );
         })
         .toList()

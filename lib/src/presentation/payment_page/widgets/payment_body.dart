@@ -4,7 +4,6 @@ import 'package:ext_rw/ext_rw.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
 import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
-import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/infrostructure/customer/entry_customer.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_customer.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase.dart';
@@ -119,9 +118,9 @@ class _PaymentBodyState extends State<PaymentBody> {
   ///
   /// Returns TableSchema
   TableSchemaAbstract<EntryPayment, void> _buildSchema() {
-    final editableAuthor = [AppUserRole.admin].contains(_user.role);
-    final editableValue = [AppUserRole.admin].contains(_user.role);
-    final editableDetails = [AppUserRole.admin].contains(_user.role);
+    // final editableAuthor = [AppUserRole.admin].contains(_user.role);
+    // final editableValue = [AppUserRole.admin].contains(_user.role);
+    // final editableDetails = [AppUserRole.admin].contains(_user.role);
     return TableSchemaReady(
       onReady: (result) {
         switch (result) {
@@ -142,7 +141,7 @@ class _PaymentBodyState extends State<PaymentBody> {
               _purchases[item.value('id').value] = EntryPayPurchase.from({
                 'pay': true,
                 'id': item.value('purchase_id').value,
-                'name': item.value('purchase').value,
+                'name': '${item.value('purchase').value} | ${item.value('product').value}',
               });
             });
             _purchasesStream.add(0);
@@ -367,7 +366,7 @@ class _PaymentBodyState extends State<PaymentBody> {
                               child: StreamBuilder<int>(
                                 stream: _purchasesStream.stream,
                                 builder: (context, snapshot) {
-                                  return CheckListWidget(
+                                  return CheckListWidget<EntryPayPurchase>(
                                     items: _purchases,
                                     onChanged: (entries) {
                                       _purchases.updateAll((key, value) {
