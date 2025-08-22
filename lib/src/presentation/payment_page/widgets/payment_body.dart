@@ -128,19 +128,29 @@ class _PaymentBodyState extends State<PaymentBody> {
             _log.trace('.build | TableSchemaReady: _schema.entries: ${_schema.entries.length}');
             _log.trace('.build | TableSchemaReady: entries: ${entries.length}');
             _customers.clear();
-            _schema.relations['customer_id']?.forEach((item) {
-              _customers[item.value('id').value] = EntryPayCustomer.from({
+            // _schema.relations['customer_id']?.forEach((item) {
+            //   _customers[item.value('id').value] = EntryPayCustomer.from({
+            //     'pay': true,
+            //     'id': item.value('id').value,
+            //     'name': item.value('name').value,
+            //   });
+            // });
+            _schema.entries.forEach((_, item) {
+              final customerId = item.value('customer_id').value;
+              _customers[customerId] = EntryPayCustomer.from({
                 'pay': true,
-                'id': item.value('id').value,
-                'name': item.value('name').value,
+                'id': customerId,
+                'name': item.value('customer').value,
               });
             });
+
             _customersStream.add(0);
             _purchases.clear();
             _schema.relations['purchase_item_id']?.forEach((item) {
-              _purchases[item.value('id').value] = EntryPayPurchase.from({
+              final purchaseId = item.value('purchase_id').value;
+              _purchases[purchaseId] = EntryPayPurchase.from({
                 'pay': true,
-                'id': item.value('purchase_id').value,
+                'id': purchaseId,
                 'name': '${item.value('purchase').value}  |  ${item.value('product').value}',
               });
             });
@@ -180,10 +190,11 @@ class _PaymentBodyState extends State<PaymentBody> {
             fields: [
               Field(hidden: false, key: 'pay', builder: _payBuilder),
               const Field(hidden: false, key: 'id'),
-              Field(hidden: false, title: 'Customer'.inRu, key: 'customer_id', relation: Relation(id: 'customer_id', field: 'name')),
+              const Field(hidden: true, key: 'customer_id'),
+              Field(hidden: false, title: 'Customer'.inRu, key: 'customer', relation: Relation(id: 'customer_id', field: 'name')),
               // const Field(hidden: false, key: 'customer'),
               // const Field(hidden: false, key: 'purchase_item_id'),
-              // Field(hidden: false, key: 'purchase_id', relation: Relation(id: 'purchase_id', field: 'name')),
+              const Field(hidden: true, key: 'purchase_id', relation: Relation(id: 'purchase_item_id', field: 'purchase_id')),
               Field(hidden: false, title: 'Purchase'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'purchase')),
               Field(hidden: false, title: 'Product'.inRu, key: 'purchase_item_id', relation: Relation(id: 'purchase_item_id', field: 'product')),
               // const Field(hidden: false, key: 'purchase'),
@@ -353,95 +364,117 @@ class _PaymentBodyState extends State<PaymentBody> {
                       Card(
                         color: Colors.amber[50],
                         margin: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16.0),
-                              child: Text('${'Purchase'.inRu} (${_purchases.length})', style: Theme.of(context).textTheme.titleMedium),
-                            ),
-                            Divider(),
-                            Expanded(
-                              child: StreamBuilder<int>(
-                                stream: _purchasesStream.stream,
-                                builder: (context, snapshot) {
-                                  return CheckListWidget<EntryPayPurchase>(
+                        child: StreamBuilder<int>(
+                          stream: _purchasesStream.stream,
+                          builder: (context, snapshot) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('${'Purchase'.inRu} | ${'Product'.inRu}', style: Theme.of(context).textTheme.titleMedium),
+                                      Text('${'In all'.inRu}: ${_purchases.length}', style: Theme.of(context).textTheme.titleMedium),
+                                    ],
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: CheckListWidget<EntryPayPurchase>(
                                     items: _purchases,
-                                    onChanged: (entries) {
-                                      _purchases.updateAll((key, value) {
-                                        return entries[key] as EntryPayPurchase;
-                                      });
+                                    onChanged: (entry) {
+                                      _purchases.update(entry.value("id").value, (_) => entry);
+                                      //  {
+                                      //   return entries[key] as EntryPayPurchase;
+                                      // });
                                       _schemaStream.add(0);
                                     },
-                                  );
-                                }
-                              ),
-                            ),
-                          ],
+                                  )
+                                ),
+                              ],
+                            );
+                          }
                         ),
                       ),
                       // Customers
                       Card(
                         color: Colors.blue[50],
                         margin: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16.0),
-                              child: Text('${'Customer'.inRu} (${_customers.length})', style: Theme.of(context).textTheme.titleMedium),
-                            ),
-                            Divider(),
-                            Expanded(
-                              child: StreamBuilder<int>(
-                                stream: _customersStream.stream,
-                                builder: (context, snapshot) {
-                                  return CheckListWidget(
+                        child: StreamBuilder<int>(
+                          stream: _customersStream.stream,
+                          builder: (context, snapshot) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Customers'.inRu, style: Theme.of(context).textTheme.titleMedium),
+                                      Text('${'In all'.inRu}: ${_customers.length}', style: Theme.of(context).textTheme.titleMedium),
+                                    ],
+                                  ),
+                                ),
+                                Divider(),
+                                Expanded(
+                                  child: CheckListWidget<EntryPayCustomer>(
                                     items: _customers,
-                                    onChanged: (entries) {
-                                      _customers.updateAll((key, value) {
-                                        return entries[key] as EntryPayCustomer;
-                                      });
+                                    onChanged: (entry) {
+                                      _customers.update(entry.value("id").value, (_) => entry);
+                                      // {
+                                      //   return entries[key] as EntryPayCustomer;
+                                      // });
                                       _log.trace('.build.onChanged | Customer`s (${_customers.length}): ${_customers.map((id, c) => MapEntry(id, c.value('name').value))}');
                                       _schemaStream.add(0);
                                     },
-                                  );
-                                }
-                              ),
-                            ),
-                          ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
                         ),
                       ),
                     ],
                   ),
                   // Orders
                   Card(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Text('Заказы'.inRu, style: Theme.of(context).textTheme.titleMedium),
-                        ),
-                        Divider(),
-                        Expanded(
-                          child: StreamBuilder<int>(
-                            stream: _schemaStream.stream,
-                            builder: (context, snapshot) {
-                              return PayListWidget<EntryPayment>(
+                    child: StreamBuilder<int>(
+                      stream: _schemaStream.stream,
+                      builder: (context, snapshot) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Заказы'.inRu, style: Theme.of(context).textTheme.titleMedium),
+                                  Text('${'In all'.inRu}: ${_schema.entries.length}', style: Theme.of(context).textTheme.titleMedium),
+                                ],
+                              ),
+                            ),
+                            Divider(),
+                            Expanded(
+                              child: PayListWidget<EntryPayment>(
                                 header: _schema.fields,
                                 items: _schema.entries,
+                                customers: _customers,
+                                purchases: _purchases,
                                 onChanged: (entries) {
                                   
                                 },
-                              );
-                            }
-                          ),
-                        ),
-                      ],
+                              ),
+                            ),
+                          ],
+                        );
+                      }
                     ),
                   ),
                 ],

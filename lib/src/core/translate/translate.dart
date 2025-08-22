@@ -58,6 +58,7 @@ const tr = {
   // '**': {Lang.en: '**', Lang.ru: '---'},
 
   'of': {Lang.en: 'of', Lang.ru: 'от'},
+  'In all': {Lang.en: 'In all', Lang.ru: 'Всего'},
   'Show deleted': {Lang.en: 'Show deleted', Lang.ru: 'Показывать удаленные'},
   'Customers': {Lang.en: 'Customers', Lang.ru: 'Пользователи'},
   'Transactions': {Lang.en: 'Transactions', Lang.ru: 'Транзакции'},

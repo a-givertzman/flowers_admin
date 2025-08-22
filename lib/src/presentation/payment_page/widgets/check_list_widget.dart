@@ -6,7 +6,7 @@ import 'package:hmi_core/hmi_core_log.dart';
 class CheckListWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
   final Map<int, T> items;
   final Widget Function(T entry)? builder;
-  final void Function(Map<int, T> entries)? onChanged;
+  final void Function(T entries)? onChanged;
   ///
   ///
   const CheckListWidget({
@@ -18,11 +18,11 @@ class CheckListWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
   //
   //
   @override
-  State<CheckListWidget> createState() => _CheckListWidgetState<T>();
+  State<CheckListWidget<T>> createState() => _CheckListWidgetState<T>();
 }
 //
 //
-class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<CheckListWidget> {
+class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<CheckListWidget<T>> {
   late final Log _log;
   final ScrollController _controller = ScrollController();
   //
@@ -53,7 +53,7 @@ class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<CheckLi
                 setState(() {return;});
                 final onChanged = widget.onChanged;
                 if (onChanged != null) {
-                  onChanged(widget.items);
+                  onChanged(item);
                 }
               },
             ),
