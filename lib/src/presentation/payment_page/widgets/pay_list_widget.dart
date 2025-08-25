@@ -1,4 +1,5 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_customer.dart';
 import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<PayList
                 children: widget.header
                   .where((item) => !item.isHidden)
                   .map((item) {
-                    return Cell(child: Text(item.title.isEmpty ? item.key : item.title, softWrap: false));
+                    return Cell(hint: item.hint, child: Text(item.title.isEmpty ? item.key : item.title, softWrap: false));
                   }).toList(),
               ),
               ...widget.items.values.map((item) {
@@ -109,16 +110,16 @@ class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<PayList
                         },
                       ),
                     ),
-                    Cell(child: Text('${item.value('id').value}', softWrap: false)),
+                    Cell(hint: ''.inRu, child: Text('${item.value('id').value}', softWrap: false)),
                     Cell(child: Text('[$customerId] ${item.value('customer').value}', softWrap: false)),
                     Cell(child: Text('[${item.value('purchase_item_id').value}] ${item.value('purchase').value}', softWrap: false)),
                     Cell(child: Text('${item.value('product').value}}', softWrap: false)),
-                    Cell(child: Text('${item.value('count').value}', softWrap: false, textAlign: TextAlign.right)),
-                    Cell(child: Text('${item.value('cost').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: costColor))),
-                    Cell(child: Text('${item.value('paid').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: paidColor))),
-                    Cell(child: Text('${item.value('distributed').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: distributedColor))),
-                    Cell(child: Text('${item.value('to_refound').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: toRefoundColor))),
-                    Cell(child: Text('${item.value('refounded').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: refoundedColor))),
+                    Cell(hint: 'Total count of the items in the order'.inRu, child: Text('${item.value('count').value}', softWrap: false, textAlign: TextAlign.right)),
+                    Cell(hint: 'Total cost of the ordered items'.inRu, child: Text('${item.value('cost').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: costColor))),
+                    Cell(hint: 'Amount already payed by the order from the Customer\'s account'.inRu, child: Text('${item.value('paid').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: paidColor))),
+                    Cell(hint: 'Count of the items in the order already picked up by the Customer'.inRu, child: Text('${item.value('distributed').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: distributedColor))),
+                    Cell(hint: 'Amount to be returned to the Customer in the case of the overpay'.inRu, child: Text('${item.value('to_refound').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: toRefoundColor))),
+                    Cell(hint: 'Amount already returned to the customer on the  overpay'.inRu, child: Text('${item.value('refounded').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: refoundedColor))),
                     Cell(child: Text('${item.value('description').value}', softWrap: false, overflow: TextOverflow.fade)),
                   ],
                 );
@@ -134,12 +135,14 @@ class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<PayList
 class Cell extends StatelessWidget {
   final Widget child;
   final Color? color;
+  final String hint;
   ///
   ///
   const Cell({
     super.key,
     required this.child,
     this.color,
+    this.hint = '',
   });
   //
   //
@@ -148,7 +151,10 @@ class Cell extends StatelessWidget {
     return TableCell(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        child: child,
+        child: Tooltip(
+          message: hint,
+          child: child,
+        ),
       ),
     );
   }
