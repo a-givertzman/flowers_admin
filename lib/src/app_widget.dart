@@ -1,5 +1,4 @@
 import 'package:flowers_admin/src/infrostructure/app_user/app_user.dart';
-import 'package:flowers_admin/src/infrostructure/app_user/app_user_role.dart';
 import 'package:flowers_admin/src/presentation/auth_page/auth_page.dart';
 import 'package:flowers_admin/src/presentation/home_page/home_page.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,7 @@ class AppWidget extends StatefulWidget {
 
 ///
 class _AppWidgetState extends State<AppWidget> {
-  AppUser _user = AppUser.empty();
+  final AppUser _user = AppUser.empty();
   //
   //
   @override
@@ -49,7 +48,7 @@ class _AppWidgetState extends State<AppWidget> {
   Widget build(BuildContext context) {
     final homePage = HomePage(
       authToken: widget.authToken,
-      user: AppUser(id: '1', name: 'Anton Lobanov', role: AppUserRole.admin),
+      user: _user,
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,

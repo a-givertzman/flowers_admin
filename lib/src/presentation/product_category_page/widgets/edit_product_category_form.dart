@@ -146,6 +146,7 @@ class _EditProductCategoryFormState extends State<EditProductCategoryForm> {
         ),
         bottomNavigationBar: BottomAppBar(
           child: OverflowBar(
+            alignment: MainAxisAlignment.end,
             children: [
               TextButton(
                 onPressed:  () => Navigator.pop(context, const Err<EntryProductCategory, void>(null)),

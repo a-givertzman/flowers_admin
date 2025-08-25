@@ -49,13 +49,13 @@ class TableSchemaReady<T extends SchemaEntryAbstract, P> implements TableSchemaA
           case Ok<List<T>, Failure>():
             r = Ok(_schema.entries);
           case Err<List<T>, Failure>(: final error):
-            r = Err(Failure(message: "$runtimeType.fetch | Error: $error", stackTrace: StackTrace.current));
+            r = Err(Failure.pass('$runtimeType.fetch', error));
         }
         return result;
       },
       onError: (err) {
         return Err<List<T>, Failure>(
-          Failure(message: "$runtimeType.fetch | Error: $err", stackTrace: StackTrace.current),
+          Failure.pass('$runtimeType.fetch', err),
         );
       },
     )
@@ -91,10 +91,7 @@ class TableSchemaReady<T extends SchemaEntryAbstract, P> implements TableSchemaA
   @override
   Future<Result<void, Failure>> fetchRelations() {
     return Future.value(
-      Err(Failure(
-        message: '$runtimeType.fetchRelations | method does not exists', 
-        stackTrace: StackTrace.current,
-      )),
+      Err(Failure('$runtimeType.fetchRelations | method does not exists')),
     );
   }
   //

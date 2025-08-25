@@ -5,6 +5,7 @@ import 'package:flowers_admin/src/app_widget.dart';
 import 'package:flowers_admin/src/core/log/log.dart';
 import 'package:flowers_admin/src/core/log/log_level.dart';
 import 'package:flowers_admin/src/core/settings/settings.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:hmi_core/hmi_core_json.dart';
 import 'package:hmi_core/hmi_core_text_file.dart';
 import 'package:flowers_admin/src/core/settings/app_settings.dart';
@@ -20,10 +21,12 @@ void main() async {
     () async {
       Log.initialize(level: LogLevel.debug);
       WidgetsFlutterBinding.ensureInitialized();
-      if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-          setWindowTitle('Flowers | Admin');
-          setWindowMinSize(const Size(500, 500));
-          setWindowMaxSize(Size.infinite);
+      if (!kIsWeb) {
+        if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+            setWindowTitle('Flowers | Admin');
+            setWindowMinSize(const Size(500, 500));
+            setWindowMaxSize(Size.infinite);
+        }
       }
       // if (!kIsWeb) {
       //   await windowManager.ensureInitialized();
@@ -67,7 +70,7 @@ void main() async {
     },
     (error, stackTrace) {
       final trace = stackTrace.toString().isEmpty ? StackTrace.current : stackTrace.toString();
-      const Log('main').error('message: $error\nstackTrace: $trace'); 
+      const Log('main').error(' | message: $error\nstackTrace: $trace'); 
     },
   );
 }

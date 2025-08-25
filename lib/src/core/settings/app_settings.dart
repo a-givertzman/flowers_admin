@@ -32,10 +32,7 @@ class AppSettings {
   static dynamic getSetting(String settingName) {
     final setting = _map[settingName];
     if (setting == null) {
-      throw Failure(
-        message: 'Ошибка в методе $AppSettings.getSetting(): Не найдена настройка "$settingName"',
-        stackTrace: StackTrace.current,
-      );
+      throw Failure('$AppSettings.getSetting | Key "$settingName" - not found');
     }
     return setting;
   }

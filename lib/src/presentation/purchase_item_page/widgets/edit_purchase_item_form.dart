@@ -29,7 +29,6 @@ class EditPurchaseItemForm extends StatefulWidget {
   //
   //
   @override
-  // ignore: no_logic_in_create_state
   State<EditPurchaseItemForm> createState() => _EditPurchaseItemFormState();
 }
 //
@@ -37,10 +36,6 @@ class EditPurchaseItemForm extends StatefulWidget {
 class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
   late final Log _log;
   late EntryPurchaseItem _entry;
-  // String _details = '';
-  // String _description = '';
-  // String _picture = '';
-  //
   //
   @override
   void initState() {
@@ -66,8 +61,8 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
   }
   ///
   ///
-  Field _field(List<Field> fields, String key) {
-    return fields.firstWhere((element) => element.key == key, orElse: () {
+  Field _field(String key) {
+    return widget.fields.firstWhere((element) => element.key == key, orElse: () {
       return Field<EntryPurchaseItem>(key: key);
     },);
   }
@@ -77,7 +72,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.titleMedium;
     final statusRelation = PurchaseStatus.relation;
-    final purchaseField = _field(widget.fields, 'purchase_id');
+    final purchaseField = _field('purchase_id');
     final purchaseRelation = widget.relations[purchaseField.relation.id] ?? [];
     final purchases = EditListEntry(
       entries: purchaseRelation,
@@ -86,7 +81,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
     final purchaseId = '${_entry.value('purchase_id').value}';
     final relPurchase = purchaseRelation.firstWhere((entry) => '${entry.value('id').value}' == purchaseId, orElse: () => EntryPurchase.empty());
     final status = _entry.value('status').value ?? '';
-    final productField = _field(widget.fields, 'product_id');
+    final productField = _field('product_id');
     final productRelation = widget.relations[productField.relation.id] ?? [];
     final products = EditListEntry(
       entries: widget.relations[productField.relation.id] ?? [],
@@ -116,7 +111,7 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: LoadImageWidget(
-                    labelText: _field(widget.fields, 'picture').title.inRu,
+                    labelText: _field('picture').title.inRu,
                     src: picture.isEmpty ? '${relProduct.value('picture').value}' : picture,
                     onComplete: (value) {
                       _entry.update('picture', value);
@@ -152,9 +147,9 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                       EditListWidget(
                         id: status.isEmpty ? '${relPurchase.value('status').value}' : status,
                         relation: EditListEntry(field: 'status', entries: statusRelation.values.toList()),
-                        editable: _field(widget.fields, 'status').isEditable,
+                        editable: _field('status').isEditable,
                         style: status.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
-                        labelText: _field(widget.fields, 'status').title.inRu,
+                        labelText: _field('status').title.inRu,
                         onComplete: (id) {
                           final status = statusRelation[id]?.value('status').value;
                           _log.debug('build.onComplete | status: $status');
@@ -178,56 +173,56 @@ class _EditPurchaseItemFormState extends State<EditPurchaseItemForm> {
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'sale_price').title.inRu,
+                        labelText: _field('sale_price').title.inRu,
                         value: '${_entry.value('sale_price').value}',
-                        editable: _field(widget.fields, 'sale_price').isEditable,
+                        editable: _field('sale_price').isEditable,
                         onComplete: (value) {
                           _entry.update('sale_price', value);
                           setState(() {return;});
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'sale_currency').title.inRu,
+                        labelText: _field('sale_currency').title.inRu,
                         value: '${_entry.value('sale_currency').value}',
-                        editable: _field(widget.fields, 'sale_currency').isEditable,
+                        editable: _field('sale_currency').isEditable,
                         onComplete: (value) {
                           _entry.update('sale_currency', value);
                           setState(() {return;});
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'shipping').title.inRu,
+                        labelText: _field('shipping').title.inRu,
                         value: '${_entry.value('shipping').value}',
-                        editable: _field(widget.fields, 'shipping').isEditable,
+                        editable: _field('shipping').isEditable,
                         onComplete: (value) {
                           _entry.update('shipping', value);
                           setState(() {return;});
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'remains').title.inRu,
+                        labelText: _field('remains').title.inRu,
                         value: '${_entry.value('remains').value}',
-                        editable: _field(widget.fields, 'remains').isEditable,
+                        editable: _field('remains').isEditable,
                         onComplete: (value) {
                           _entry.update('remains', value);
                           setState(() {return;});
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'details').title.inRu,
+                        labelText: _field('details').title.inRu,
                         value: details.isEmpty ? '${relProduct.value('details').value}' : details,
                         style: details.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
-                        editable: _field(widget.fields, 'details').isEditable,
+                        editable: _field('details').isEditable,
                         onComplete: (value) {
                           _entry.update('details', value);
                           setState(() {return;});
                         },
                       ),
                       TextEditWidget(
-                        labelText: _field(widget.fields, 'description').title.inRu,
+                        labelText: _field('description').title.inRu,
                         value: description.isEmpty ? '${relProduct.value('description').value}' : description,
                         style: description.isEmpty ? null : textStyle?.copyWith(color: Colors.blue),
-                        editable: _field(widget.fields, 'description').isEditable,
+                        editable: _field('description').isEditable,
                         onComplete: (value) {
                           _entry.update('description', value);
                           setState(() {return;});

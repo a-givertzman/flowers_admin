@@ -58,6 +58,7 @@ const tr = {
   // '**': {Lang.en: '**', Lang.ru: '---'},
 
   'of': {Lang.en: 'of', Lang.ru: 'от'},
+  'In all': {Lang.en: 'In all', Lang.ru: 'Всего'},
   'Show deleted': {Lang.en: 'Show deleted', Lang.ru: 'Показывать удаленные'},
   'Customers': {Lang.en: 'Customers', Lang.ru: 'Пользователи'},
   'Transactions': {Lang.en: 'Transactions', Lang.ru: 'Транзакции'},
@@ -68,6 +69,7 @@ const tr = {
   'Purchase': {Lang.en: 'Purchase', Lang.ru: 'Закупка'},
   'Purchases': {Lang.en: 'Purchases', Lang.ru: 'Закупки'},
   'PurchaseItems': {Lang.en: 'Purchase Items', Lang.ru: 'Позиции закупок'},
+  'Purchase Item': {Lang.en: 'Purchase Item', Lang.ru: 'Позиция в закупке'},
   'Orders': {Lang.en: 'Orders', Lang.ru: 'Заказы'},
   'Count': {Lang.en: 'Count', Lang.ru: 'Кол-во'},
   'Paid': {Lang.en: 'Paid', Lang.ru: 'Оплачено'},
@@ -77,6 +79,45 @@ const tr = {
   'Refounded': {Lang.en: 'Refounded', Lang.ru: 'Возвращено'},
   'No date': {Lang.en: 'No date', Lang.ru: 'Нет даты'},
   'Allow indebted': {Lang.en: 'Allow indebted', Lang.ru: 'Разрешить долг'},
+  'Pay': {Lang.en: 'Pay', Lang.ru: 'Оплатить'},
+  'Perform payments': {Lang.en: 'Perform payments', Lang.ru: 'Провести платежи'},
+  'Payments will be performed for selected Customers by selected Purchase items': {
+    Lang.en: 'Payments will be performed for selected Customers by selected Purchase items',
+    Lang.ru: 'Платежи будут проведены для выбранных Клиентов по выбранным позициям закупок',
+  },
+  'Total count of the items in the order': {
+    Lang.en: 'Total count of the items in the order',
+    Lang.ru: 'Количество товаров в заказе',
+  },
+  'Total cost of the ordered items': {
+    Lang.en: 'The total cost of the ordered items',
+    Lang.ru: 'Общая стоимость заказанных товаров',
+  },
+  'Amount already payed by the order from the Customer\'s account': {
+    Lang.en: 'Amount already payed by the order from the Customer\'s account',
+    Lang.ru: 'Сумма, уже оплаченная по заказу со счета Клиента',
+  },
+  'Count of the items in the order already picked up by the Customer': {
+    Lang.en: 'Count of the items in the order already picked up by the Customer',
+    Lang.ru: 'Количество товаров в заказе, уже полученных Клиентом',
+  },
+  'Amount to be returned to the Customer in the case of the overpay': {
+    Lang.en: 'Amount to be returned to the Customer in the Case of the overpay',
+    Lang.ru: 'Сумма, подлежащая возврату Клиенту в случае переплаты',
+  },
+  'Amount already returned to the customer on the  overpay': {
+    Lang.en: 'Amount already returned to the customer on the  overpay',
+    Lang.ru: 'Сумма, уже возвращенная Клиенту по переплате',
+  },
+  'Check the box to perform a payment on the order': {
+    Lang.en: 'Check the box to perform a payment on the order',
+    Lang.ru: 'Установите галочку что бы провести платежь по заказа',
+  },
+  'en_long': {
+    Lang.en: 'en_long',
+    Lang.ru: 'ru',
+  },
+  'en_compact': {Lang.en: 'en_compact', Lang.ru: 'ru'},
 };
 ///
 /// Simple translate

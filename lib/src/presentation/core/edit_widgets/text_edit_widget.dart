@@ -4,21 +4,25 @@ import 'package:flutter/material.dart';
 ///
 class TextEditWidget extends StatefulWidget {
   final String value;
+  final Function(String)? onChange;
   final Function(String)? onComplete;
   final String? labelText;
   final String? errorText;
   final bool editable;
   final TextStyle? style;
+  final bool obscureText;
   ///
   ///
   const TextEditWidget({
     super.key,
     this.value = '',
+    this.onChange,
     this.onComplete,
     this.labelText,
     this.errorText,
     this.editable = true,
     this.style,
+    this.obscureText = false,
   });
   //
   //
@@ -59,6 +63,7 @@ class _TextEditWidgetState extends State<TextEditWidget> {
           ? (widget.style ?? Theme.of(context).textTheme.titleMedium)?.copyWith(color: Colors.blue)
           : widget.style,
         // textAlign: _textAlign,
+        obscureText: widget.obscureText,
         decoration: InputDecoration(
           // border: OutlineInputBorder(borderSide: BorderSide(width: 0.1, color: _isChanged ? Colors.red.withValue(alpha: 0.5) : Colors.black.withValue(alpha: 0.5))),
           // border: const OutlineInputBorder(),
@@ -76,6 +81,7 @@ class _TextEditWidgetState extends State<TextEditWidget> {
             _isChanged = isChanged;
             setState(() {return;});
           }
+          widget.onChange?.call(value);
         },
         onTapOutside: (_) {
           _onEditingComplete(_controller.text);

@@ -2,6 +2,13 @@
 
 A new Flutter project.
 
+## Deploy
+
+```bash
+flutter build web --release
+rsync -avz -e 'ssh' build/web/ root@95.142.42.240:/var/www/html/
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application that follows the

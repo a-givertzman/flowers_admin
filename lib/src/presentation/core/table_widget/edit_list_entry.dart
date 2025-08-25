@@ -4,7 +4,7 @@ import 'package:ext_rw/ext_rw.dart';
 class EditListEntry {
   final Map<String, String> _entry;
   ///
-  /// Creates EditListEntry with [entries]
+  /// Creates EditListEntry from [entries] by taking values of [field]
   EditListEntry({
     required String field,
     required List<SchemaEntryAbstract> entries,

@@ -1,30 +1,29 @@
 import 'package:ext_rw/ext_rw.dart';
+import 'package:flowers_admin/src/core/translate/translate.dart';
+import 'package:flowers_admin/src/infrostructure/payment/entry_pay_customer.dart';
+import 'package:flowers_admin/src/infrostructure/payment/entry_pay_purchase.dart';
 import 'package:flutter/material.dart';
 import 'package:hmi_core/hmi_core_log.dart';
 ///
 /// Check list
 class PayListWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
-  late final Log _log;
-  final List<Field<T>> _header;
-  final Map<String, T> _items;
+  final List<Field<T>> header;
+  final Map<String, T> items;
+  final Map<int, EntryPayCustomer> customers;
+  final Map<int, EntryPayPurchase> purchases;
   // final Widget Function(T) _builder;
-  final void Function(Map<String, T> entries)? _onChanged;
+  final void Function(Map<String, T> entries)? onChanged;
   ///
   ///
-  PayListWidget({
+  const PayListWidget({
     super.key,
-    required List<Field<T>> header,
-    required Map<String, T> items,
-    // required Widget Function(T) builder,
-    void Function(Map<String, T>)? onChanged,
-  }):
-    _header = header,
-    _items = items,
-    // _builder = builder,
-    _onChanged = onChanged {
-      _log = Log("$runtimeType");
-    }
-  //
+    required this.header,
+    required this.items,
+    required this.customers,
+    required this.purchases,
+    // required this.builder,
+    this.onChanged,
+  });
   //
   @override
   State<PayListWidget<T>> createState() => _CheckListWidgetState();
@@ -32,7 +31,14 @@ class PayListWidget<T extends SchemaEntryAbstract> extends StatefulWidget {
 //
 //
 class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<PayListWidget<T>> {
+  late final Log _log;
   final ScrollController _controller = ScrollController();
+  //
+  @override
+  void initState() {
+    _log = Log("$runtimeType");
+    super.initState();
+  }
   //
   //
   @override
@@ -64,13 +70,13 @@ class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<PayList
             children: [
               TableRow(
                 decoration: BoxDecoration(),
-                children: widget._header
+                children: widget.header
                   .where((item) => !item.isHidden)
                   .map((item) {
-                    return Cell(child: Text(item.title.isEmpty ? item.key : item.title, softWrap: false));
+                    return Cell(hint: item.hint, child: Text(item.title.isEmpty ? item.key : item.title, softWrap: false));
                   }).toList(),
               ),
-              ...widget._items.values.map((item) {
+              ...widget.items.values.map((item) {
                 double asDouble(item, key) {
                   return double.tryParse('${item.value(key).value}') ?? 0.0;
                 }
@@ -79,6 +85,15 @@ class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<PayList
                 final distributedColor = asDouble(item, 'paid') >= asDouble(item, 'cost') && asDouble(item, 'distributed') < asDouble(item, 'count') ? Colors.red : Colors.black;
                 final toRefoundColor = asDouble(item, 'to_refound') > asDouble(item, 'refounded') ? Colors.red : Colors.black;
                 final refoundedColor = asDouble(item, 'refounded') > asDouble(item, 'to_refound') ? Colors.red : Colors.black;
+                final customerId = item.value('customer_id').value;
+                final putchaseId = item.value('purchase_id').value;
+                final customerPay = widget.customers[customerId]?.value("pay").value ?? false;
+                final purchasePay  =widget.purchases[putchaseId]?.value("pay").value ?? false;
+                _log.debug('.build | customerId: $customerId,  isSelected: $customerPay');
+                _log.debug('.build | putchaseId: $putchaseId,  isSelected: $purchasePay');
+                final pay = customerPay && purchasePay;
+                _log.debug('.build | pay: $pay');
+                item.update('pay', pay);
                 return TableRow(
                   decoration: BoxDecoration(),
                   children: [
@@ -88,23 +103,23 @@ class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<PayList
                         onChanged: (value) {
                           item.update('pay', value);
                           setState(() {return;});
-                          final onChanged = widget._onChanged;
+                          final onChanged = widget.onChanged;
                           if (onChanged != null) {
-                            onChanged(widget._items);
+                            onChanged(widget.items);
                           }
                         },
                       ),
                     ),
-                    Cell(child: Text('${item.value('id').value}', softWrap: false)),
-                    Cell(child: Text('[${item.value('customer_id').value}] ${item.value('customer').value}', softWrap: false)),
+                    Cell(hint: ''.inRu, child: Text('${item.value('id').value}', softWrap: false)),
+                    Cell(child: Text('[$customerId] ${item.value('customer').value}', softWrap: false)),
                     Cell(child: Text('[${item.value('purchase_item_id').value}] ${item.value('purchase').value}', softWrap: false)),
                     Cell(child: Text('${item.value('product').value}}', softWrap: false)),
-                    Cell(child: Text('${item.value('count').value}', softWrap: false, textAlign: TextAlign.right)),
-                    Cell(child: Text('${item.value('cost').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: costColor))),
-                    Cell(child: Text('${item.value('paid').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: paidColor))),
-                    Cell(child: Text('${item.value('distributed').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: distributedColor))),
-                    Cell(child: Text('${item.value('to_refound').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: toRefoundColor))),
-                    Cell(child: Text('${item.value('refounded').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: refoundedColor))),
+                    Cell(hint: 'Total count of the items in the order'.inRu, child: Text('${item.value('count').value}', softWrap: false, textAlign: TextAlign.right)),
+                    Cell(hint: 'Total cost of the ordered items'.inRu, child: Text('${item.value('cost').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: costColor))),
+                    Cell(hint: 'Amount already payed by the order from the Customer\'s account'.inRu, child: Text('${item.value('paid').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: paidColor))),
+                    Cell(hint: 'Count of the items in the order already picked up by the Customer'.inRu, child: Text('${item.value('distributed').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: distributedColor))),
+                    Cell(hint: 'Amount to be returned to the Customer in the case of the overpay'.inRu, child: Text('${item.value('to_refound').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: toRefoundColor))),
+                    Cell(hint: 'Amount already returned to the customer on the  overpay'.inRu, child: Text('${item.value('refounded').value}', softWrap: false, textAlign: TextAlign.right, style: DefaultTextStyle.of(context).style.copyWith(color: refoundedColor))),
                     Cell(child: Text('${item.value('description').value}', softWrap: false, overflow: TextOverflow.fade)),
                   ],
                 );
@@ -120,12 +135,14 @@ class _CheckListWidgetState<T extends SchemaEntryAbstract> extends State<PayList
 class Cell extends StatelessWidget {
   final Widget child;
   final Color? color;
+  final String hint;
   ///
   ///
   const Cell({
     super.key,
     required this.child,
     this.color,
+    this.hint = '',
   });
   //
   //
@@ -134,7 +151,10 @@ class Cell extends StatelessWidget {
     return TableCell(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        child: child,
+        child: Tooltip(
+          message: hint,
+          child: child,
+        ),
       ),
     );
   }
